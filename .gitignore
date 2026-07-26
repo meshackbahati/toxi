@@ -23,6 +23,9 @@ demo.db
 
 
 
+# Tool state directories
+.mimocode/
+
 # Local env and editor artifacts
 .env
 .env.*
