@@ -408,17 +408,17 @@ use toxi_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
 use std::time::Duration;
 
 async fn handler(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Hello from Toxi with middleware!",
         "timestamp": chrono::Utc::now().to_rfc3339()
-    })))
+    }))
 }
 
 async fn protected_handler(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "This is a protected endpoint",
         "status": "authorized"
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -499,7 +499,7 @@ where
                         .status(status_code)
                         .header("content-type", "application/json")
                         .body(toxi_core::types::ResponseBody::from(
-                            serde_json::json!({
+                            json!({
                                 "error": status_code.as_str(),
                                 "message": error.to_string()
                             }).to_string()

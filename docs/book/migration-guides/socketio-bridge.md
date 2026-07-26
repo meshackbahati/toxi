@@ -31,7 +31,7 @@ use toxi_realtime::{Event, EventType};
 
 let event = Event::new(
     EventType::Custom("leaderboard:update".into()),
-    serde_json::json!({"eventId": 42, "delta": 15})
+    json!({"eventId": 42, "delta": 15})
 );
 ```
 

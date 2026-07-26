@@ -165,7 +165,7 @@ async fn validate_token(_token: &str) -> bool {
 }
 
 async fn protected_route(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "message": "Access granted" })))
+    Ok(json_response!({ "message": "Access granted" }))
 }
 ```
 
@@ -428,17 +428,17 @@ async fn error_handling_middleware(req: Request, next: Next) -> Result<Response>
     match next.run(req).await {
         Ok(response) => Ok(response),
         Err(Error::NotFound) => {
-            Ok(Response::json(serde_json::json!({
+            Ok(json_response!({
                 "error": "Resource not found",
                 "code": 404
-            })))
+            }))
         }
         Err(Error::Unauthorized(msg)) => {
-            Ok(Response::json(serde_json::json!({
+            Ok(json_response!({
                 "error": "Unauthorized",
                 "message": msg,
                 "code": 401
-            })))
+            }))
         }
         Err(other_error) => Err(other_error),
     }
@@ -462,7 +462,7 @@ async fn conditional_middleware(req: Request, next: Next) -> Result<Response> {
 }
 
 async fn api_handler(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "endpoint": "api" })))
+    Ok(json_response!({ "endpoint": "api" }))
 }
 
 async fn web_handler(_req: Request) -> Result<Response> {

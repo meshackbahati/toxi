@@ -186,7 +186,7 @@ impl Plugin for DatabasePlugin {
                 let db = db.clone();
                 async move {
                     let data: Vec<PluginData> = db.find_all()?;
-                    Ok(response::json(serde_json::json!(data)))
+                    Ok(json_response!(data))
                 }
             }
         });

@@ -4,7 +4,7 @@
 
 <img src="docs/logo/toxi.svg" width="200" alt="Toxi Logo">
 
-A modular web framework for Rust.
+A web framework for Rust. Build APIs, microservices, serverless functions, and full-stack apps.
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](LICENSE)
@@ -17,9 +17,7 @@ A modular web framework for Rust.
 
 ## What is Toxi?
 
-Toxi is a modular web framework for Rust built on `hyper` and `tokio`. It provides a complete, opt-in stack for building HTTP services — from a lean routing core to a full-featured ORM, authentication, real-time communication, background jobs, and more.
-
-Every capability is a separate crate. Use `toxi-core` alone for a minimal API, or enable the full stack with `toxi = { features = ["full"] }`. Nothing is forced. Nothing is hidden.
+Toxi is a Rust web framework for building APIs, microservices, serverless functions, and full-stack applications. It provides routing, extractors, middleware, an ORM with auto-diff migrations, authentication, server-side templates, real-time communication, background job queues, caching, file storage, email delivery, and OpenAPI documentation. Each component is a separate crate. Use `toxi-core` alone for a minimal API server, or enable the full stack through the `toxi` facade.
 
 ## Quick Start
 

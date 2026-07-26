@@ -71,9 +71,9 @@ Conventions:
 
 The `Any` database abstraction is great for write-once-run-anywhere code, but it has limitations:
 
-- ❌ Doesn't support `#[derive(sqlx::FromRow)]` for complex types (JSONB, arrays, custom types)
-- ❌ No PostgreSQL-specific operators (JSONB queries, array operations, etc.)
-- ❌ Limited type mapping for database-specific features
+-  Doesn't support `#[derive(sqlx::FromRow)]` for complex types (JSONB, arrays, custom types)
+-  No PostgreSQL-specific operators (JSONB queries, array operations, etc.)
+-  Limited type mapping for database-specific features
 
 **Solution**: Access the concrete pool directly when you need database-specific features.
 

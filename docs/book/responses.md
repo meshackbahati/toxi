@@ -14,7 +14,7 @@ The most common response type for APIs is JSON:
 use toxi::prelude::*;
 
 async fn api_handler(_req: Request) -> Result<Response> {
-    let data = serde_json::json!({
+    let data = json!({
         "message": "Hello, World!",
         "status": "success"
     });
@@ -65,7 +65,7 @@ While the direct methods on `Response` are preferred, you can also use the respo
 use toxi::response;
 
 async fn alternative_json(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "data": "value" })))
+    Ok(json_response!({ "data": "value" }))
 }
 
 async fn alternative_html(_req: Request) -> Result<Response> {
@@ -161,7 +161,7 @@ async fn error_example(_req: Request) -> Result<Response> {
     }
     
     // Success response
-    Ok(Response::json(serde_json::json!({ "status": "success" })))
+    Ok(json_response!({ "status": "success" }))
 }
 ```
 

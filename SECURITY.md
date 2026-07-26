@@ -58,52 +58,52 @@ Toxi is designed with security as a top priority:
 
 #### OWASP Top 10 Mitigations
 
-1. **Injection** ✅
+1. **Injection** 
    - Prepared statements for all SQL queries
    - Type-safe parameter binding
    - Input validation via serde
 
-2. **Broken Authentication** ✅
+2. **Broken Authentication** 
    - Secure session management
    - Password strength requirements
    - Account lockout after failed attempts
    - JWT with short expiration
 
-3. **Sensitive Data Exposure** ✅
+3. **Sensitive Data Exposure** 
    - TLS 1.3 enforced
    - Encrypted secrets storage
    - No sensitive data in logs
 
-4. **XML External Entities (XXE)** ✅
+4. **XML External Entities (XXE)** 
    - No XML parsing by default
    - JSON-only APIs
 
-5. **Broken Access Control** ✅
+5. **Broken Access Control** 
    - RBAC/PBAC built-in
    - Authorization middleware
    - Principle of least privilege
 
-6. **Security Misconfiguration** ✅
+6. **Security Misconfiguration** 
    - Secure defaults
    - Security headers enabled by default
    - Configuration validation
 
-7. **Cross-Site Scripting (XSS)** ✅
+7. **Cross-Site Scripting (XSS)** 
    - Auto-escaping in templates
    - Content-Security-Policy headers
    - JSON APIs (not HTML)
 
-8. **Insecure Deserialization** ✅
+8. **Insecure Deserialization** 
    - Type-safe deserialization with serde
    - Size limits on request bodies
    - Validation on all inputs
 
-9. **Using Components with Known Vulnerabilities** ✅
+9. **Using Components with Known Vulnerabilities** 
    - Regular dependency audits
    - `cargo audit` in CI
    - Automatic dependabot updates
 
-10. **Insufficient Logging & Monitoring** ✅
+10. **Insufficient Logging & Monitoring** 
     - Structured logging
     - Request ID tracking
     - Audit logs for sensitive operations
@@ -263,4 +263,4 @@ When we fix a security vulnerability:
 
 ---
 
-Thank you for helping keep Toxi and its users safe! 🔒
+Thank you for helping keep Toxi and its users safe! 

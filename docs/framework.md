@@ -492,7 +492,7 @@ use toxi_testing::TestRequest;
 // Build test requests
 let request = TestRequest::get("/")
     .header("authorization", "Bearer token")
-    .json(&serde_json::json!({"key": "value"}));
+    .json(&json!({"key": "value"}));
 
 let response = server.execute(request).await?;
 ```
@@ -558,10 +558,10 @@ async fn create_user(
     let token = create_token(&state.jwt_manager, claims)
         .map_err(|e| Error::Server(e.to_string()))?;
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user": user,
         "token": token
-    })))
+    }))
 }
 
 async fn analytics(

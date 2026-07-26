@@ -18,12 +18,12 @@ async fn inspect_request(req: Request) -> Result<Response> {
     let uri = req.uri();
     let version = req.version();
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "method": method.to_string(),
         "uri": uri.to_string(),
         "version": format!("{:?}", version),
         "headers": extract_headers(&req)
-    })))
+    }))
 }
 
 fn extract_headers(req: &Request) -> serde_json::Value {
@@ -60,14 +60,14 @@ async fn handle_headers(req: Request) -> Result<Response> {
         .and_then(|hv| hv.to_str().ok())
         .map(|s| s.to_string());
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "content_type": content_type,
         "user_agent": user_agent,
         "has_auth": authorization.is_some(),
         "auth_scheme": authorization.as_ref().map(|auth| {
             auth.split_whitespace().next().unwrap_or("unknown").to_string()
         })
-    })))
+    }))
 }
 
 // Case-insensitive header access
@@ -79,7 +79,7 @@ async fn handle_specific_header(req: Request) -> Result<Response> {
         .and_then(|hv| hv.to_str().ok())
         .unwrap_or("unknown");
     
-    Ok(Response::json(serde_json::json!({ "user_agent": user_agent })))
+    Ok(json_response!({ "user_agent": user_agent }))
 }
 ```
 
@@ -93,13 +93,13 @@ use toxi::prelude::*;
 async fn inspect_uri(req: Request) -> Result<Response> {
     let uri = req.uri();
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "scheme": uri.scheme().map(|s| s.to_string()).unwrap_or_default(),
         "authority": uri.authority().map(|a| a.to_string()).unwrap_or_default(),
         "path": uri.path(),
         "query": uri.query().unwrap_or_default(),
         "full_uri": uri.to_string()
-    })))
+    }))
 }
 
 // Parse query parameters manually (though Query extractor is preferred)
@@ -118,7 +118,7 @@ async fn manual_query_parsing(req: Request) -> Result<Response> {
         })
         .collect();
     
-    Ok(Response::json(serde_json::json!(params)))
+    Ok(json_response!(params))
 }
 ```
 
@@ -153,11 +153,11 @@ async fn method_inspector(req: Request) -> Result<Response> {
         _ => "UNKNOWN",
     };
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "method": method_str,
         "version": version_str,
         "is_standard_method": method.is_safe() || method.is_idempotent() || method.is_extension()
-    })))
+    }))
 }
 ```
 
@@ -185,13 +185,13 @@ async fn handle_extensions(mut req: Request) -> Result<Response> {
     
     // Later, you can retrieve it
     if let Some(metadata) = req.extensions().get::<RequestMetadata>() {
-        return Ok(Response::json(serde_json::json!({
+        return Ok(json_response!({
             "request_id": metadata.request_id,
             "timestamp": metadata.timestamp.to_rfc3339()
-        })));
+        }));
     }
     
-    Ok(Response::json(serde_json::json!({ "status": "no_metadata" })))
+    Ok(json_response!({ "status": "no_metadata" }))
 }
 ```
 
@@ -214,11 +214,11 @@ async fn access_raw_body(mut req: Request) -> Result<Response> {
     
     let body_str = String::from_utf8_lossy(&body_bytes);
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "body_size": body_bytes.len(),
         "body_content": body_str.to_string(),
         "is_valid_utf8": std::str::from_utf8(&body_bytes).is_ok()
-    })))
+    }))
 }
 ```
 
@@ -257,7 +257,7 @@ async fn validate_request(req: Request) -> Result<Response> {
         return Err(Error::BadRequest("Request body too large".to_string()));
     }
     
-    Ok(Response::json(serde_json::json!({ "status": "validated" })))
+    Ok(json_response!({ "status": "validated" }))
 }
 ```
 
@@ -290,7 +290,7 @@ async fn contextual_handler(
         return Err(Error::ServiceUnavailable("Service temporarily unavailable".to_string()));
     }
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "app": {
             "name": ctx.app_name,
             "version": ctx.version
@@ -302,7 +302,7 @@ async fn contextual_handler(
             "method": req.method().to_string(),
             "path": req.uri().path()
         }
-    })))
+    }))
 }
 ```
 
@@ -379,7 +379,7 @@ async fn secure_request_handler(req: Request) -> Result<Response> {
         return Err(Error::BadRequest("Potential SQL injection detected".to_string()));
     }
     
-    Ok(Response::json(serde_json::json!({ "status": "secure" })))
+    Ok(json_response!({ "status": "secure" }))
 }
 
 fn is_allowed_host(host: &str) -> bool {

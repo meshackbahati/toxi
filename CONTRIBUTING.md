@@ -4,7 +4,7 @@ Thank you for your interest in contributing to Toxi! This document provides guid
 
 ---
 
-## 🌟 Ways to Contribute
+##  Ways to Contribute
 
 - **Report bugs** via GitHub Issues
 - **Suggest features** and enhancements
@@ -15,7 +15,7 @@ Thank you for your interest in contributing to Toxi! This document provides guid
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -43,7 +43,7 @@ cargo run --example hello-world
 
 ---
 
-## 📝 Development Workflow
+##  Development Workflow
 
 ### 1. Fork and Clone
 
@@ -125,7 +125,7 @@ git push origin feature/your-feature-name
 
 ---
 
-## 🎯 Coding Guidelines
+##  Coding Guidelines
 
 ### Code Style
 
@@ -204,7 +204,7 @@ mod tests {
 
 ---
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 toxi/
@@ -223,7 +223,7 @@ toxi/
 
 ---
 
-## 🔍 Review Process
+##  Review Process
 
 ### Pull Request Checklist
 
@@ -246,7 +246,7 @@ Before submitting a PR, ensure:
 
 ---
 
-## 🐛 Reporting Bugs
+##  Reporting Bugs
 
 ### Before Reporting
 
@@ -283,7 +283,7 @@ Any other relevant information.
 
 ---
 
-## 💡 Feature Requests
+##  Feature Requests
 
 We welcome feature suggestions! Please:
 
@@ -294,7 +294,7 @@ We welcome feature suggestions! Please:
 
 ---
 
-## 🎓 Learning Resources
+##  Learning Resources
 
 ### Rust Resources
 - [The Rust Book](https://doc.rust-lang.org/book/)
@@ -309,7 +309,7 @@ We welcome feature suggestions! Please:
 
 ---
 
-## 📜 Code of Conduct
+##  Code of Conduct
 
 ### Our Pledge
 
@@ -328,7 +328,7 @@ Unacceptable behavior may result in temporary or permanent bans. Report issues t
 
 ---
 
-## 🎁 Recognition
+##  Recognition
 
 Contributors will be:
 
@@ -338,7 +338,7 @@ Contributors will be:
 
 ---
 
-## 📧 Questions?
+##  Questions?
 
 - **GitHub Discussions**: For general questions
 - **GitHub Issues**: For bugs and features
@@ -346,4 +346,4 @@ Contributors will be:
 
 ---
 
-Thank you for contributing to Toxi! 🦀❤️
+Thank you for contributing to Toxi! 

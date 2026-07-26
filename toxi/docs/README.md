@@ -1,19 +1,22 @@
 # Toxi Framework Documentation
 
-Welcome to the official documentation for **Toxi**, a modern, high-performance web framework for Rust.
+Documentation for **Toxi**, a Rust web framework for APIs, microservices, serverless functions, and full-stack apps.
 
-## 🚀 Introduction
+## Introduction
 
-Toxi is designed to be familiar to developers coming from **FastAPI** (Python) or **Express.js** (Node.js), while leveraging the performance and safety of Rust.
+Toxi is built on `hyper` and `tokio`. It provides routing, extractors, middleware, and optional crates for database access, authentication, templates, real-time communication, background jobs, and more.
 
-### Key Features
-- **Fast & Async**: Built on top of `hyper` and `tokio`.
-- **Easy Routing**: Express-like routing syntax.
-- **Auto-Documentation**: OpenAPI (Swagger UI) generation out of the box.
-- **Full-Stack Ready**: Built-in template engine (Jinja2-like), static file serving, and WebSocket support.
-- **Production Grade**: Includes middleware for CORS, CSRF, Rate Limiting, and more.
+Key features:
+- Async request handling with `tokio`
+- Type-safe extractors (`Json`, `Path`, `Query`, `State`, `Form`, `Cookies`)
+- Middleware system compatible with `tower`
+- Optional ORM with auto-diff migrations
+- Built-in authentication (JWT, OAuth2, RBAC)
+- Server-side template rendering
+- WebSocket and SSE support
+- CLI for project scaffolding and migrations
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Installation
 
@@ -21,76 +24,76 @@ Add Toxi to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi = "0.1.0"
-tokio = { version = "1.0", features = ["full"] }
-serde = { version = "1.0", features = ["derive"] }
+toxi = "3.0"
+tokio = { version = "1", features = ["full"] }
 ```
 
 ### Basic Example
 
 ```rust
-use toxi::{Toxi, Request, Response, Router};
+use toxi::prelude::*;
 
 #[tokio::main]
-async fn main() {
-    let mut app = Toxi::new();
-    let mut router = Router::new();
-
-    router.get("/", |req| async {
-        Ok(Response::new("Hello, Toxi!".into()))
+async fn main() -> Result<()> {
+    let mut app = Application::new();
+    app.router_mut().get("/", |_| async {
+        Ok(Response::new("Hello, Toxi!"))
     });
-
-    app.router(router);
-    app.listen("127.0.0.1:3000").await.unwrap();
+    app.run().await
 }
 ```
 
-## 📚 Guides
+## Guides
 
-### 1. Building a REST API
-Toxi makes building APIs simple. Use `json()` helper for responses.
+### Building a REST API
 
 ```rust
-router.get("/api/users", |req| async {
+use toxi::prelude::*;
+
+async fn get_users(_req: Request) -> Result<Response> {
     let users = vec!["Alice", "Bob"];
-    Ok(toxi::response::json(users))
-});
+    Ok(json_response!(users))
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let mut app = Application::new();
+    app.router_mut().get("/api/users", get_users);
+    app.run().await
+}
 ```
 
-### 2. Full-Stack Web Apps
-Use the `toxi-template` crate for server-side rendering.
+### Full-Stack Web Apps
+
+Use `TemplateContext` for server-side rendering:
 
 ```rust
-router.get("/profile", |req| async {
-    let ctx = context! { "username" => "Alice" };
-    let html = templates.render("profile.html", &ctx)?;
-    Ok(toxi::response::html(html))
-});
+use toxi::prelude::*;
+
+async fn profile(_req: Request) -> Result<Response> {
+    let ctx = TemplateContext::new("templates");
+    let html = ctx.render("profile.html", &ctx)?;
+    Ok(Response::html(html))
+}
 ```
 
-### 4. Automatic API Documentation
-Toxi includes built-in support for OpenAPI (Swagger) documentation.
+### Automatic API Documentation
 
-**1. Add dependency:**
 ```toml
 [dependencies]
-toxi-openapi = "0.1.0"
+toxi-openapi = "3.0"
 ```
 
-**2. Generate Spec:**
 ```rust
 use toxi_openapi::{OpenApiBuilder, Info};
 
-router.get("/api/openapi.json", |req| async {
-    let spec = OpenApiBuilder::new("My API", "1.0.0")
-        .description("My awesome API")
+async fn api_spec(_req: Request) -> Result<Response> {
+    let spec = OpenApiBuilder::new("My API", "3.0.0")
+        .description("My API description")
         .build();
-    Ok(toxi::response::json(spec))
-});
+    Ok(json_response!(spec))
+}
 ```
-
-**3. Serve Docs UI:**
-Create a route that renders the Swagger UI template (included in `toxi-template` or custom).
 
 ### How-To Guides
 
@@ -106,7 +109,7 @@ Step-by-step guides for common tasks:
 
 - **[Implementation Status](../STATUS.md)** - Current feature completeness and progress
 
-## 📖 Demo Application
+##  Demo Application
 
 The `examples/demo-app` directory contains a complete full-stack application showcasing:
 - **Database Integration**: SQLite with migrations.
@@ -121,7 +124,7 @@ cargo run
 ```
 Visit `http://localhost:8080` to see it in action!
 
-## 🔧 Advanced Usage
+##  Advanced Usage
 
 ### Middleware
 ```rust
@@ -133,10 +136,10 @@ let app = Toxi::new()
 ```
 
 ### Error Handling
-Toxi provides a robust error handling system. You can return `Result<Response, Error>` from any handler.
+Handlers return `Result<Response, Error>`. Errors propagate through middleware and are converted to appropriate HTTP responses.
 
-## 🤝 Contributing
+##  Contributing
 We welcome contributions! Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for details.
 
 ---
-*Built with ❤️ by the Toxi Team*
+Built by the Toxi Team

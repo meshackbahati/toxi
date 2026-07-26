@@ -20,22 +20,22 @@ use toxi::prelude::*;
 
 // V1 API routes
 async fn v1_get_users(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!([
+    Ok(json_response!([
         {"id": 1, "name": "John", "email": "john@example.com"}
-    ])))
+    ]))
 }
 
 async fn v1_get_user(Path(user_id): Path<u32>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": user_id,
         "name": format!("User {}", user_id),
         "email": format!("user{}@example.com", user_id)
-    })))
+    }))
 }
 
 // V2 API routes - with breaking changes
 async fn v2_get_users(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!([
+    Ok(json_response!([
         {
             "id": 1,
             "name": "John",
@@ -45,11 +45,11 @@ async fn v2_get_users(_req: Request) -> Result<Response> {
                 "avatar_url": "https://example.com/avatar.jpg"
             }
         }
-    ])))
+    ]))
 }
 
 async fn v2_get_user(Path(user_id): Path<u32>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": user_id,
         "name": format!("User {}", user_id),
         "email": format!("user{}@example.com", user_id),
@@ -61,7 +61,7 @@ async fn v2_get_user(Path(user_id): Path<u32>) -> Result<Response> {
                 "notifications": true
             }
         }
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -138,13 +138,13 @@ async fn get_users_by_version(req: Request) -> Result<Response> {
 }
 
 async fn v1_get_users(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!([
+    Ok(json_response!([
         {"id": 1, "name": "John", "email": "john@example.com"}
-    ])))
+    ]))
 }
 
 async fn v2_get_users(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!([
+    Ok(json_response!([
         {
             "id": 1,
             "name": "John",
@@ -154,7 +154,7 @@ async fn v2_get_users(_req: Request) -> Result<Response> {
                 "avatar_url": "https://example.com/avatar.jpg"
             }
         }
-    ])))
+    ]))
 }
 ```
 
@@ -182,16 +182,16 @@ async fn versioned_handler(Query(params): Query<VersionedQuery>) -> Result<Respo
 }
 
 fn v1_response() -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "data": [
             {"id": 1, "name": "John"}
         ],
         "version": "v1"
-    })))
+    }))
 }
 
 fn v2_response() -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "data": [
             {
                 "id": 1,
@@ -208,7 +208,7 @@ fn v2_response() -> Result<Response> {
             "per_page": 10,
             "total": 100
         }
-    })))
+    }))
 }
 
 // Alternative: Middleware approach for query versioning
@@ -463,12 +463,12 @@ async fn version_negotiation_middleware(
 
 // Get version info endpoint
 async fn api_version_info(State(version_manager): State<Arc<ApiVersionManager>>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "current_version": version_manager.default_version,
         "supported_versions": version_manager.supported_versions.iter().collect::<Vec<_>>(),
         "latest_stable": 2,
         "deprecation_warning": null
-    })))
+    }))
 }
 ```
 
@@ -614,15 +614,15 @@ async fn versioned_content_handler(req: Request) -> Result<Response> {
         match (version, accept_header) {
             (1, accept) if accept.contains("application/vnd.myapi.v1+json") => {
                 // V1 JSON response
-                Ok(Response::json(serde_json::json!({
+                Ok(json_response!({
                     "users": [
                         {"id": 1, "name": "John"}
                     ]
-                })))
+                }))
             }
             (2, accept) if accept.contains("application/vnd.myapi.v2+json") => {
                 // V2 JSON response with more fields
-                Ok(Response::json(serde_json::json!({
+                Ok(json_response!({
                     "data": {
                         "users": [
                             {
@@ -638,22 +638,22 @@ async fn versioned_content_handler(req: Request) -> Result<Response> {
                         "self": "/api/v2/users",
                         "next": "/api/v2/users?page=2"
                     }
-                })))
+                }))
             }
             _ => {
                 // Fallback response
-                Ok(Response::json(serde_json::json!({
+                Ok(json_response!({
                     "error": "Unsupported version or content type"
-                })))
+                }))
             }
         }
     } else {
         // Default response
-        Ok(Response::json(serde_json::json!({
+        Ok(json_response!({
             "users": [
                 {"id": 1, "name": "John"}
             ]
-        })))
+        }))
     }
 }
 ```
@@ -693,14 +693,14 @@ async fn versioned_router(req: Request) -> Result<Response> {
                 // Apply v1-specific middleware and handlers
                 v1_rate_limit_middleware(req, Next::new(|req| async {
                     // V1 handler
-                    Ok(Response::json(serde_json::json!({"version": "v1"})))
+                    Ok(json_response!({"version": "v1"}))
                 })).await
             }
             2 => {
                 // Apply v2-specific middleware and handlers
                 v2_rate_limit_middleware(req, Next::new(|req| async {
                     // V2 handler
-                    Ok(Response::json(serde_json::json!({"version": "v2"})))
+                    Ok(json_response!({"version": "v2"}))
                 })).await
             }
             _ => Err(Error::NotImplemented),
@@ -708,7 +708,7 @@ async fn versioned_router(req: Request) -> Result<Response> {
     } else {
         // Default to v1
         v1_rate_limit_middleware(req, Next::new(|req| async {
-            Ok(Response::json(serde_json::json!({"version": "v1", "default": true})))
+            Ok(json_response!({"version": "v1", "default": true}))
         })).await
     }
 }
@@ -805,7 +805,7 @@ mod version_tests {
             router.get("/users")
                 .with_state(policy_clone)
                 .middleware(deprecation_middleware)
-                .handler(|_| async { Ok(Response::json(serde_json::json!({"test": true}))) });
+                .handler(|_| async { Ok(json_response!({"test": true})) });
         }).await;
         
         let response = server
@@ -829,7 +829,7 @@ use toxi::prelude::*;
 
 // Migration guide endpoint
 async fn migration_guide(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "v1_to_v2": {
             "breaking_changes": [
                 "User objects now include profile information",
@@ -848,7 +848,7 @@ async fn migration_guide(_req: Request) -> Result<Response> {
                 "recommended_action": "Migrate to v2 before deprecation date"
             }
         }
-    })))
+    }))
 }
 
 // Feature flags for gradual rollout
@@ -881,7 +881,7 @@ async fn feature_flagged_handler(
     if let Some(ApiVersion(version)) = req.extensions().get::<ApiVersion>() {
         match version {
             2 => {
-                let mut response_data = serde_json::json!({
+                let mut response_data = json!({
                     "users": [
                         {
                             "id": 1,
@@ -892,7 +892,7 @@ async fn feature_flagged_handler(
                 
                 // Conditionally add features based on flags
                 if flags.is_enabled("enhanced_pagination") {
-                    response_data["pagination"] = serde_json::json!({
+                    response_data["pagination"] = json!({
                         "page": 1,
                         "per_page": 10,
                         "total": 100,
@@ -903,7 +903,7 @@ async fn feature_flagged_handler(
                 if flags.is_enabled("new_user_format") {
                     if let Some(users) = response_data["users"].as_array_mut() {
                         for user in users {
-                            user["profile"] = serde_json::json!({
+                            user["profile"] = json!({
                                 "bio": "Software developer",
                                 "avatar_url": "https://example.com/avatar.jpg"
                             });

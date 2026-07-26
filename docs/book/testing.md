@@ -96,18 +96,18 @@ use toxi_testing::{TestServer, RequestBuilder};
 
 // Sample route handler
 async fn hello_handler(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Hello, World!",
         "status": "success"
-    })))
+    }))
 }
 
 async fn user_handler(Path(user_id): Path<u32>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": user_id,
         "name": format!("User {}", user_id),
         "email": format!("user{}@example.com", user_id)
-    })))
+    }))
 }
 
 #[cfg(test)]
@@ -176,10 +176,10 @@ async fn stateful_handler(
     _req: Request,
     State(state): State<Arc<AppState>>
 ) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "app_name": state.app_name,
         "version": state.version
-    })))
+    }))
 }
 
 #[cfg(test)]
@@ -399,10 +399,10 @@ async fn contact_handler(
         .await
         .map_err(|e| Error::InternalServerError(e))?;
 
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "status": "sent",
         "message": "Email sent successfully"
-    })))
+    }))
 }
 
 #[derive(serde::Deserialize)]
@@ -466,7 +466,7 @@ mod mock_tests {
 
         let response = server
             .post("/contact")
-            .json(&serde_json::json!({
+            .json(&json!({
                 "email": "user@example.com",
                 "subject": "Test Subject",
                 "message": "Test message"

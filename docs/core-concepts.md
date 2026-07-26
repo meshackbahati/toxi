@@ -95,10 +95,10 @@ struct UserId {
 async fn get_user(
     Path(params): Path<UserId>
 ) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": params.id,
         "name": "User Name"
-    })))
+    }))
 }
 ```
 
@@ -130,7 +130,7 @@ Toxi provides utility functions to create common response types:
 use toxi::response;
 
 // JSON response
-let json_resp = Response::json(serde_json::json!({"key": "value"}));
+let json_resp = json_response!({"key": "value"});
 
 // HTML response
 let html_resp = Response::html("<h1>Hello</h1>");
@@ -163,11 +163,11 @@ struct CreateUser {
 }
 
 async fn create_user(Json(data): Json<CreateUser>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": 1,
         "name": data.name,
         "email": data.email
-    })))
+    }))
 }
 ```
 
@@ -187,10 +187,10 @@ async fn list_items(Query(params): Query<Pagination>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "page": page,
         "limit": limit
-    })))
+    }))
 }
 ```
 
@@ -206,9 +206,9 @@ struct UserId {
 }
 
 async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": params.id
-    })))
+    }))
 }
 ```
 
@@ -224,9 +224,9 @@ struct AppState {
 }
 
 async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "app_name": state.app_name
-    })))
+    }))
 }
 ```
 
@@ -283,7 +283,7 @@ async fn handler(_req: Request) -> Result<Response> {
     // This will return a Server error if it fails
     let data = some_operation_that_might_fail()?;
     
-    Ok(Response::json(serde_json::json!(data)))
+    Ok(json_response!(data))
 }
 ```
 

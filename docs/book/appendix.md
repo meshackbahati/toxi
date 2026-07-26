@@ -29,12 +29,12 @@ async fn advanced_search(
     Query(params): Query<SearchParams>,
     Json(payload): Json<SearchPayload>,
 ) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "category": category,
         "search_params": params,
         "payload": payload,
         "message": "Advanced search executed"
-    })))
+    }))
 }
 ```
 
@@ -47,7 +47,7 @@ async fn handle_cookies(cookies: Cookies) -> Result<Response> {
     let session_id = cookies.get("session_id");
     let theme = cookies.get("theme").unwrap_or("light");
     
-    let mut response_data = serde_json::json!({
+    let mut response_data = json!({
         "theme": theme,
         "has_session": session_id.is_some()
     });
@@ -75,7 +75,7 @@ async fn conditional_response(query: Query<serde_json::Value>) -> Result<Respons
     match format {
         "html" => Ok(Response::html("<h1>HTML Response</h1>".to_string())),
         "text" => Ok(Response::text("Text Response".to_string())),
-        _ => Ok(Response::json(serde_json::json!({ "message": "JSON Response" }))),
+        _ => Ok(json_response!({ "message": "JSON Response" })),
     }
 }
 ```
@@ -123,10 +123,10 @@ use toxi::prelude::*;
 
 // Create a custom error response
 fn custom_error_response(message: &str, status: u16) -> Response {
-    Response::json(serde_json::json!({
+    json_response!({
         "error": message,
         "status": status
-    }))
+    })
 }
 
 async fn custom_error_handler(_req: Request) -> Result<Response> {
@@ -138,7 +138,7 @@ async fn custom_error_handler(_req: Request) -> Result<Response> {
         return Ok(error_response);
     }
     
-    Ok(Response::json(serde_json::json!({ "status": "success" })))
+    Ok(json_response!({ "status": "success" }))
 }
 ```
 
@@ -155,10 +155,10 @@ async fn recoverable_operation(_req: Request) -> Result<Response> {
         Ok(data) => Ok(Response::json(data)),
         Err(_) => {
             // Return a fallback response instead of error
-            Ok(Response::json(serde_json::json!({
+            Ok(json_response!({
                 "warning": "Using cached data",
                 "data": get_cached_data()
-            })))
+            }))
         }
     }
 }
@@ -169,7 +169,7 @@ async fn some_risky_operation() -> Result<serde_json::Value, Box<dyn std::error:
 }
 
 fn get_cached_data() -> serde_json::Value {
-    serde_json::json!({ "cached": true, "data": "fallback" })
+    json!({ "cached": true, "data": "fallback" })
 }
 ```
 
@@ -214,11 +214,11 @@ struct CurrentUser {
 }
 
 async fn protected_route(user: CurrentUser) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Access granted",
         "user_id": user.id,
         "role": user.role
-    })))
+    }))
 }
 ```
 
@@ -276,7 +276,7 @@ async fn get_user(
     State(repo): State<std::sync::Arc<UserRepository>>
 ) -> Result<Response> {
     match repo.find_by_id(user_id).await? {
-        Some(user) => Ok(Response::json(serde_json::json!(user))),
+        Some(user) => Ok(json_response!(user)),
         None => Err(Error::NotFound),
     }
 }
@@ -286,7 +286,7 @@ async fn get_users(
     State(repo): State<std::sync::Arc<UserRepository>>
 ) -> Result<Response> {
     let users = repo.find_all(params.limit.unwrap_or(10), params.offset.unwrap_or(0)).await?;
-    Ok(Response::json(serde_json::json!(users)))
+    Ok(json_response!(users))
 }
 
 #[derive(Deserialize)]
@@ -325,7 +325,7 @@ impl Default for AppConfig {
 }
 
 async fn config_endpoint(State(config): State<AppConfig>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!(config)))
+    Ok(json_response!(config))
 }
 ```
 
@@ -436,10 +436,10 @@ async fn cached_computation(
     
     // Check cache first
     if let Some(cached_result) = cache.get(&cache_key) {
-        return Ok(Response::json(serde_json::json!({
+        return Ok(json_response!({
             "result": cached_result,
             "from_cache": true
-        })));
+        }));
     }
     
     // Perform expensive computation
@@ -448,15 +448,15 @@ async fn cached_computation(
     // Cache the result
     cache.set(cache_key, result.clone());
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "result": result,
         "from_cache": false
-    })))
+    }))
 }
 
 async fn perform_expensive_computation(_input: &str) -> serde_json::Value {
     // Simulate expensive computation
-    serde_json::json!({ "computed": true, "value": 42 })
+    json!({ "computed": true, "value": 42 })
 }
 ```
 

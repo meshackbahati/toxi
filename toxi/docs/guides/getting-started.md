@@ -41,7 +41,7 @@ async fn main() -> Result<()> {
     app.get("/", hello);
     app.get("/users/:id", get_user);
     
-    println!("🚀 Server running on http://127.0.0.1:3000");
+    println!("Server running on http://127.0.0.1:3000");
     
     Server::new(app)
         .listen("127.0.0.1:3000".parse().unwrap())

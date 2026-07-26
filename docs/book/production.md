@@ -487,7 +487,6 @@ Implement comprehensive monitoring:
 
 ```rust,ignore
 use toxi::prelude::*;
-use serde_json::json;
 
 // Structured logging middleware
 async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
@@ -803,7 +802,7 @@ async fn health_check(_req: Request) -> Result<Response> {
     
     let status = if healthy { "healthy" } else { "unhealthy" };
     
-    let health_response = serde_json::json!({
+    let health_response = json!({
         "status": status,
         "checks": {
             "database": db_healthy,
@@ -876,10 +875,10 @@ async fn backup_handler(_req: Request) -> Result<Response> {
     let backup_result = create_backup().await;
     
     match backup_result {
-        Ok(backup_info) => Ok(Response::json(serde_json::json!({
+        Ok(backup_info) => Ok(json_response!({
             "status": "success",
             "backup": backup_info
-        }))),
+        })),
         Err(e) => Err(Error::InternalServerError(format!("Backup failed: {}", e))),
     }
 }
@@ -931,10 +930,10 @@ async fn restore_handler(
     let restore_result = restore_from_backup(&backup_path).await;
     
     match restore_result {
-        Ok(_) => Ok(Response::json(serde_json::json!({
+        Ok(_) => Ok(json_response!({
             "status": "success",
             "message": "Restore completed successfully"
-        }))),
+        })),
         Err(e) => Err(Error::InternalServerError(format!("Restore failed: {}", e))),
     }
 }
@@ -958,7 +957,7 @@ async fn list_backups(_req: Request) -> Result<Response> {
         if path.extension().and_then(|ext| ext.to_str()) == Some("sql") {
             if let Some(filename) = path.file_name().and_then(|name| name.to_str()) {
                 let metadata = entry.metadata().await?;
-                backups.push(serde_json::json!({
+                backups.push(json!({
                     "filename": filename,
                     "size": metadata.len(),
                     "created_at": format!("{:?}", metadata.created())
@@ -972,10 +971,10 @@ async fn list_backups(_req: Request) -> Result<Response> {
         b["created_at"].as_str().cmp(&a["created_at"].as_str())
     });
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "backups": backups,
         "count": backups.len()
-    })))
+    }))
 }
 ```
 
@@ -1050,7 +1049,7 @@ async fn distributed_handler(
 
 async fn perform_critical_operation() -> Result<serde_json::Value> {
     // Critical operation that should only run on one instance at a time
-    Ok(serde_json::json!({ "status": "completed" }))
+    Ok(json!({ "status": "completed" }))
 }
 
 // Load balancing considerations
@@ -1063,12 +1062,12 @@ async fn load_balancer_health_check(_req: Request) -> Result<Response> {
 async fn instance_info(
     State(app_state): State<Arc<ScalableAppState>>
 ) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "instance_id": app_state.instance_id,
         "app_id": app_state.app_id,
         "cluster_size": app_state.cluster_nodes.len(),
         "timestamp": chrono::Utc::now().to_rfc3339()
-    })))
+    }))
 }
 ```
 

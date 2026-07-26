@@ -4,14 +4,14 @@
 
 <img src="../docs/logo/toxi.svg" width="200" alt="Toxi Logo">
 
-A modular, high-performance web framework for Rust.
+A web framework for Rust. Build APIs, microservices, serverless functions, and full-stack apps.
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](../LICENSE)
 [![GitHub](https://img.shields.io/badge/github-Kyle6012%2Frust--toxi-black)](https://github.com/Kyle6012/rust-toxi)
 [![Status](https://img.shields.io/badge/status-beta-yellow.svg)](../STATUS.md)
 
-Built with ❤️ by [Meshack Bahati Ouma](https://github.com/Kyle6012)
+Built by [Meshack Bahati Ouma](https://github.com/Kyle6012)
 
 </div>
 
@@ -19,39 +19,34 @@ Built with ❤️ by [Meshack Bahati Ouma](https://github.com/Kyle6012)
 
 ## What is Toxi?
 
-Toxi is a modular web framework for Rust built on `hyper` and `tokio`. It provides an integrated stack that covers routing, a custom ORM with relationships and auto-diff migrations, identity and access management (JWT, OAuth2, RBAC/PBAC), real-time communication (WebSockets, SSE), background job queues, caching, file storage, server-side templates, email delivery, and OpenAPI generation — all wired together through a single CLI for scaffolding, migrations, and hot-reload development.
+Toxi is a Rust web framework for building APIs, microservices, serverless functions, and full-stack applications. It provides routing, extractors, middleware, an ORM with auto-diff migrations, authentication (JWT, OAuth2, RBAC, PBAC), server-side templates, WebSockets and SSE, background job queues, caching, file storage, email delivery, and OpenAPI documentation. The `toxi-cli` tool scaffolds projects, runs migrations, and provides a development server.
 
-Toxi is organised as a collection of focused crates (`toxi-core`, `toxi-db`, `toxi-auth`, etc.) that can be used independently or pulled in together through the main `toxi` facade with feature flags.
+Each component is distributed as a separate crate. Use them independently or enable them all through the `toxi` facade with feature flags.
 
-## ✨ What's Included
-
-Toxi provides a complete out-of-the-box toolkit for modern application development:
-- **`toxi-core`**: High-performance routing, hyper HTTP server, and type-safe extractors (`Json`, `Path`, `Query`, `State`, `Form`, `Cookies`, `Body`).
-- **`toxi-db`**: Advanced custom ORM featuring async validation rules (`length`, `range`, `email`, `url`, `regex`, `custom`, `unique`), relationships (`has_many`, `has_one`, `belongs_to`), and auto-diff schema migrations.
-- **`toxi-auth`**: End-to-end Identity & Access Management supporting RBAC/PBAC, API keys, JWT session handling, and OAuth2 integration.
-- **`toxi-realtime`**: Full-duplex WebSockets, Server-Sent Events (SSE), and Redis-backed event broadcasting.
-- **`toxi-queue`**: Durable background job execution with automatic retries and dead-letter queues.
-- **`toxi-cache`**: Transparent caching supporting in-memory and Redis backends.
-- **`toxi-storage`**: Unified storage API with local disk and AWS S3/Cloudinary/ImageKit compatibility.
+## Crates
+- **`toxi-core`**: Routing, hyper HTTP server, and type-safe extractors (`Json`, `Path`, `Query`, `State`, `Form`, `Cookies`, `Body`).
+- **`toxi-db`**: ORM with async validation rules (`length`, `range`, `email`, `url`, `regex`, `custom`, `unique`), relationships (`has_many`, `has_one`, `belongs_to`), and auto-diff schema migrations.
+- **`toxi-auth`**: RBAC/PBAC, API keys, JWT sessions, and OAuth2 integration.
+- **`toxi-realtime`**: WebSockets, Server-Sent Events (SSE), and Redis-backed event broadcasting.
+- **`toxi-queue`**: Background job execution with automatic retries and dead-letter queues.
+- **`toxi-cache`**: Caching with in-memory and Redis backends.
+- **`toxi-storage`**: Storage API with local disk and S3/Cloudinary/ImageKit backends.
 - **`toxi-template`**: Lightweight server-side rendering (SSR) templates.
 - **`toxi-openapi`**: Automatic Swagger UI/OpenAPI 3.0 document generation.
-- **`toxi-cli`**: Command-line scaffolding, migrations, code generators, and `toxi tinker` interactive console.
+- **`toxi-cli`**: Project scaffolding, migrations, code generators, and an interactive console.
 
-### 🗄️ Our ORM Goal: Parity with SeaORM & Diesel
+### ORM Features
 
-We designed our built-in ORM to match the ergonomics, power, and safety of the ecosystem's industry-standard libraries like **SeaORM** and **Diesel**:
-- **Compile-Time Checks**: Using our procedural macros and `handler_fn` route helper, handler extractor bindings and model queries are verified at compile time.
-- **Solve the N+1 Problem**: Prevents N+1 database queries with static eager-loading helper methods (`eager_load_posts`, `eager_load_profile`) that execute batched SQL `IN` queries.
-- **Auto-Diff Migrations**: Eliminate manually written SQL migration scripts. Toxi's CLI parses and diffs your Rust struct models against the live database schema to generate migrations automatically.
+The built-in ORM provides:
+- **Compile-time checks**: Procedural macros verify handler extractor bindings and model queries at compile time.
+- **Eager loading**: Static helper methods (`eager_load_posts`, `eager_load_profile`) execute batched SQL `IN` queries to prevent N+1 queries.
+- **Auto-diff migrations**: The CLI parses your Rust struct models, diffs them against the live database schema, and generates migrations automatically.
 
-### ⚡ Honest Benchmarks Notice
+### Benchmarks
 
-**We currently do not have public benchmarks.**
-While Toxi leverages `hyper` and `tokio` to achieve very high performance, we prioritised completing the unified framework ecosystem first. Detailed performance profiles (RPS, latency, memory usage) comparing Toxi against Axum, Actix Web, and Loco will be published in future releases.
+Public benchmarks are not yet available. See [STATUS.md](../STATUS.md) for current feature completeness.
 
-> **Status**: See [STATUS.md](../STATUS.md) for detailed feature completeness
-
-## 📦 Installation
+##  Installation
 
 Install the Toxi CLI tool to get started:
 
@@ -63,7 +58,7 @@ cargo install --path ../toxi-cli
 cargo install toxi-cli
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Quick Start
 
@@ -109,7 +104,7 @@ async fn main() -> Result<()> {
 
 ### Using Extractors
 
-Toxi provides powerful type-safe extractors for handling different types of requests:
+Extractors deserialize request data from common formats:
 
 ```rust
 use toxi::prelude::*;
@@ -124,28 +119,28 @@ struct CreateUser {
 // Handle JSON requests
 async fn create_user(Json(payload): Json<CreateUser>) -> Result<ToxiResponse> {
     // payload contains deserialized JSON data
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "User created successfully",
         "user": payload
-    })))
+    }))
 }
 
 // Handle form data
 async fn create_user_form(Form(payload): Form<CreateUser>) -> Result<ToxiResponse> {
     // payload contains deserialized form data
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "User created from form",
         "user": payload
-    })))
+    }))
 }
 
 // Handle query parameters
 async fn search_users(Query(params): Query<CreateUser>) -> Result<ToxiResponse> {
     // params contains deserialized query parameters
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Search results",
         "query": params
-    })))
+    }))
 }
 
 // Handle path parameters
@@ -156,16 +151,16 @@ struct UserId {
 
 async fn get_user(Path(params): Path<UserId>) -> Result<ToxiResponse> {
     // params.id contains the path parameter
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "id": params.id,
         "name": "Sample User"
-    })))
+    }))
 }
 
 // Access cookies
 async fn get_cookies(Cookies(cookies): Cookies) -> Result<ToxiResponse> {
     // cookies is a HashMap<String, String> containing request cookies
-    Ok(response::json(serde_json::json!(cookies)))
+    Ok(json_response!(cookies))
 }
 
 // Access raw body
@@ -175,7 +170,7 @@ async fn handle_raw_body(Body(body): Body) -> Result<ToxiResponse> {
 }
 ```
 
-## 🛠️ Core Concepts
+##  Core Concepts
 
 ### Routers and Handlers
 
@@ -189,9 +184,9 @@ async fn home(_req: ToxiRequest) -> Result<ToxiResponse> {
 }
 
 async fn api_handler(_req: ToxiRequest) -> Result<ToxiResponse> {
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Hello from API"
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -236,18 +231,18 @@ use toxi::prelude::*;
 
 // URL-based versioning
 async fn api_v1_handler(_req: ToxiRequest) -> Result<ToxiResponse> {
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "version": "1.0",
         "data": "API v1 response"
-    })))
+    }))
 }
 
 async fn api_v2_handler(_req: ToxiRequest) -> Result<ToxiResponse> {
-    Ok(response::json(serde_json::json!({
+    Ok(json_response!({
         "version": "2.0",
         "data": "API v2 response",
         "enhanced": true
-    })))
+    }))
 }
 
 // Version-specific routes
@@ -275,14 +270,14 @@ async fn conflict_route(_req: ToxiRequest) -> Result<ToxiResponse> {
 async fn validation_route(Json(data): Json<MyData>) -> Result<ToxiResponse> {
     // Validate the data
     if data.is_valid() {
-        Ok(response::json(serde_json::json!("Valid")))
+        Ok(json_response!("Valid"))
     } else {
         Err(ToxiError::Validation("Invalid data".to_string()))
     }
 }
 ```
 
-## 📚 Documentation
+##  Documentation
 
 Complete documentation is available in the [docs/](../docs/) directory:
 
@@ -297,7 +292,7 @@ Complete documentation is available in the [docs/](../docs/) directory:
 - [Middleware Guide](../docs/middleware.md) - Adding functionality with middleware
 - [CLI Tools](../docs/cli.md) - Command-line interface
 
-## 🏗️ Architecture
+##  Architecture
 
 Toxi is composed of modular crates that can be used independently:
 
@@ -322,7 +317,7 @@ Toxi is composed of modular crates that can be used independently:
 | `toxi-testing` | Testing utilities |
 | `toxi-utils` | Common utilities |
 
-## 🧪 Testing
+##  Testing
 
 Toxi provides comprehensive testing utilities:
 
@@ -349,7 +344,7 @@ mod tests {
 }
 ```
 
-## 🚀 Deployment
+##  Deployment
 
 Deploy your Toxi application with any Rust-compatible hosting provider:
 
@@ -371,10 +366,10 @@ RUN cargo build --release
 CMD ["./target/release/my-app"]
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md).
 
-## 📄 License
+##  License
 
 MIT OR Apache-2.0 - see [LICENSE](LICENSE) for details.

@@ -196,7 +196,7 @@ async fn sse_handler(_req: Request) -> Result<Response> {
             interval.tick().await;
             
             // Simulate some metrics
-            let metrics = serde_json::json!({
+            let metrics = json!({
                 "users_active": 42,
                 "messages_sent": 1234,
                 "server_uptime": "24h"
@@ -315,7 +315,7 @@ async fn pubsub_example(
     
     pubsub.publish(event).await?;
     
-    Ok(Response::json(serde_json::json!({ "status": "published" })))
+    Ok(json_response!({ "status": "published" }))
 }
 
 // Subscribe to events in a WebSocket
@@ -553,20 +553,20 @@ async fn track_analytics(
 ) -> Result<Response> {
     analytics.track_event(event)?;
     
-    Ok(Response::json(serde_json::json!({ "status": "tracked" })))
+    Ok(json_response!({ "status": "tracked" }))
 }
 
 // Real-time metrics endpoint
 async fn real_time_metrics(State(analytics): State<Arc<AnalyticsService>>) -> Result<Response> {
     let metrics = analytics.get_metrics().await;
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "page_views": metrics.page_views,
         "unique_visitors": metrics.unique_visitors.len(),
         "active_users": metrics.active_users.len(),
         "event_counts": metrics.event_counts,
         "timestamp": chrono::Utc::now().to_rfc3339()
-    })))
+    }))
 }
 ```
 
@@ -775,12 +775,12 @@ use toxi::prelude::*;
 
 // Endpoint to get WebSocket connection details
 async fn websocket_config(_user: AuthenticatedUser) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "websocket_url": "ws://localhost:3000/ws",
         "heartbeat_interval": 30000,
         "reconnect_attempts": 5,
         "reconnect_delay": 1000
-    })))
+    }))
 }
 
 // Frontend JavaScript example (as documentation):
@@ -827,11 +827,11 @@ socket.onclose = function(event) {
 
 // SSE connection helper
 async fn sse_connection_helper(_user: AuthenticatedUser) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "sse_url": "/api/events",
         "retry_interval": 3000,
         "supported_events": ["notifications", "chat", "analytics"]
-    })))
+    }))
 }
 ```
 

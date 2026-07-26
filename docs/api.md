@@ -69,7 +69,7 @@ struct CreateUser {
 
 async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
     // payload contains deserialized JSON
-    Ok(Response::json(serde_json::json!(payload)))
+    Ok(json_response!(payload))
 }
 ```
 
@@ -91,7 +91,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(Response::json(serde_json::json!({ "page": page, "limit": limit })))
+    Ok(json_response!({ "page": page, "limit": limit }))
 }
 ```
 
@@ -109,7 +109,7 @@ struct UserId {
 }
 
 async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "id": params.id })))
+    Ok(json_response!({ "id": params.id }))
 }
 ```
 
@@ -127,7 +127,7 @@ struct AppState {
 }
 
 async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "db_url": state.db_url })))
+    Ok(json_response!({ "db_url": state.db_url }))
 }
 ```
 
@@ -168,7 +168,7 @@ async fn handler(_req: Request) -> Result<Response> {
     // This will return a 500 Internal Server Error
     let data = some_operation_that_might_fail()?;
     
-    Ok(Response::json(serde_json::json!(data)))
+    Ok(json_response!(data))
 }
 ```
 
@@ -180,7 +180,7 @@ async fn handler(_req: Request) -> Result<Response> {
 use toxi::response;
 
 // JSON response
-let json_resp = Response::json(serde_json::json!({ "key": "value" }));
+let json_resp = json_response!({ "key": "value" });
 
 // HTML response
 let html_resp = Response::html("<h1>Hello</h1>");
@@ -406,7 +406,7 @@ context.set("title", "My Page");
 context.set("count", 42);
 
 // Objects
-context.set("user", serde_json::json!({
+context.set("user", json!({
     "name": "John",
     "email": "john@example.com"
 }));

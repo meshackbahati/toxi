@@ -78,7 +78,6 @@ The Context struct is used to pass data to templates:
 
 ```rust,ignore
 use toxi_template::Context;
-use serde_json::json;
 
 // Create context in different ways
 let mut context = Context::new();
@@ -338,7 +337,6 @@ Here's a complete example showing template usage in a web application:
 ```rust,ignore
 use toxi::prelude::*;
 use toxi_template::{TemplateContext, TemplateEngine};
-use serde_json::json;
 use std::sync::Arc;
 
 struct AppState {

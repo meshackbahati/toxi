@@ -710,11 +710,11 @@ async fn send_email_handler(
     let job_id = queue.enqueue(job).await
         .map_err(|e| Error::InternalServerError(format!("Failed to queue email: {}", e)))?;
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "status": "queued",
         "job_id": job_id,
         "message": "Email queued for sending"
-    })))
+    }))
 }
 
 // Check job status endpoint
@@ -725,7 +725,7 @@ async fn check_job_status(
     let status = queue.get_job_status(&job_id).await
         .map_err(|e| Error::InternalServerError(format!("Failed to get job status: {}", e)))?;
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "job_id": job_id,
         "status": match status {
             JobStatus::Pending => "pending",
@@ -734,7 +734,7 @@ async fn check_job_status(
             JobStatus::Failed => "failed",
             JobStatus::Cancelled => "cancelled",
         }
-    })))
+    }))
 }
 ```
 

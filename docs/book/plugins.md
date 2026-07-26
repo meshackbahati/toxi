@@ -58,7 +58,7 @@ impl Plugin for RequestTrackerPlugin {
 
         // Register a diagnostic route
         router.get("/_sys/health", |_req| async {
-            Ok(Response::json(serde_json::json!({ "status": "healthy" })))
+            Ok(json_response!({ "status": "healthy" }))
         });
 
         Ok(())

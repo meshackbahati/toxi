@@ -22,7 +22,7 @@ struct CreateUser {
 
 async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
     // payload contains deserialized JSON
-    Ok(Response::json(serde_json::json!(payload)))
+    Ok(json_response!(payload))
 }
 ```
 
@@ -43,7 +43,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(Response::json(serde_json::json!({ "page": page, "limit": limit })))
+    Ok(json_response!({ "page": page, "limit": limit }))
 }
 ```
 
@@ -60,7 +60,7 @@ struct UserId {
 }
 
 async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "id": params.id })))
+    Ok(json_response!({ "id": params.id }))
 }
 ```
 
@@ -79,10 +79,10 @@ struct LoginForm {
 
 async fn login_handler(Form(login_data): Form<LoginForm>) -> Result<Response> {
     // login_data contains the deserialized form data
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Login successful",
         "username": login_data.username
-    })))
+    }))
 }
 ```
 
@@ -108,7 +108,7 @@ async fn handler(cookies: Cookies) -> Result<Response> {
         println!("{}: {}", name, value);
     }
     
-    Ok(Response::json(serde_json::json!({ "status": "ok" })))
+    Ok(json_response!({ "status": "ok" }))
 }
 ```
 
@@ -144,7 +144,7 @@ struct AppState {
 }
 
 async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "db_url": state.db_url })))
+    Ok(json_response!({ "db_url": state.db_url }))
 }
 ```
 
@@ -423,7 +423,7 @@ async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<Response>
     }
     
     // create user...
-    Ok(Response::json(serde_json::json!(user)))
+    Ok(json_response!(user))
 }
 ```
 

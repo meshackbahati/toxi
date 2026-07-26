@@ -41,7 +41,7 @@ async fn lazy_evaluation_handler(req: Request) -> Result<Response> {
         .map(|q| q.contains("details=true"))
         .unwrap_or(false);
     
-    let mut response = serde_json::json!({
+    let mut response = json!({
         "simple": "data"
     });
     
@@ -57,7 +57,7 @@ async fn lazy_evaluation_handler(req: Request) -> Result<Response> {
 async fn expensive_computation() -> serde_json::Value {
     // Simulate expensive computation
     tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-    serde_json::json!({ "computed": true, "value": 42 })
+    json!({ "computed": true, "value": 42 })
 }
 
 // Request preprocessing middleware
@@ -1105,7 +1105,7 @@ async fn performance_metrics_endpoint(_req: Request) -> Result<Response> {
     let memory_usage = MemoryMonitor::get_memory_usage();
     let process_memory = MemoryMonitor::get_process_memory_usage();
     
-    let metrics = serde_json::json!({
+    let metrics = json!({
         "memory": {
             "total": memory_usage.total_memory,
             "used": memory_usage.used_memory,

@@ -463,7 +463,7 @@ async fn create_user_handler(
     user.create(&state.db).await
         .map_err(|e| Error::Server(e.to_string()))?;
   
-    Ok(Response::json(serde_json::json!(user)))
+    Ok(json_response!(user))
 }
 
 async fn get_user_handler(
@@ -473,7 +473,7 @@ async fn get_user_handler(
     let id = params["id"].as_i64().unwrap_or(0);
   
     match User::find(&state.db, id).await {
-        Ok(Some(user)) => Ok(Response::json(serde_json::json!(user))),
+        Ok(Some(user)) => Ok(json_response!(user)),
         Ok(None) => Err(Error::NotFound),
         Err(e) => Err(Error::Server(e.to_string())),
     }

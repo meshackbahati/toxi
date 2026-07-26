@@ -143,7 +143,7 @@ context.set("title", "My Page");
 context.set("count", 42);
 
 // Objects
-context.set("user", serde_json::json!({
+context.set("user", json!({
     "name": "John",
     "email": "john@example.com"
 }));
@@ -155,7 +155,6 @@ context.set("items", vec!["apple", "banana", "cherry"]);
 ### Nested Object Access
 
 ```rust
-use serde_json::json;
 
 let mut context = Context::new();
 context.set("user", json!({
@@ -227,7 +226,6 @@ if engine.get_template("home").is_some() {
 ```rust
 use toxi::prelude::*;
 use toxi::template::{TemplateEngine, Context};
-use serde_json::json;
 
 // Global template engine (in a real app, you'd want to store this in application state)
 static mut TEMPLATE_ENGINE: Option<TemplateEngine> = None;
@@ -323,7 +321,6 @@ Here's a complete example showing how to use the templating system:
 ```rust
 use toxi::prelude::*;
 use toxi::template::{TemplateEngine, Context};
-use serde_json::json;
 use std::sync::Arc;
 
 #[derive(Clone)]

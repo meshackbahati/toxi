@@ -108,10 +108,10 @@ async fn protected_handler(
             match verify_token(jwt_manager, token) {
                 Ok(claims) => {
                     // Token is valid, proceed with request
-                    Ok(Response::json(serde_json::json!({
+                    Ok(json_response!({
                         "message": "Access granted",
                         "user_id": claims.sub
-                    })))
+                    }))
                 }
                 Err(_) => Err(Error::Unauthorized("Invalid token".to_string())),
             }
@@ -162,10 +162,10 @@ async fn login_handler(
     let session_id = session.save().await?;
     
     // Return session ID in response (typically stored in cookie)
-    let mut response = Response::json(serde_json::json!({
+    let mut response = json_response!({
         "message": "Login successful",
         "session_id": session_id
-    }));
+    });
     
     // Set session ID in cookie
     use http::header::{SET_COOKIE, HeaderValue};
@@ -183,10 +183,10 @@ async fn profile_handler(
     if let Some(session_id) = cookies.get("session_id") {
         if let Some(mut session) = session_manager.get_session(session_id).await? {
             if let Some(user_id) = session.get("user_id") {
-                return Ok(Response::json(serde_json::json!({
+                return Ok(json_response!({
                     "user_id": user_id,
                     "username": session.get("username")
-                })));
+                }));
             }
         }
     }
@@ -266,9 +266,9 @@ use toxi::auth::{RequireRole, RequirePermission};
 async fn admin_handler(
     _req: Request
 ) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Admin access granted"
-    })))
+    }))
 }
 
 // Apply role requirement
@@ -308,10 +308,10 @@ async fn oauth_callback(
             // Get user info
             let user_info = oauth_client.get_user_info(&token.access_token).await?;
             
-            Ok(Response::json(serde_json::json!({
+            Ok(json_response!({
                 "message": "OAuth2 login successful",
                 "user": user_info
-            })))
+            }))
         }
         Err(e) => Err(Error::Unauthorized(format!("OAuth2 error: {}", e))),
     }
@@ -383,10 +383,10 @@ async fn register_handler(
         users.insert(user.id.clone(), user.clone());
     }
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "User registered successfully",
         "user_id": user.id
-    })))
+    }))
 }
 
 async fn login_handler(
@@ -411,11 +411,11 @@ async fn login_handler(
             
             let token = create_token(&state.jwt_manager, claims)?;
             
-            return Ok(Response::json(serde_json::json!({
+            return Ok(json_response!({
                 "message": "Login successful",
                 "token": token,
                 "user_id": user.id
-            })));
+            }));
         }
     }
     
@@ -434,10 +434,10 @@ async fn protected_handler(
             
             match verify_token(&state.jwt_manager, token) {
                 Ok(claims) => {
-                    return Ok(Response::json(serde_json::json!({
+                    return Ok(json_response!({
                         "message": "Access to protected resource granted",
                         "user_id": claims.sub
-                    })));
+                    }));
                 }
                 Err(_) => {
                     return Err(Error::Unauthorized("Invalid token".to_string()));

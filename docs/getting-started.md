@@ -149,7 +149,7 @@ async fn simple_handler(_req: Request) -> Result<Response> {
 use toxi::prelude::*;
 
 async fn api_handler(_req: Request) -> Result<Response> {
-    let data = serde_json::json!({
+    let data = json!({
         "message": "Hello from API",
         "status": "success"
     });
@@ -176,7 +176,7 @@ struct CreateUserRequest {
 
 async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<Response> {
     // payload contains the deserialized JSON data
-    let user = serde_json::json!({
+    let user = json!({
         "id": 1,
         "name": payload.name,
         "email": payload.email
@@ -202,11 +202,11 @@ async fn list_items(Query(params): Query<ListQuery>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "page": page,
         "limit": limit,
         "items": []
-    })))
+    }))
 }
 ```
 
@@ -222,10 +222,10 @@ struct UserId {
 }
 
 async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": params.id,
         "name": "User Name"
-    })))
+    }))
 }
 ```
 
@@ -369,7 +369,7 @@ async fn create_user(
     user.create(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(Response::json(serde_json::json!(user)))
+    Ok(json_response!(user))
 }
 
 async fn get_user(
@@ -377,7 +377,7 @@ async fn get_user(
     Path(params): Path<UserIdParam>
 ) -> Result<Response> {
     match User::find(&state.db, params.id).await {
-        Ok(Some(user)) => Ok(Response::json(serde_json::json!(user))),
+        Ok(Some(user)) => Ok(json_response!(user)),
         Ok(None) => Err(Error::NotFound),
         Err(e) => Err(Error::Server(format!("Database error: {}", e))),
     }
@@ -389,10 +389,10 @@ async fn list_users(
     let users = User::all(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "users": users,
         "total": users.len()
-    })))
+    }))
 }
 
 async fn update_user(
@@ -413,7 +413,7 @@ async fn update_user(
     user.update(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(Response::json(serde_json::json!(user)))
+    Ok(json_response!(user))
 }
 
 async fn delete_user(
@@ -429,7 +429,7 @@ async fn delete_user(
     user.delete(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(Response::json(serde_json::json!({ "message": "User deleted" })))
+    Ok(json_response!({ "message": "User deleted" }))
 }
 
 #[tokio::main]

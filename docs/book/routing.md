@@ -80,20 +80,20 @@ use serde::Deserialize;
 
 // Handler with path parameter
 async fn get_user(Path(user_id): Path<u32>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user_id": user_id,
         "name": format!("User {}", user_id),
         "email": format!("user{}@example.com", user_id)
-    })))
+    }))
 }
 
 // Handler with multiple path parameters
 async fn get_user_post(Path((user_id, post_id)): Path<(u32, u32)>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user_id": user_id,
         "post_id": post_id,
         "title": format!("Post {} by User {}", post_id, user_id)
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -132,18 +132,18 @@ struct UserPostId {
 }
 
 async fn get_user_by_struct(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user_id": params.user_id,
         "name": format!("User {}", params.user_id)
-    })))
+    }))
 }
 
 async fn get_user_post_by_struct(Path(params): Path<UserPostId>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user_id": params.user_id,
         "post_id": params.post_id,
         "title": format!("Post {} by User {}", params.post_id, params.user_id)
-    })))
+    }))
 }
 ```
 
@@ -169,7 +169,7 @@ async fn get_users(Query(params): Query<UserQuery>) -> Result<Response> {
     let sort = params.sort.unwrap_or_else(|| "id".to_string());
     let active = params.active.unwrap_or(true);
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "users": [], // In a real app, this would come from your database
         "pagination": {
             "page": page,
@@ -180,7 +180,7 @@ async fn get_users(Query(params): Query<UserQuery>) -> Result<Response> {
             "sort": sort,
             "active": active
         }
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -205,11 +205,11 @@ use toxi::prelude::*;
 
 // API versioning example
 async fn v1_users(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "version": "3.0", "endpoint": "users" })))
+    Ok(json_response!({ "version": "3.0", "endpoint": "users" }))
 }
 
 async fn v2_users(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "version": "3.0", "endpoint": "users", "enhanced": true })))
+    Ok(json_response!({ "version": "3.0", "endpoint": "users", "enhanced": true }))
 }
 
 #[tokio::main]

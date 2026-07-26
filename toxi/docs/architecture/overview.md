@@ -1,17 +1,17 @@
 # Toxi Architecture Overview
 
-This document provides a comprehensive overview of Toxi's architecture, design principles, and internal workings.
+An overview of Toxi's architecture, design principles, and internal structure.
 
 ---
 
-## 🎯 Design Principles
+## Design Principles
 
-### 1. **Performance First**
-- Zero-cost abstractions leveraging Rust's type system
-- Async I/O with Tokio for maximum throughput
-- Efficient memory management without garbage collection
+### Performance
+- Zero-cost abstractions through Rust's type system
+- Async I/O with Tokio
+- Minimal allocation overhead
 
-### 2. **Security by Default**
+### Security
 - Secure defaults for all configurations
 - Memory safety guaranteed by Rust
 - Protection against OWASP Top 10 vulnerabilities
@@ -30,7 +30,7 @@ This document provides a comprehensive overview of Toxi's architecture, design p
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 ```mermaid
 graph TD
@@ -51,7 +51,7 @@ graph TD
 
 ---
 
-## 📦 Crate Dependency Graph
+##  Crate Dependency Graph
 
 ```mermaid
 graph LR
@@ -73,7 +73,7 @@ graph LR
 
 ---
 
-## 🔄 Request Lifecycle
+##  Request Lifecycle
 
 ### 1. **Connection Accepted**
 ```rust
@@ -133,7 +133,7 @@ Hyper serializes response
 
 ---
 
-## 🎨 Core Components
+##  Core Components
 
 ### toxi-core (Implemented)
 
@@ -369,7 +369,7 @@ enum Commands {
 
 ---
 
-## 🔐 Security Architecture
+##  Security Architecture
 
 ### Memory Safety
 - No buffer overflows (Rust prevents)
@@ -400,7 +400,7 @@ enum Commands {
 
 ---
 
-## ⚡ Performance Optimizations
+##  Performance Optimizations
 
 ### Async I/O
 - Non-blocking I/O for all operations
@@ -423,7 +423,7 @@ enum Commands {
 
 ---
 
-## 🧪 Testing Strategy
+##  Testing Strategy
 
 ### Unit Tests
 - Test individual functions
@@ -447,7 +447,7 @@ enum Commands {
 
 ---
 
-## 📈 Monitoring & Observability
+##  Monitoring & Observability
 
 ### Logging
 - Structured JSON logging
@@ -467,7 +467,7 @@ enum Commands {
 
 ---
 
-## 🚀 Deployment Architecture
+##  Deployment Architecture
 
 ### Single Server
 ```
@@ -505,7 +505,7 @@ enum Commands {
 
 ---
 
-## 🔮 Future Directions
+##  Future Directions
 
 - GraphQL support
 - gRPC native support

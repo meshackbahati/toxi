@@ -40,10 +40,10 @@ Let's explore different ways to respond:
 ### JSON Response
 ```rust,ignore
 async fn api_hello(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Hello, World!",
         "timestamp": chrono::Utc::now().to_rfc3339()
-    })))
+    }))
 }
 ```
 
@@ -104,11 +104,11 @@ async fn greet(Path(name): Path<String>) -> Result<Response> {
 }
 
 async fn user_details(Path(user_id): Path<u32>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user_id": user_id,
         "name": format!("User {}", user_id),
         "active": true
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -183,14 +183,14 @@ struct CreateUser {
 
 async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
     // Process the payload...
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "User created successfully",
         "user": {
             "id": 123, // In a real app, this would come from your database
             "name": payload.name,
             "email": payload.email
         }
-    })))
+    }))
 }
 
 #[tokio::main]
@@ -275,18 +275,18 @@ async fn home(_req: Request) -> Result<Response> {
 }
 
 async fn api_hello(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Hello from API",
         "framework": "Toxi",
         "version": "3.0"
-    })))
+    }))
 }
 
 async fn get_users(Query(params): Query<UserQuery>) -> Result<Response> {
     let limit = params.limit.unwrap_or(10);
     let offset = params.offset.unwrap_or(0);
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "users": [
             {"id": 1, "name": "Alice", "email": "alice@example.com"},
             {"id": 2, "name": "Bob", "email": "bob@example.com"}
@@ -296,7 +296,7 @@ async fn get_users(Query(params): Query<UserQuery>) -> Result<Response> {
             "offset": offset,
             "total": 2
         }
-    })))
+    }))
 }
 
 async fn greet_user(Path(name): Path<String>) -> Result<Response> {

@@ -48,11 +48,11 @@ async fn api_handler(
     Query(params): Query<QueryParams>,
     Json(payload): Json<serde_json::Value>
 ) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "user_id": user_id,
         "query_params": params,
         "payload": payload
-    })))
+    }))
 }
 ```
 
@@ -67,7 +67,7 @@ use toxi::prelude::*;
 
 async fn various_responses(_req: Request) -> Result<Response> {
     // JSON response
-    let json_resp = Response::json(serde_json::json!({ "type": "json" }));
+    let json_resp = json_response!({ "type": "json" });
     
     // HTML response
     let html_resp = Response::html("<h1>Hello HTML</h1>");
@@ -345,10 +345,10 @@ async fn upload_handler(_req: Request) -> Result<Response> {
     // In a real implementation, handle multipart form data
     // and save files to configured storage backend
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "status": "uploaded",
         "files": []
-    })))
+    }))
 }
 ```
 
@@ -491,10 +491,10 @@ use toxi_openapi::OpenApi;
 #[derive(toxi_macros::RouteInfo)]
 #[openapi(path = "/users/{id}", method = "GET")]
 async fn get_user(Path(id): Path<u32>) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "id": id,
         "name": format!("User {}", id)
-    })))
+    }))
 }
 
 async fn setup_openapi_docs() -> Result<()> {

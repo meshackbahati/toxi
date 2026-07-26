@@ -81,10 +81,10 @@ async fn login(Json(credentials): Json<LoginRequest>) -> Result<Response> {
     if verify_credentials(&credentials.username, &credentials.password).await {
         let token = generate_jwt(&credentials.username, "user").await?;
         
-        Ok(Response::json(serde_json::json!({
+        Ok(json_response!({
             "token": token,
             "expires_in": 86400 // 24 hours in seconds
-        })))
+        }))
     } else {
         Err(Error::Unauthorized("Invalid credentials".to_string()))
     }
@@ -139,11 +139,11 @@ struct AuthenticatedUser {
 
 // Protected route using authenticated user
 async fn protected_route(user: AuthenticatedUser) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Access granted",
         "user_id": user.id,
         "role": user.role
-    })))
+    }))
 }
 ```
 
@@ -264,10 +264,10 @@ async fn session_login(
         );
         
         // Create response with session cookie
-        let mut response = Response::json(serde_json::json!({
+        let mut response = json_response!({
             "message": "Login successful",
             "session_id": session_id
-        }));
+        });
         
         // Add session cookie
         use http::header::{SET_COOKIE, HeaderValue};
@@ -389,11 +389,11 @@ struct ApiKeyUser {
 
 // Protected endpoint for API key users
 async fn api_protected_route(user: ApiKeyUser) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "API access granted",
         "user_id": user.user_id,
         "permissions": user.permissions
-    })))
+    }))
 }
 ```
 
@@ -476,9 +476,9 @@ async fn register_user(Json(registration): Json<RegisterRequest>) -> Result<Resp
     // In a real app, save to database
     save_user_to_db(user).await?;
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "User registered successfully"
-    })))
+    }))
 }
 
 #[derive(Clone)]
@@ -522,10 +522,10 @@ async fn google_oauth_redirect(_req: Request) -> Result<Response> {
     );
     
     // In a real app, redirect to the auth URL
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "redirect_url": auth_url,
         "state": state
-    })))
+    }))
 }
 
 // OAuth2 callback handler
@@ -553,11 +553,11 @@ async fn google_oauth_callback(
     );
     
     // Return session info or redirect
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Authentication successful",
         "session_id": session_id,
         "user": user_info
-    })))
+    }))
 }
 
 struct TokenResponse {
@@ -720,10 +720,10 @@ fn extract_resource_from_path(path: &str) -> String {
 
 // Example route with RBAC protection
 async fn admin_only_route(user: AuthenticatedUser) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "message": "Admin access granted",
         "user_id": user.id
-    })))
+    }))
 }
 ```
 
@@ -810,11 +810,11 @@ async fn generate_2fa_setup(
         .light_color(unicode_art::Color::Ascii('█'))
         .build();
     
-    Ok(Response::json(serde_json::json!({
+    Ok(json_response!({
         "secret": secret,
         "qr_code": qr_string,
         "manual_entry": format!("{} {}", issuer, account)
-    })))
+    }))
 }
 
 // Verify 2FA token
@@ -831,9 +831,9 @@ async fn verify_2fa(
     if totp_store.verify_token(&user.id, &payload.token) {
         totp_store.enable_2fa(&user.id);
         
-        Ok(Response::json(serde_json::json!({
+        Ok(json_response!({
             "message": "2FA enabled successfully"
-        })))
+        }))
     } else {
         Err(Error::BadRequest("Invalid 2FA token".to_string()))
     }

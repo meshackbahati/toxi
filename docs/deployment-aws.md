@@ -70,7 +70,7 @@ Attach an Application Load Balancer in front of an EC2 Auto Scaling group. Enabl
 use toxi::prelude::*;
 
 pub async fn health_check() -> Result<Response> {
-    Ok(Response::json(serde_json::json!({"status": "ok"})))
+    Ok(json_response!({"status": "ok"}))
 }
 ```
 

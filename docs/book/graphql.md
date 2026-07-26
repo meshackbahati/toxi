@@ -1148,7 +1148,7 @@ mod graphql_tests {
         
         let response = server
             .post("/graphql")
-            .json(&serde_json::json!({
+            .json(&json!({
                 "query": query
             }))
             .send()
@@ -1182,7 +1182,7 @@ mod graphql_tests {
         
         let response = server
             .post("/graphql")
-            .json(&serde_json::json!({
+            .json(&json!({
                 "query": mutation
             }))
             .send()
@@ -1212,7 +1212,7 @@ mod graphql_tests {
         
         let response = server
             .post("/graphql")
-            .json(&serde_json::json!({
+            .json(&json!({
                 "query": invalid_query
             }))
             .send()
@@ -1249,7 +1249,7 @@ mod graphql_tests {
         // Request without authentication should fail
         let response = server
             .post("/graphql")
-            .json(&serde_json::json!({
+            .json(&json!({
                 "query": query
             }))
             .send()
@@ -1267,7 +1267,7 @@ mod graphql_tests {
         let response = server
             .post("/graphql")
             .header("Authorization", "Bearer valid_token")
-            .json(&serde_json::json!({
+            .json(&json!({
                 "query": query
             }))
             .send()
