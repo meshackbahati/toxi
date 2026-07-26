@@ -7,7 +7,7 @@
 A modular web framework for Rust.
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](Cargo.toml)
 [![GitHub](https://img.shields.io/badge/github-meshackbahati%2Ftoxi-black)](https://github.com/meshackbahati/toxi)
 
@@ -239,4 +239,4 @@ Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-MIT License — see [LICENSE](LICENSE).
+MIT OR Apache-2.0 — see [LICENSE](LICENSE).

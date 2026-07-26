@@ -83,4 +83,4 @@ To contribute to the documentation:
 
 ## License
 
-The documentation is licensed under the same license as the Toxi framework.
+The documentation is licensed under the MIT OR Apache-2.0 dual license.

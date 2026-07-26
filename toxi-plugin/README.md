@@ -6,7 +6,7 @@ Plugin system for the Toxi web framework.
 
 [![Crates.io](https://img.shields.io/crates/v/toxi-plugin.svg)](https://crates.io/crates/toxi-plugin)
 [![Docs.rs](https://docs.rs/toxi-plugin/badge.svg)](https://docs.rs/toxi-plugin)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](../../LICENSE)
 
 </div>
 
@@ -369,4 +369,4 @@ impl Plugin for ConfigurablePlugin {
 
 ## License
 
-MIT
+MIT OR Apache-2.0

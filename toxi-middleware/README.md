@@ -6,7 +6,7 @@ HTTP middleware for Toxi (CORS, logging, compression, rate limiting).
 
 [![Crates.io](https://img.shields.io/crates/v/toxi-middleware.svg)](https://crates.io/crates/toxi-middleware)
 [![Docs.rs](https://docs.rs/toxi-middleware/badge.svg)](https://docs.rs/toxi-middleware)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](../../LICENSE)
 
 </div>
 
@@ -330,4 +330,4 @@ async fn main() -> Result<()> {
 
 ## License
 
-MIT
+MIT OR Apache-2.0

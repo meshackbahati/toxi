@@ -6,7 +6,7 @@ Authentication and authorization for Toxi (RBAC, JWT, OAuth2, 2FA, API keys).
 
 [![Crates.io](https://img.shields.io/crates/v/toxi-auth.svg)](https://crates.io/crates/toxi-auth)
 [![Docs.rs](https://docs.rs/toxi-auth/badge.svg)](https://docs.rs/toxi-auth)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](../../LICENSE)
 
 </div>
 
@@ -198,4 +198,4 @@ use toxi_auth::middleware::AuthMiddleware;
 
 ## License
 
-MIT
+MIT OR Apache-2.0
