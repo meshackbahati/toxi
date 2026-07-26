@@ -264,5 +264,5 @@ cargo build
 ## Resources
 
 - [API Documentation](https://docs.rs/toxi)
-- [GitHub Repository](https://github.com/Kyle6012/rust-toxi)
-- [Example Applications](https://github.com/Kyle6012/rust-toxi/tree/main/examples)
+- [GitHub Repository](https://github.com/meshackbahati/toxi)
+- [Example Applications](https://github.com/meshackbahati/toxi/tree/main/examples)

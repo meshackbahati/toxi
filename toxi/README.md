@@ -8,7 +8,7 @@ A web framework for Rust. Build APIs, microservices, serverless functions, and f
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](../LICENSE)
-[![GitHub](https://img.shields.io/badge/github-Kyle6012%2Frust--toxi-black)](https://github.com/Kyle6012/rust-toxi)
+[![GitHub](https://img.shields.io/badge/github-meshackbahati%2Ftoxi-black)](https://github.com/meshackbahati/toxi)
 [![Status](https://img.shields.io/badge/status-beta-yellow.svg)](../STATUS.md)
 
 Built by [Meshack Bahati Ouma](https://github.com/Kyle6012)
