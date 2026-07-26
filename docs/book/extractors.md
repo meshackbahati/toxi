@@ -1,10 +1,10 @@
 # Request Extractors
 
-Request extractors are a key feature in Oxidite that allow you to extract data from incoming HTTP requests in a type-safe manner. This chapter covers all the available extractors and how to use them effectively.
+Request extractors are a key feature in Toxi that allow you to extract data from incoming HTTP requests in a type-safe manner. This chapter covers all the available extractors and how to use them effectively.
 
 ## Overview
 
-Extractors in Oxidite implement the `FromRequest` trait, which allows them to automatically extract data from requests when used as parameters in handler functions. This provides a clean and type-safe way to access different parts of the request.
+Extractors in Toxi implement the `FromRequest` trait, which allows them to automatically extract data from requests when used as parameters in handler functions. This provides a clean and type-safe way to access different parts of the request.
 
 ## Available Extractors
 
@@ -13,7 +13,7 @@ Extractors in Oxidite implement the `FromRequest` trait, which allows them to au
 The `Path` extractor extracts path parameters from the URL:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Single parameter
 async fn get_user(Path(user_id): Path<u32>) -> Result<Response> {
@@ -52,7 +52,7 @@ async fn get_user_by_struct(Path(params): Path<UserParams>) -> Result<Response> 
 The `Query` extractor extracts query parameters from the URL:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -90,7 +90,7 @@ async fn handle_raw_query(Query(raw): Query<serde_json::Value>) -> Result<Respon
 The `Json` extractor parses JSON from the request body:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -128,7 +128,7 @@ async fn handle_generic_json(Json(data): Json<serde_json::Value>) -> Result<Resp
 The `Form` extractor handles `application/x-www-form-urlencoded` data:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -165,7 +165,7 @@ async fn handle_generic_form(Form(data): Form<serde_json::Value>) -> Result<Resp
 The `Cookies` extractor provides access to request cookies:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn handle_cookies(cookies: Cookies) -> Result<Response> {
     let mut response_data = serde_json::json!({
@@ -207,7 +207,7 @@ async fn get_session(cookies: Cookies) -> Result<Response> {
 The `Body` extractor provides access to the raw request body:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Extract as string
 async fn handle_text_body(Body(raw_body): Body<String>) -> Result<Response> {
@@ -242,7 +242,7 @@ async fn handle_bytes_body(Body(bytes): Body<Bytes>) -> Result<Response> {
 The `State` extractor provides access to application state:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -281,7 +281,7 @@ async fn main() -> Result<()> {
 You can use multiple extractors in a single handler:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -320,7 +320,7 @@ async fn complex_handler(
 You can create custom extractors by implementing the `FromRequest` trait:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::future::Future;
 use std::pin::Pin;
 
@@ -383,7 +383,7 @@ async fn protected_handler(user: AuthenticatedUser) -> Result<Response> {
 Extractors automatically handle parsing errors and return appropriate HTTP status codes:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // If JSON parsing fails, returns 400 Bad Request
 async fn handle_bad_json(Json(data): Json<serde_json::Value>) -> Result<Response> {
@@ -417,7 +417,7 @@ async fn handle_bad_query(Query(params): Query<BadQuery>) -> Result<Response> {
 3. **Validation**: Consider validating data after extraction rather than during extraction for better performance:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -460,15 +460,15 @@ Request extractors provide a powerful and type-safe way to access different part
 - Handle errors appropriately
 - Consider performance implications
 
-Extractors are a fundamental part of Oxidite's design and enable clean, readable handler functions.
+Extractors are a fundamental part of Toxi's design and enable clean, readable handler functions.
 
 ## State Injection Patterns (Recommended)
 
 In production applications, you typically share a database pool, cache connections, and configuration through `State<Arc<AppState>>`. Here's the recommended pattern:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite::db::DbPool;
+use toxi::prelude::*;
+use toxi::db::DbPool;
 use std::sync::Arc;
 
 // 1. Define your application state
@@ -488,20 +488,20 @@ pub struct AppConfig {
 async fn list_users(
     State(state): State<Arc<AppState>>,
     Query(pagination): Query<PaginationParams>,
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let users = User::all(&state.db).await
         .map_err(|e| Error::InternalServerError(e.to_string()))?;
-    Ok(response::json(serde_json::json!(users)))
+    Ok(Response::json(serde_json::json!(users)))
 }
 
 async fn create_user(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateUserRequest>,
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let mut user = User { id: 0, name: payload.name, email: payload.email, ..Default::default() };
     user.save_checked(&state.db).await
         .map_err(|e| Error::Validation(e.to_string()))?;
-    Ok(response::json(serde_json::json!(user)))
+    Ok(Response::json(serde_json::json!(user)))
 }
 
 // 3. Wire it up in main
@@ -526,4 +526,4 @@ async fn main() -> Result<()> {
 }
 ```
 
-The `oxidite generate controller` command scaffolds handlers with this pattern by default.
+The `toxi generate controller` command scaffolds handlers with this pattern by default.

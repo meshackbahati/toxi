@@ -1,0 +1,79 @@
+[package]
+name = "toxi"
+version = "3.0.0"
+edition = "2021"
+authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
+description = "A modern, high-performance framework for Rust."
+license = "MIT"
+repository = "https://github.com/meshackbahati/toxi"
+documentation = "https://docs.rs/toxi"
+homepage = "https://github.com/meshackbahati/toxi"
+keywords = ["web", "framework", "http", "async", "high-performance"]
+categories = ["web-programming", "asynchronous"]
+readme = "README.md"
+
+[dependencies]
+# Core functionality - Always included
+toxi-core = { version = "3.0.0", path = "../toxi-core" }
+toxi-middleware = { version = "3.0.0", path = "../toxi-middleware" }
+toxi-config = { version = "3.0.0", path = "../toxi-config" }
+tokio = { version = "1.48", features = ["full", "test-util"] }
+
+# Optional features
+toxi-db = { version = "3.0.0", path = "../toxi-db", optional = true }
+toxi-auth = { version = "3.0.0", path = "../toxi-auth", optional = true }
+toxi-security = { version = "3.0.0", path = "../toxi-security", optional = true }
+toxi-queue = { version = "3.0.0", path = "../toxi-queue", optional = true }
+toxi-cache = { version = "3.0.0", path = "../toxi-cache", optional = true }
+toxi-realtime = { version = "3.0.0", path = "../toxi-realtime", optional = true }
+toxi-template = { version = "3.0.0", path = "../toxi-template", optional = true }
+toxi-mail = { version = "3.0.0", path = "../toxi-mail", optional = true }
+toxi-storage = { version = "3.0.0", path = "../toxi-storage", optional = true }
+toxi-macros = { version = "3.0.0", path = "../toxi-macros", optional = true }
+toxi-utils = { version = "3.0.0", path = "../toxi-utils", optional = true }
+toxi-openapi = { version = "3.0.0", path = "../toxi-openapi", optional = true }
+toxi-graphql = { version = "3.0.0", path = "../toxi-graphql", optional = true }
+toxi-plugin = { version = "3.0.0", path = "../toxi-plugin", optional = true }
+serde = "1.0.228"
+serde_json = "1.0.149"
+chrono = { version = "0.4", features = ["serde"] }
+tower-http = "0.6.11"
+
+[dev-dependencies]
+toxi-testing = { version = "3.0.0", path = "../toxi-testing" }
+
+[features]
+default = ["full"]
+
+# Full framework with all features
+full = [
+    "database",
+    "auth",
+    "queue",
+    "cache",
+    "realtime",
+    "templates",
+    "mail",
+    "storage",
+    "graphql",
+    "plugin",
+    "security",
+    "utils",
+]
+
+# Individual feature groups
+database = ["dep:toxi-db", "dep:toxi-macros"]
+auth = ["dep:toxi-auth", "database"]
+queue = ["dep:toxi-queue"]
+cache = ["dep:toxi-cache"]
+realtime = ["dep:toxi-realtime"]
+templates = ["dep:toxi-template"]
+mail = ["dep:toxi-mail"]
+storage = ["dep:toxi-storage"]
+security = ["dep:toxi-security"]
+utils = ["dep:toxi-utils"]
+graphql = ["dep:toxi-graphql"]
+plugin = ["dep:toxi-plugin"]
+
+# Minimal setup (just HTTP server and routing)
+minimal = []

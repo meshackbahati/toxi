@@ -1,6 +1,6 @@
 # Template Engine
 
-Oxidite provides a powerful template engine for server-side rendering. The engine supports Jinja2-style syntax with features like variable interpolation, control structures, and template inheritance.
+Toxi provides a powerful template engine for server-side rendering. The engine supports Jinja2-style syntax with features like variable interpolation, control structures, and template inheritance.
 
 ## Basic Template Usage
 
@@ -9,15 +9,15 @@ Oxidite provides a powerful template engine for server-side rendering. The engin
 First, you need to set up the template engine:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_template::{TemplateContext, TemplateEngine};
+use toxi::prelude::*;
+use toxi_template::{TemplateContext, TemplateEngine};
 
 async fn setup_template_example(
     State(engine): State<TemplateEngine>,
     TemplateContext(mut context): TemplateContext,
 ) -> Result<Response> {
     context.set("name", "Developer");
-    context.set("framework", "Oxidite");
+    context.set("framework", "Toxi");
     
     let response = engine.render_response("hello", &context)?;
     Ok(response)
@@ -77,7 +77,7 @@ The template engine supports basic control structures:
 The Context struct is used to pass data to templates:
 
 ```rust,ignore
-use oxidite_template::Context;
+use toxi_template::Context;
 use serde_json::json;
 
 // Create context in different ways
@@ -115,7 +115,7 @@ You can render templates in several ways:
 ### Render to String
 
 ```rust,ignore
-use oxidite_template::{TemplateEngine, Context};
+use toxi_template::{TemplateEngine, Context};
 
 let mut engine = TemplateEngine::new();
 engine.add_template("greeting", "Hello {{ name }}!")?;
@@ -127,11 +127,13 @@ let html = engine.render("greeting", &context)?;
 assert_eq!(html, "Hello World!");
 ```
 
+> **Modern pattern:** Use `TemplateContext::new("templates")?.load_dir()?` to load templates from a directory instead of embedding them inline.
+
 ### Render Directly as Response
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_template::{TemplateContext, TemplateEngine};
+use toxi::prelude::*;
+use toxi_template::{TemplateContext, TemplateEngine};
 
 async fn render_as_response(
     State(engine): State<TemplateEngine>,
@@ -321,8 +323,8 @@ This is useful for rendering different partials based on route parameters or app
 The template engine also includes utilities for serving static files:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_template::serve_static;
+use toxi::prelude::*;
+use toxi_template::serve_static;
 
 // In your router, register the static file handler
 // Note: This should be registered last to avoid blocking other routes
@@ -334,8 +336,8 @@ use oxidite_template::serve_static;
 Here's a complete example showing template usage in a web application:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_template::{TemplateContext, TemplateEngine};
+use toxi::prelude::*;
+use toxi_template::{TemplateContext, TemplateEngine};
 use serde_json::json;
 use std::sync::Arc;
 
@@ -413,6 +415,7 @@ async fn main() -> Result<()> {
         </body>
         </html>
     "#)?;
+    // Note: For production apps, prefer TemplateContext::new("templates")?.load_dir()?
     
     let engine = Arc::new(template_engine);
     let mut app = Application::new(engine.clone());
@@ -442,7 +445,7 @@ async fn main() -> Result<()> {
 
 ## Security Considerations
 
-The Oxidite template engine includes built-in security features:
+The Toxi template engine includes built-in security features:
 
 - Automatic HTML escaping to prevent XSS
 - Context isolation between different template renders
@@ -455,7 +458,7 @@ Remember to always validate and sanitize user input before passing it to templat
 You can register custom filters to extend the template engine with project-specific transformations:
 
 ```rust,ignore
-use oxidite_template::{TemplateEngine, Context};
+use toxi_template::{TemplateEngine, Context};
 
 let mut engine = TemplateEngine::new();
 
@@ -469,6 +472,7 @@ engine.register_filter("short_date", |s: &str| {
 });
 
 engine.add_template("greeting", "{{ name | shout }}")?;
+// Note: For production apps, prefer TemplateContext::new("templates")?.load_dir()?
 
 let mut context = Context::new();
 context.set("name", "hello");

@@ -1,14 +1,14 @@
 # GraphQL Integration
 
-GraphQL provides a powerful alternative to REST APIs, allowing clients to request exactly the data they need. This chapter covers how to integrate GraphQL into your Oxidite applications.
+GraphQL provides a powerful alternative to REST APIs, allowing clients to request exactly the data they need. This chapter covers how to integrate GraphQL into your Toxi applications.
 
 ## Overview
 
-Oxidite's GraphQL integration includes:
+Toxi's GraphQL integration includes:
 - Schema definition with Rust types
 - Query and mutation resolvers
 - Subscription support
-- Integration with Oxidite's routing system
+- Integration with Toxi's routing system
 - Type safety with Juniper integration
 - Real-time subscriptions
 
@@ -17,7 +17,7 @@ Oxidite's GraphQL integration includes:
 Set up a basic GraphQL endpoint:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use juniper::{EmptyMutation, EmptySubscription, RootNode};
 
 // Define a simple user object
@@ -119,7 +119,7 @@ struct DatabaseContext;
 Define more complex schemas with mutations and relationships:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use juniper::{FieldResult, GraphQLInputObject};
 
 // Enhanced user with more fields
@@ -325,12 +325,12 @@ fn create_advanced_schema() -> Schema {
 }
 ```
 
-## Integration with Oxidite Routing
+## Integration with Toxi Routing
 
-Integrate GraphQL with Oxidite's routing system:
+Integrate GraphQL with Toxi's routing system:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 // Enhanced GraphQL handler with proper request/response handling
@@ -471,8 +471,8 @@ async fn main() -> Result<()> {
 Connect GraphQL resolvers to your database:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_db::Model;
+use toxi::prelude::*;
+use toxi_db::Model;
 use serde::{Deserialize, Serialize};
 
 // Define models that match your GraphQL types
@@ -639,7 +639,7 @@ fn create_db_schema() -> DbSchema {
 Secure your GraphQL endpoints:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Context with authentication info
 struct AuthenticatedContext {
@@ -822,7 +822,7 @@ fn create_secured_schema() -> SecuredSchema {
 Implement real-time GraphQL subscriptions:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use juniper::http::GraphQLRequest;
 use futures::stream::Stream;
 use tokio_stream::wrappers::UnboundedReceiverStream;
@@ -890,40 +890,40 @@ fn create_subscription_schema() -> SubscriptionSchema {
 
 // WebSocket handler for subscriptions
 async fn websocket_graphql_handler(
-    ws: oxidite_realtime::websocket::WebSocket
+    ws: toxi_realtime::websocket::WebSocket
 ) -> Result<()> {
     ws.on_message(|msg| async move {
         match msg {
-            oxidite_realtime::websocket::Message::Text(text) => {
+            toxi_realtime::websocket::Message::Text(text) => {
                 // Parse GraphQL subscription message
                 match serde_json::from_str::<SubscriptionMessage>(&text) {
                     Ok(sub_msg) => {
                         match sub_msg.r#type.as_str() {
                             "connection_init" => {
                                 // Initialize connection
-                                Ok(oxidite_realtime::websocket::Message::Text(
+                                Ok(toxi_realtime::websocket::Message::Text(
                                     r#"{"type":"connection_ack"}"#.to_string()
                                 ))
                             }
                             "subscribe" => {
                                 // Handle subscription request
                                 // This would typically involve setting up a subscription
-                                Ok(oxidite_realtime::websocket::Message::Text(
+                                Ok(toxi_realtime::websocket::Message::Text(
                                     r#"{"type":"next","id":"1","payload":{"data":{"hello":"world"}}}"#.to_string()
                                 ))
                             }
                             "unsubscribe" => {
                                 // Handle unsubscribe
-                                Ok(oxidite_realtime::websocket::Message::Text(
+                                Ok(toxi_realtime::websocket::Message::Text(
                                     r#"{"type":"complete","id":"1"}"#.to_string()
                                 ))
                             }
-                            _ => Ok(oxidite_realtime::websocket::Message::Text(
+                            _ => Ok(toxi_realtime::websocket::Message::Text(
                                 r#"{"type":"error","payload":"Unknown message type"}"#.to_string()
                             ))
                         }
                     }
-                    Err(_) => Ok(oxidite_realtime::websocket::Message::Text(
+                    Err(_) => Ok(toxi_realtime::websocket::Message::Text(
                         r#"{"type":"error","payload":"Invalid message format"}"#.to_string()
                     )),
                 }
@@ -948,7 +948,7 @@ struct SubscriptionMessage {
 Optimize GraphQL performance:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -1120,8 +1120,8 @@ fn create_optimized_schema() -> OptimizedSchema {
 Test your GraphQL endpoints:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_testing::TestServer;
+use toxi::prelude::*;
+use toxi_testing::TestServer;
 
 #[cfg(test)]
 mod graphql_tests {
@@ -1280,7 +1280,7 @@ mod graphql_tests {
 
 ## Summary
 
-GraphQL integration in Oxidite provides:
+GraphQL integration in Toxi provides:
 
 - **Schema Definition**: Define types and operations with Rust structs
 - **Query and Mutation Support**: Handle data fetching and modifications

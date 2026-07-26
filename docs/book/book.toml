@@ -2,17 +2,17 @@
 authors = ["Meshack Bahati Ouma"]
 language = "en"
 src = "."
-title = "Oxidite Documentation - Professional Rust Web Framework"
-description = "Comprehensive documentation for Oxidite, a high-performance, batteries-included web framework for Rust. Learn about routing, ORM, OpenAPI, real-time features, and more."
+title = "Toxi Documentation - Professional Rust Web Framework"
+description = "Comprehensive documentation for Toxi, a high-performance, batteries-included web framework for Rust. Learn about routing, ORM, OpenAPI, real-time features, and more."
 
 [build]
 build-dir = "book"
 
 [output.html]
 default-theme = "light"
-git-repository-url = "https://github.com/meshackbahati/rust-oxidite"
-edit-url-template = "https://github.com/meshackbahati/rust-oxidite/edit/main/docs/book/{path}"
-site-url = "https://oxidite.rs/docs/book/"
+git-repository-url = "https://github.com/meshackbahati/rust-toxi"
+edit-url-template = "https://github.com/meshackbahati/rust-toxi/edit/main/docs/book/{path}"
+site-url = "https://toxi.rs/docs/book/"
 additional-css = ["custom.css"]
 additional-js = ["branding.js"]
 google-analytics = "G-XXXXXXXXXX"

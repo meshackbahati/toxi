@@ -1,7 +1,7 @@
-// Example: Advanced error handling in Oxidite
+// Example: Advanced error handling in Toxi
 // Demonstrates the enhanced error types and status codes
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
@@ -153,7 +153,7 @@ fn validate_email(email: &str) -> Result<()> {
 // GET / - API info
 async fn api_info(_req: Request) -> Result<Response> {
     Ok(response::json(serde_json::json!({
-        "message": "Oxidite Advanced Error Handling Demo API",
+        "message": "Toxi Advanced Error Handling Demo API",
         "version": "1.0",
         "endpoints": {
             "GET /users": "List all users",
@@ -351,7 +351,7 @@ async fn validation_test(_req: Request) -> Result<Response> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("🚀 Starting Oxidite Advanced Error Handling Demo");
+    println!("🚀 Starting Toxi Advanced Error Handling Demo");
     println!("📍 Listening on http://127.0.0.1:3000");
     println!("📋 Features demonstrated:");
     println!("   • Enhanced error types with HTTP status codes");
@@ -388,8 +388,8 @@ async fn main() -> Result<()> {
     router.get("/validation-test", validation_test);
 
     // Add state to service using extension layer
-    let service = oxidite_middleware::tower::ServiceBuilder::new()
-        .layer(oxidite_middleware::tower_http::add_extension::AddExtensionLayer::new(app_state))
+    let service = toxi_middleware::tower::ServiceBuilder::new()
+        .layer(toxi_middleware::tower_http::add_extension::AddExtensionLayer::new(app_state))
         .service(router);
 
     Server::new(service)

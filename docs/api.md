@@ -1,6 +1,6 @@
 # API Reference
 
-This document provides a comprehensive reference for all Oxidite framework APIs.
+This document provides a comprehensive reference for all Toxi framework APIs.
 
 ## Core Module
 
@@ -9,7 +9,7 @@ This document provides a comprehensive reference for all Oxidite framework APIs.
 The Router handles incoming HTTP requests and maps them to appropriate handlers.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 let mut router = Router::new();
 
@@ -37,7 +37,7 @@ router.get("/files/*", handler);  // Matches /files/anything/here
 The Server handles HTTP connections and dispatches requests to the router.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 let server = Server::new(router);
 server.listen("127.0.0.1:3000".parse().unwrap()).await?;
@@ -45,8 +45,8 @@ server.listen("127.0.0.1:3000".parse().unwrap()).await?;
 
 ### Request/Response Types
 
-- `Request`: Alias for `OxiditeRequest`, wrapper around `hyper::Request`
-- `Response`: Alias for `OxiditeResponse`, wrapper around `hyper::Response`
+- `Request`: Alias for `ToxiRequest`, wrapper around `hyper::Request`
+- `Response`: Alias for `ToxiResponse`, wrapper around `hyper::Response`
 - `Result<T>`: Type alias for `std::result::Result<T, Error>`
 
 ## Extractors
@@ -58,7 +58,7 @@ Extractors implement `FromRequest` trait to extract data from requests.
 Extracts and deserializes JSON from request body.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -69,7 +69,7 @@ struct CreateUser {
 
 async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
     // payload contains deserialized JSON
-    Ok(response::json(serde_json::json!(payload)))
+    Ok(Response::json(serde_json::json!(payload)))
 }
 ```
 
@@ -78,7 +78,7 @@ async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
 Extracts and deserializes query parameters.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -91,7 +91,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(response::json(serde_json::json!({ "page": page, "limit": limit })))
+    Ok(Response::json(serde_json::json!({ "page": page, "limit": limit })))
 }
 ```
 
@@ -100,7 +100,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<Response> {
 Extracts and deserializes path parameters.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -109,7 +109,7 @@ struct UserId {
 }
 
 async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(response::json(serde_json::json!({ "id": params.id })))
+    Ok(Response::json(serde_json::json!({ "id": params.id })))
 }
 ```
 
@@ -118,7 +118,7 @@ async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
 Extracts application state from request extensions.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -127,7 +127,7 @@ struct AppState {
 }
 
 async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
-    Ok(response::json(serde_json::json!({ "db_url": state.db_url })))
+    Ok(Response::json(serde_json::json!({ "db_url": state.db_url })))
 }
 ```
 
@@ -136,7 +136,7 @@ async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
 ### Error Types
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 enum Error {
     Server(String),           // Internal server error
@@ -168,7 +168,7 @@ async fn handler(_req: Request) -> Result<Response> {
     // This will return a 500 Internal Server Error
     let data = some_operation_that_might_fail()?;
     
-    Ok(response::json(serde_json::json!(data)))
+    Ok(Response::json(serde_json::json!(data)))
 }
 ```
 
@@ -177,16 +177,16 @@ async fn handler(_req: Request) -> Result<Response> {
 ### Creating Responses
 
 ```rust
-use oxidite::response;
+use toxi::response;
 
 // JSON response
-let json_resp = response::json(serde_json::json!({ "key": "value" }));
+let json_resp = Response::json(serde_json::json!({ "key": "value" }));
 
 // HTML response
-let html_resp = response::html("<h1>Hello</h1>");
+let html_resp = Response::html("<h1>Hello</h1>");
 
 // Text response
-let text_resp = response::text("Plain text");
+let text_resp = Response::text("Plain text");
 ```
 
 ## Database Module
@@ -194,8 +194,8 @@ let text_resp = response::text("Plain text");
 ### Model Definition
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::db::{Model, Database};
+use toxi::prelude::*;
+use toxi::db::{Model, Database};
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize, Clone)]
@@ -242,7 +242,7 @@ user.force_delete(&db).await?;
 ### Database Connections
 
 ```rust
-use oxidite::db::{DbPool, PoolOptions};
+use toxi::db::{DbPool, PoolOptions};
 
 // Basic connection
 let db = DbPool::connect("sqlite::memory:").await?;
@@ -263,7 +263,7 @@ let db = DbPool::connect_with_options("postgresql://...", options).await?;
 ### JWT Authentication
 
 ```rust
-use oxidite::auth::{JwtManager, create_token, verify_token, Claims};
+use toxi::auth::{JwtManager, create_token, verify_token, Claims};
 
 // Create JWT manager
 let jwt_manager = JwtManager::new("your-secret-key".to_string());
@@ -284,7 +284,7 @@ let verified_claims = verify_token(&jwt_manager, &token)?;
 ### Password Hashing
 
 ```rust
-use oxidite::auth::{hash_password, verify_password};
+use toxi::auth::{hash_password, verify_password};
 
 // Hash password
 let password_hash = hash_password("user-password")?;
@@ -298,7 +298,7 @@ if verify_password("user-password", &password_hash)? {
 ### API Keys
 
 ```rust
-use oxidite::auth::ApiKey;
+use toxi::auth::ApiKey;
 
 // Generate API key
 let api_key = ApiKey::generate("user-id", Some("description"))?;
@@ -317,8 +317,8 @@ if let Some(parsed_key) = ApiKey::parse(key_value) {
 ### Using Built-in Middleware
 
 ```rust
-use oxidite::prelude::*;
-use oxidite_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
+use toxi::prelude::*;
+use toxi_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
 
 let service = ServiceBuilder::new()
     .layer(LoggerLayer)                    // Request/response logging
@@ -374,7 +374,7 @@ where
 ### Template Creation and Rendering
 
 ```rust
-use oxidite::template::{TemplateEngine, Context};
+use toxi::template::{TemplateEngine, Context};
 
 let mut engine = TemplateEngine::new();
 
@@ -392,10 +392,12 @@ context.set("name", "World");
 let html = engine.render("welcome", &context)?;
 ```
 
+> **Modern pattern:** Use `TemplateContext::new("templates")?.load_dir()?` to load templates from a directory instead of embedding them inline.
+
 ### Context Variables
 
 ```rust
-use oxidite::template::Context;
+use toxi::template::Context;
 
 let mut context = Context::new();
 
@@ -419,56 +421,56 @@ context.set("items", vec!["apple", "banana", "cherry"]);
 
 ```bash
 # Create new project
-oxidite new my-project
+toxi new my-project
 
 # Create specific project type
-oxidite new my-api --project-type api
-oxidite new my-fullstack --project-type fullstack
+toxi new my-api --project-type api
+toxi new my-fullstack --project-type fullstack
 ```
 
 ### Code Generation
 
 ```bash
 # Generate model
-oxidite generate model User
+toxi generate model User
 
 # Generate controller
-oxidite generate controller UserController
+toxi generate controller UserController
 
 # Generate middleware
-oxidite generate middleware AuthMiddleware
+toxi generate middleware AuthMiddleware
 ```
 
 ### Database Operations
 
 ```bash
 # Create migration
-oxidite migrate create create_users_table
+toxi migrate create create_users_table
 
 # Run migrations
-oxidite migrate run
+toxi migrate run
 
 # Revert migration
-oxidite migrate revert
+toxi migrate revert
 
 # Check status
-oxidite migrate status
+toxi migrate status
 ```
 
 ### Queue Management
 
 ```bash
 # Start workers
-oxidite queue work --workers 4
+toxi queue work --workers 4
 
 # List queue stats
-oxidite queue list
+toxi queue list
 
 # View dead letter queue
-oxidite queue dlq
+toxi queue dlq
 
 # Clear queue
-oxidite queue clear
+toxi queue clear
 ```
 
 ## Advanced Features
@@ -501,7 +503,7 @@ async fn versioned_handler(req: Request) -> Result<Response> {
 ### Background Jobs
 
 ```rust
-use oxidite::queue::{Job, Queue};
+use toxi::queue::{Job, Queue};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -543,12 +545,10 @@ struct AppState {
     template_engine: Arc<TemplateEngine>,
 }
 
-// Add to service
+// Inject state into router
 let state = Arc::new(AppState { /* ... */ });
 
-let service = ServiceBuilder::new()
-    .layer(AddExtensionLayer::new(state))
-    .service(router);
+let router = router.with_state(state);
 ```
 
 ### Environment Variables

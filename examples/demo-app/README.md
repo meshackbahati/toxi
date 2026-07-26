@@ -1,6 +1,6 @@
-# Oxidite Demo Application
+# Toxi Demo Application
 
-This demo application showcases all features of the Oxidite web framework.
+This demo application showcases all features of the Toxi web framework.
 
 ## Running the Demo
 

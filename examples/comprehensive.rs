@@ -1,12 +1,12 @@
-// Comprehensive example showcasing all Oxidite features
+// Comprehensive example showcasing all Toxi features
 // This demonstrates: routing, middleware, auth, caching, queues, and database
 
-use oxidite_core::{Router, Server, OxiditeRequest, OxiditeResponse, Result as CoreResult, Path, Json};
-use oxidite_middleware::{ServiceBuilder, LoggerLayer};
-use oxidite_config::Config;
-use oxidite_auth::{hash_password, verify_password, create_token, JwtToken, Claims};
-use oxidite_cache::{Cache, MemoryCache};
-use oxidite_queue::{Queue, Job, JobWrapper, Worker};
+use toxi_core::{Router, Server, ToxiRequest, ToxiResponse, Result as CoreResult, Path, Json};
+use toxi_middleware::{ServiceBuilder, LoggerLayer};
+use toxi_config::Config;
+use toxi_auth::{hash_password, verify_password, create_token, JwtToken, Claims};
+use toxi_cache::{Cache, MemoryCache};
+use toxi_queue::{Queue, Job, JobWrapper, Worker};
 use serde::{Deserialize, Serialize};
 use http_body_util::Full;
 use bytes::Bytes;
@@ -64,7 +64,7 @@ struct SendEmailJob {
 
 #[async_trait::async_trait]
 impl Job for SendEmailJob {
-    async fn perform(&self) -> oxidite_queue::Result<()> {
+    async fn perform(&self) -> toxi_queue::Result<()> {
         println!("📧 Sending email to: {}", self.to);
         println!("   Subject: {}", self.subject);
         
@@ -84,9 +84,9 @@ impl Job for SendEmailJob {
 // API Handlers
 // ============================================================================
 
-async fn index(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
+async fn index(_req: ToxiRequest) -> CoreResult<ToxiResponse> {
     let response = serde_json::json!({
-        "message": "Welcome to Oxidite Comprehensive Example!",
+        "message": "Welcome to Toxi Comprehensive Example!",
         "version": env!("CARGO_PKG_VERSION"),
         "endpoints": {
             "health": "GET /health",
@@ -102,7 +102,7 @@ async fn index(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
     });
 
     let json = serde_json::to_vec(&response)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     Ok(hyper::Response::builder()
         .header("content-type", "application/json")
@@ -110,7 +110,7 @@ async fn index(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
         .unwrap())
 }
 
-async fn health(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
+async fn health(_req: ToxiRequest) -> CoreResult<ToxiResponse> {
     let health = serde_json::json!({
         "status": "healthy",
         "timestamp": chrono::Utc::now().to_rfc3339(),
@@ -122,7 +122,7 @@ async fn health(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
     });
 
     let json = serde_json::to_vec(&health)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     Ok(hyper::Response::builder()
         .header("content-type", "application/json")
@@ -130,7 +130,7 @@ async fn health(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
         .unwrap())
 }
 
-async fn register(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
+async fn register(_req: ToxiRequest) -> CoreResult<ToxiResponse> {
     // In real app, parse JSON body
     let user_data = RegisterRequest {
         name: "John Doe".to_string(),
@@ -140,7 +140,7 @@ async fn register(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
 
     // Hash password
     let password_hash = hash_password(&user_data.password)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     let user = User {
         id: 1,
@@ -151,7 +151,7 @@ async fn register(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
 
     // Create JWT token
     let token = create_token(user.id.to_string(), "secret_key", 3600)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     let response = AuthResponse {
         token,
@@ -163,7 +163,7 @@ async fn register(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
     };
 
     let json = serde_json::to_vec(&response)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     Ok(hyper::Response::builder()
         .status(201)
@@ -172,7 +172,7 @@ async fn register(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
         .unwrap())
 }
 
-async fn cache_demo(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
+async fn cache_demo(_req: ToxiRequest) -> CoreResult<ToxiResponse> {
     let cache = MemoryCache::new();
 
     // Demonstrate caching
@@ -180,7 +180,7 @@ async fn cache_demo(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
         println!("🔄 Computing expensive operation...");
         tokio::time::sleep(Duration::from_secs(1)).await;
         Ok::<_, Box<dyn std::error::Error + Send + Sync>>("Expensive result".to_string())
-    }).await.map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+    }).await.map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     let response = serde_json::json!({
         "cached_value": data,
@@ -188,7 +188,7 @@ async fn cache_demo(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
     });
 
     let json = serde_json::to_vec(&response)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
 
     Ok(hyper::Response::builder()
         .header("content-type", "application/json")
@@ -202,7 +202,7 @@ async fn cache_demo(_req: OxiditeRequest) -> CoreResult<OxiditeResponse> {
 
 #[tokio::main]
 async fn main() -> CoreResult<()> {
-    println!("🚀 Oxidite Comprehensive Example");
+    println!("🚀 Toxi Comprehensive Example");
     println!("==================================");
     println!();
 
@@ -224,13 +224,13 @@ async fn main() -> CoreResult<()> {
     // Enqueue a sample job
     let email_job = SendEmailJob {
         to: "user@example.com".to_string(),
-        subject: "Welcome to Oxidite!".to_string(),
-        body: "Thank you for using Oxidite framework.".to_string(),
+        subject: "Welcome to Toxi!".to_string(),
+        body: "Thank you for using Toxi framework.".to_string(),
     };
     let job_wrapper = JobWrapper::new(&email_job)
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
     queue.enqueue(job_wrapper).await
-        .map_err(|e| oxidite_core::Error::Server(e.to_string()))?;
+        .map_err(|e| toxi_core::Error::Server(e.to_string()))?;
     println!("✅ Sample job enqueued");
     println!();
 

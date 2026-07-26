@@ -23,6 +23,6 @@
     <circle cx="15" cy="-12" r="2.5" fill="#764ba2"/>
   </g>
   
-  <!-- OXIDITE Text -->
-  <text x="50" y="38" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#grad1)">OXIDITE</text>
+  <!-- TOXI Text -->
+  <text x="50" y="38" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#grad1)">TOXI</text>
 </svg>

@@ -1,4 +1,4 @@
-# Redis Session Compatibility (Node -> Oxidite)
+# Redis Session Compatibility (Node -> Toxi)
 
 This guide keeps users logged in during migration.
 
@@ -10,8 +10,8 @@ This guide keeps users logged in during migration.
 
 ## Migration approach
 
-1. Run Oxidite and Node against the same Redis session store.
-2. Validate Oxidite middleware reads existing session records.
+1. Run Toxi and Node against the same Redis session store.
+2. Validate Toxi middleware reads existing session records.
 3. Keep session payload backward-compatible through transition.
 
 ## Checklist

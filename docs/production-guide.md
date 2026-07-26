@@ -1,13 +1,13 @@
 # Production Deployment Guide
 
-This guide covers best practices for deploying Oxidite applications to production environments.
+This guide covers best practices for deploying Toxi applications to production environments.
 
 ## Configuration Management
 
 For production environments, use environment variables for configuration:
 
 ```rust
-use oxidite::config::Config;
+use toxi::config::Config;
 
 let config = Config::builder()
     .env()
@@ -66,7 +66,7 @@ Recommended production settings:
 
 ### Logging
 ```rust
-use oxidite_middleware::LoggerLayer;
+use toxi_middleware::LoggerLayer;
 
 // Structured logging with correlation IDs
 let logger = LoggerLayer::new()

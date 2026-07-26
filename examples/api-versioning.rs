@@ -1,7 +1,7 @@
-// Example: API Versioning in Oxidite
+// Example: API Versioning in Toxi
 // Demonstrates URL-based, header-based, and query parameter-based versioning
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
@@ -102,7 +102,7 @@ struct CreateUserRequest {
 async fn v1_get_user(
     State(state): State<Arc<AppState>>,
     Path(params): Path<serde_json::Value>
-) -> Result<OxiditeResponse> {
+) -> Result<ToxiResponse> {
     let id = params["id"].as_u64().ok_or_else(|| 
         Error::BadRequest("Invalid user ID format".to_string())
     )?;
@@ -122,7 +122,7 @@ async fn v1_get_user(
 
 async fn v1_list_users(
     State(state): State<Arc<AppState>>
-) -> Result<OxiditeResponse> {
+) -> Result<ToxiResponse> {
     let users = state.user_store.get_all_users();
     let response = ApiResponse {
         version: "v1".to_string(),
@@ -135,7 +135,7 @@ async fn v1_list_users(
 async fn v1_create_user(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateUserRequest>
-) -> Result<OxiditeResponse> {
+) -> Result<ToxiResponse> {
     let user = UserV1 {
         id: 0, // Will be assigned by store
         name: payload.name,
@@ -158,7 +158,7 @@ async fn v1_create_user(
 async fn v2_get_user(
     State(state): State<Arc<AppState>>,
     Path(params): Path<serde_json::Value>
-) -> Result<OxiditeResponse> {
+) -> Result<ToxiResponse> {
     let id = params["id"].as_u64().ok_or_else(|| 
         Error::BadRequest("Invalid user ID format".to_string())
     )?;
@@ -192,7 +192,7 @@ async fn v2_get_user(
 
 async fn v2_list_users(
     State(state): State<Arc<AppState>>
-) -> Result<OxiditeResponse> {
+) -> Result<ToxiResponse> {
     let v1_users = state.user_store.get_all_users();
     
     // Transform V1 users to V2 users
@@ -220,7 +220,7 @@ async fn v2_list_users(
 async fn v2_create_user(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateUserRequest>
-) -> Result<OxiditeResponse> {
+) -> Result<ToxiResponse> {
     let v1_user = UserV1 {
         id: 0, // Will be assigned by store
         name: payload.name,
@@ -257,8 +257,8 @@ async fn v2_create_user(
 // Version-agnostic handler that determines version from headers
 async fn versioned_api_handler(
     State(state): State<Arc<AppState>>,
-    req: OxiditeRequest
-) -> Result<OxiditeResponse> {
+    req: ToxiRequest
+) -> Result<ToxiResponse> {
     // Determine version from Accept header (e.g., application/vnd.api+json;version=2)
     let version = req.headers()
         .get("accept")
@@ -312,8 +312,8 @@ async fn versioned_api_handler(
 async fn query_versioned_handler(
     State(state): State<Arc<AppState>>,
     Query(params): Query<serde_json::Value>,
-    req: OxiditeRequest
-) -> Result<OxiditeResponse> {
+    req: ToxiRequest
+) -> Result<ToxiResponse> {
     // Determine version from query parameter
     let version = params["version"]
         .as_u64()
@@ -364,7 +364,7 @@ async fn query_versioned_handler(
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("🚀 Starting Oxidite API Versioning Demo");
+    println!("🚀 Starting Toxi API Versioning Demo");
     println!("📍 Listening on http://127.0.0.1:3000");
     println!("📋 API Versioning Approaches Demonstrated:");
     println!("   • URL-based versioning (e.g., /api/v1/users, /api/v2/users)");
@@ -400,8 +400,8 @@ async fn main() -> Result<()> {
     // Query parameter versioning
     router.get("/query-versioned", query_versioned_handler);
 
-    let service = oxidite_middleware::tower::ServiceBuilder::new()
-        .layer(oxidite_middleware::tower_http::add_extension::AddExtensionLayer::new(app_state))
+    let service = toxi_middleware::tower::ServiceBuilder::new()
+        .layer(toxi_middleware::tower_http::add_extension::AddExtensionLayer::new(app_state))
         .service(router);
 
     Server::new(service)

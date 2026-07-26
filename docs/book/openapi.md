@@ -1,6 +1,6 @@
 # OpenAPI & Swagger UI
 
-Oxidite provides first-class support for automated API documentation via OpenAPI 3.1. By using the `openapi` feature, your framework automatically generates schema definitions and provides a built-in Swagger UI for testing.
+Toxi provides first-class support for automated API documentation via OpenAPI 3.1. By using the `openapi` feature, your framework automatically generates schema definitions and provides a built-in Swagger UI for testing.
 
 ## Enabling OpenAPI
 
@@ -8,18 +8,18 @@ To enable OpenAPI support, add the `openapi` feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = { version = "2.3", features = ["full", "openapi"] }
+toxi = { version = "2.3", features = ["full", "openapi"] }
 ```
 
 ## Configuration
 
-In your `oxidite.toml`, you can configure the OpenAPI metadata:
+In your `toxi.toml`, you can configure the OpenAPI metadata:
 
 ```toml
 [api]
 title = "My Professional API"
 version = "1.0.0"
-description = "A high-performance Rust API built with Oxidite."
+description = "A high-performance Rust API built with Toxi."
 contact_email = "dev@example.com"
 license = "MIT"
 
@@ -31,12 +31,12 @@ theme = "classic" # options: classic, dark, modern
 
 ## Automated Schema Generation
 
-Oxidite automatically inspects your `router` and `handlers` to derive the API schema. For types to appear in the schema, they should implement `JsonSchema` (from the `schemars` crate, which is re-exported).
+Toxi automatically inspects your `router` and `handlers` to derive the API schema. For types to appear in the schema, they should implement `JsonSchema` (from the `schemars` crate, which is re-exported).
 
 ### Example Model
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Model, sqlx::FromRow)]
@@ -53,7 +53,7 @@ pub struct User {
 You can use the `#[api_operation]` macro to add specific metadata to your handlers:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[api_operation(
     summary = "List all users",
@@ -76,7 +76,7 @@ Once your server is running, navigate to the path defined in your configuration 
 
 ## Security Schemes
 
-Oxidite's OpenAPI integration supports various security schemes:
+Toxi's OpenAPI integration supports various security schemes:
 
 ### JWT Bearer Authentication
 
@@ -101,4 +101,4 @@ router.api_security("api_key", SecurityScheme::ApiKey {
 1. **Keep Summary Short**: Use the `summary` field for a concise overview.
 2. **Use Tags**: Group related endpoints using `tags` for better navigation in the UI.
 3. **Document Errors**: Use the `responses` attribute in `#[api_operation]` to document common error states (400, 401, 404).
-4. **Version Your API**: Use the versioning features of Oxidite to keep your OpenAPI docs in sync with your API lifecycle.
+4. **Version Your API**: Use the versioning features of Toxi to keep your OpenAPI docs in sync with your API lifecycle.

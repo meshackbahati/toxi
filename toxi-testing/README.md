@@ -1,0 +1,46 @@
+# Toxi Testing
+
+Testing utilities for Toxi handlers and routers.
+
+## Installation
+
+```toml
+[dev-dependencies]
+toxi-testing = "2.3.4"
+```
+
+## Available API
+
+- `TestRequest`: fluent request builder for GET/POST/PUT/DELETE.
+- `TestRequest::build_toxi()`: convert test request to `ToxiRequest`.
+- `TestResponse`: response wrapper helpers (`status`, `text`, `json`, assertions).
+- `TestServer`: wraps a `tower::Service` (including `Router`) for request execution.
+- `test_router(router)`: convenience constructor for `TestServer<Router>`.
+
+## Example
+
+```rust
+use toxi::prelude::*;
+use toxi_testing::{test_router, TestRequest};
+
+async fn ping(_req: Request) -> Result<Response> {
+    Ok(Response::text("pong"))
+}
+
+#[tokio::test]
+async fn ping_route_responds() {
+    let mut router = Router::new();
+    router.get("/ping", ping);
+
+    let mut server = test_router(router);
+    let req = TestRequest::get("/ping").build_toxi();
+
+    let resp = server.call(req).await.unwrap();
+    assert_eq!(resp.status(), http::StatusCode::OK);
+}
+```
+
+## Notes
+
+- `TestRequest::header/json/build` are convenience methods and may panic on invalid input.
+- Use `try_header`, `try_json`, and `try_build` for non-panicking test setup.

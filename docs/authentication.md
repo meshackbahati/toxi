@@ -1,6 +1,6 @@
 # Authentication and Authorization
 
-Oxidite provides comprehensive authentication and authorization features to secure your web applications.
+Toxi provides comprehensive authentication and authorization features to secure your web applications.
 
 ## Overview
 
@@ -22,7 +22,7 @@ Add the auth feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = { version = "2.1", features = ["auth"] }
+toxi = { version = "3.0", features = ["auth"] }
 ```
 
 ## JWT Authentication
@@ -32,7 +32,7 @@ JSON Web Tokens (JWT) provide stateless authentication for your applications.
 ### Setting up JWT Manager
 
 ```rust
-use oxidite::auth::JwtManager;
+use toxi::auth::JwtManager;
 
 let jwt_manager = JwtManager::new("your-super-secret-key-here".to_string());
 ```
@@ -40,7 +40,7 @@ let jwt_manager = JwtManager::new("your-super-secret-key-here".to_string());
 ### Creating Tokens
 
 ```rust
-use oxidite::auth::{JwtManager, create_token, Claims};
+use toxi::auth::{JwtManager, create_token, Claims};
 
 let jwt_manager = JwtManager::new("secret-key".to_string());
 
@@ -58,7 +58,7 @@ println!("Generated token: {}", token);
 ### Verifying Tokens
 
 ```rust
-use oxidite::auth::{JwtManager, verify_token, Claims};
+use toxi::auth::{JwtManager, verify_token, Claims};
 
 let jwt_manager = JwtManager::new("secret-key".to_string());
 let token = "your.jwt.token.here";
@@ -78,7 +78,7 @@ match verify_token(&jwt_manager, &token) {
 The `Claims` struct contains standard JWT claims:
 
 ```rust
-use oxidite::auth::Claims;
+use toxi::auth::Claims;
 
 let claims = Claims {
     sub: "user-id".to_string(),      // Subject (user identifier)
@@ -92,8 +92,8 @@ let claims = Claims {
 ### JWT in Request Handlers
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::auth::{JwtManager, verify_token};
+use toxi::prelude::*;
+use toxi::auth::{JwtManager, verify_token};
 
 async fn protected_handler(
     mut req: Request,
@@ -108,7 +108,7 @@ async fn protected_handler(
             match verify_token(jwt_manager, token) {
                 Ok(claims) => {
                     // Token is valid, proceed with request
-                    Ok(response::json(serde_json::json!({
+                    Ok(Response::json(serde_json::json!({
                         "message": "Access granted",
                         "user_id": claims.sub
                     })))
@@ -126,14 +126,14 @@ async fn protected_handler(
 
 ## Session Management
 
-Oxidite provides session management for stateful authentication.
+Toxi provides session management for stateful authentication.
 
 ### Session Stores
 
-Oxidite supports different session storage backends:
+Toxi supports different session storage backends:
 
 ```rust
-use oxidite::auth::{SessionManager, InMemorySessionStore, RedisSessionStore};
+use toxi::auth::{SessionManager, InMemorySessionStore, RedisSessionStore};
 
 // In-memory store (for development)
 let session_store = InMemorySessionStore::new();
@@ -147,7 +147,7 @@ let session_manager = SessionManager::new(session_store);
 ### Working with Sessions
 
 ```rust
-use oxidite::auth::Session;
+use toxi::auth::Session;
 
 async fn login_handler(
     mut req: Request,
@@ -162,7 +162,7 @@ async fn login_handler(
     let session_id = session.save().await?;
     
     // Return session ID in response (typically stored in cookie)
-    let mut response = response::json(serde_json::json!({
+    let mut response = Response::json(serde_json::json!({
         "message": "Login successful",
         "session_id": session_id
     }));
@@ -183,7 +183,7 @@ async fn profile_handler(
     if let Some(session_id) = cookies.get("session_id") {
         if let Some(mut session) = session_manager.get_session(session_id).await? {
             if let Some(user_id) = session.get("user_id") {
-                return Ok(response::json(serde_json::json!({
+                return Ok(Response::json(serde_json::json!({
                     "user_id": user_id,
                     "username": session.get("username")
                 })));
@@ -197,10 +197,10 @@ async fn profile_handler(
 
 ## Password Hashing
 
-Oxidite provides secure password hashing and verification:
+Toxi provides secure password hashing and verification:
 
 ```rust
-use oxidite::auth::{hash_password, verify_password};
+use toxi::auth::{hash_password, verify_password};
 
 // Hash a password
 let password = "user-password";
@@ -219,7 +219,7 @@ if verify_password(password, &hashed)? {
 API keys provide an alternative authentication method for machine-to-machine communication:
 
 ```rust
-use oxidite::auth::ApiKey;
+use toxi::auth::ApiKey;
 
 // Create an API key
 let api_key = ApiKey::generate("user-id", Some("description"))?;
@@ -235,10 +235,10 @@ if let Some(parsed_key) = ApiKey::parse(key_value) {
 
 ## Role-Based Access Control (RBAC)
 
-Oxidite includes an RBAC system for fine-grained permission control:
+Toxi includes an RBAC system for fine-grained permission control:
 
 ```rust
-use oxidite::auth::{Role, Permission};
+use toxi::auth::{Role, Permission};
 
 // Define roles and permissions
 let admin_role = Role::new("admin");
@@ -259,14 +259,14 @@ user_role.add_permission(read_permission);
 ### Authorization Middleware
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::auth::{RequireRole, RequirePermission};
+use toxi::prelude::*;
+use toxi::auth::{RequireRole, RequirePermission};
 
 // Handler that requires admin role
 async fn admin_handler(
     _req: Request
 ) -> Result<Response> {
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "message": "Admin access granted"
     })))
 }
@@ -278,10 +278,10 @@ router.get("/admin", RequireRole::new("admin", admin_handler));
 
 ## OAuth2 Integration
 
-Oxidite provides OAuth2 integration for third-party authentication:
+Toxi provides OAuth2 integration for third-party authentication:
 
 ```rust
-use oxidite::auth::{OAuth2Client, OAuth2Config, OAuth2Provider};
+use toxi::auth::{OAuth2Client, OAuth2Config, OAuth2Provider};
 
 // Configure OAuth2 with Google
 let google_config = OAuth2Config {
@@ -300,7 +300,7 @@ let auth_url = oauth_client.authorization_url()?;
 async fn oauth_callback(
     Query(params): Query<serde_json::Value>,
     oauth_client: &OAuth2Client
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let code = params["code"].as_str().unwrap_or("");
     
     match oauth_client.exchange_code(code).await {
@@ -308,7 +308,7 @@ async fn oauth_callback(
             // Get user info
             let user_info = oauth_client.get_user_info(&token.access_token).await?;
             
-            Ok(response::json(serde_json::json!({
+            Ok(Response::json(serde_json::json!({
                 "message": "OAuth2 login successful",
                 "user": user_info
             })))
@@ -323,8 +323,8 @@ async fn oauth_callback(
 Here's a complete example showing user registration, login, and protected routes:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::auth::{JwtManager, hash_password, verify_password, create_token, Claims};
+use toxi::prelude::*;
+use toxi::auth::{JwtManager, hash_password, verify_password, create_token, Claims};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -358,7 +358,7 @@ struct RegisterRequest {
 async fn register_handler(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<RegisterRequest>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     // Check if user already exists
     {
         let users = state.users.lock().unwrap();
@@ -383,7 +383,7 @@ async fn register_handler(
         users.insert(user.id.clone(), user.clone());
     }
     
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "message": "User registered successfully",
         "user_id": user.id
     })))
@@ -392,7 +392,7 @@ async fn register_handler(
 async fn login_handler(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<LoginRequest>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     // Find user by email
     let user = {
         let users = state.users.lock().unwrap();
@@ -411,7 +411,7 @@ async fn login_handler(
             
             let token = create_token(&state.jwt_manager, claims)?;
             
-            return Ok(response::json(serde_json::json!({
+            return Ok(Response::json(serde_json::json!({
                 "message": "Login successful",
                 "token": token,
                 "user_id": user.id
@@ -424,8 +424,8 @@ async fn login_handler(
 
 async fn protected_handler(
     State(state): State<Arc<AppState>>,
-    mut req: OxiditeRequest
-) -> Result<OxiditeResponse> {
+    mut req: Request
+) -> Result<Response> {
     // Extract and verify JWT token
     if let Some(auth_header) = req.headers().get("authorization") {
         let auth_str = auth_header.to_str().unwrap_or("");
@@ -434,7 +434,7 @@ async fn protected_handler(
             
             match verify_token(&state.jwt_manager, token) {
                 Ok(claims) => {
-                    return Ok(response::json(serde_json::json!({
+                    return Ok(Response::json(serde_json::json!({
                         "message": "Access to protected resource granted",
                         "user_id": claims.sub
                     })));
@@ -462,11 +462,9 @@ async fn main() -> Result<()> {
     router.post("/login", login_handler);
     router.get("/protected", protected_handler);
     
-    let service = ServiceBuilder::new()
-        .layer(AddExtensionLayer::new(app_state))
-        .service(router);
+    let router = router.with_state(app_state);
     
-    Server::new(service)
+    Server::new(router)
         .listen("127.0.0.1:3000".parse().unwrap())
         .await
 }

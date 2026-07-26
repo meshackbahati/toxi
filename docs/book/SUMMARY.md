@@ -45,12 +45,12 @@
 - [Web/API Feature Crates](./subcrates/web-stack.md)
 - [Tooling Crates](./subcrates/tooling.md)
 - [Subcrate API Map](./subcrates/api-map.md)
-- [Oxidite Complete Handbook](./oxidite-complete-handbook.md)
+- [Toxi Complete Handbook](./toxi-complete-handbook.md)
 
 # Deployment
 - [Migration and Adoption](./migration-adoption.md)
 - [Socket.IO Bridge Adapter](./migration-guides/socketio-bridge.md)
-- [Sequelize to Oxidite Cookbook](./migration-guides/sequelize-to-oxidite.md)
+- [Sequelize to Toxi Cookbook](./migration-guides/sequelize-to-toxi.md)
 - [Postgres Analytics Patterns](./migration-guides/postgres-analytics.md)
 - [Redis Session Compatibility](./migration-guides/redis-session-compat.md)
 - [Kafka Idempotent Consumers](./migration-guides/kafka-idempotency.md)

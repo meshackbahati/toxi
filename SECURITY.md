@@ -6,7 +6,7 @@
 | ------- | ------------------ |
 | 0.x.x   | :white_check_mark: |
 
-As Oxidite is currently in alpha/beta, we support only the latest version.
+As Toxi is currently in alpha/beta, we support only the latest version.
 
 ---
 
@@ -21,7 +21,7 @@ We take security seriously. If you discover a security vulnerability, please rep
 
 ### DO
 
-1. **Email**: Send details to security@oxidite.dev _(or create a private security advisory on GitHub)_
+1. **Email**: Send details to security@toxi.dev _(or create a private security advisory on GitHub)_
 2. **Include**:
    - Description of the vulnerability
    - Steps to reproduce
@@ -42,7 +42,7 @@ We take security seriously. If you discover a security vulnerability, please rep
 
 ## Security Features
 
-Oxidite is designed with security as a top priority:
+Toxi is designed with security as a top priority:
 
 ### Memory Safety
 - **No buffer overflows**: Rust's ownership system prevents them
@@ -114,7 +114,7 @@ Oxidite is designed with security as a top priority:
 
 ### Development
 ```toml
-# oxidite.toml
+# toxi.toml
 [security]
 tls_enabled = false  # OK for dev
 cors_allow_all = true
@@ -137,7 +137,7 @@ csp_enabled = true
 
 ## Security Headers
 
-Oxidite automatically adds:
+Toxi automatically adds:
 
 ```
 Strict-Transport-Security: max-age=31536000; includeSubDomains
@@ -156,7 +156,7 @@ Permissions-Policy: geolocation=(), microphone=(), camera=()
 Protect against brute force and DoS:
 
 ```rust
-use oxidite_middleware::RateLimitLayer;
+use toxi_middleware::RateLimitLayer;
 
 let service = ServiceBuilder::new()
     .layer(RateLimitLayer::new(
@@ -263,4 +263,4 @@ When we fix a security vulnerability:
 
 ---
 
-Thank you for helping keep Oxidite and its users safe! 🔒
+Thank you for helping keep Toxi and its users safe! 🔒

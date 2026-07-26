@@ -1,6 +1,6 @@
 # Handler and Service Patterns
 
-This chapter shows patterns that keep Oxidite apps maintainable at scale.
+This chapter shows patterns that keep Toxi apps maintainable at scale.
 
 ## Thin handlers, thick services
 

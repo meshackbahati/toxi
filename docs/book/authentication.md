@@ -1,10 +1,10 @@
 # Authentication
 
-Authentication in Oxidite provides multiple methods to verify user identity. This chapter covers various authentication mechanisms including JWT, sessions, API keys, and OAuth2.
+Authentication in Toxi provides multiple methods to verify user identity. This chapter covers various authentication mechanisms including JWT, sessions, API keys, and OAuth2.
 
 ## Overview
 
-Oxidite provides comprehensive authentication support including:
+Toxi provides comprehensive authentication support including:
 - JSON Web Tokens (JWT)
 - Session-based authentication
 - API key authentication
@@ -17,7 +17,7 @@ Oxidite provides comprehensive authentication support including:
 JSON Web Tokens provide stateless authentication:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 use chrono::{Duration, Utc};
 
@@ -101,7 +101,7 @@ async fn verify_credentials(_username: &str, _password: &str) -> bool {
 Create middleware to protect routes with JWT authentication:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn jwt_auth_middleware(req: Request, next: Next) -> Result<Response> {
     // Extract token from Authorization header
@@ -152,7 +152,7 @@ async fn protected_route(user: AuthenticatedUser) -> Result<Response> {
 Session-based authentication stores user state on the server:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -287,7 +287,7 @@ async fn session_login(
 API key authentication for service-to-service communication:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
@@ -402,7 +402,7 @@ async fn api_protected_route(user: ApiKeyUser) -> Result<Response> {
 Secure password handling with hashing:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 pub struct PasswordHasher;
 
@@ -500,7 +500,7 @@ async fn save_user_to_db(_user: UserRegistration) -> Result<()> {
 OAuth2 support for third-party authentication:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -608,7 +608,7 @@ async fn validate_state(_state: &str) -> bool {
 Implement role-based access control:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashSet;
 
 #[derive(Clone)]
@@ -732,7 +732,7 @@ async fn admin_only_route(user: AuthenticatedUser) -> Result<Response> {
 Implement two-factor authentication:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use qrcode::QrCode;
 use base32;
 
@@ -793,7 +793,7 @@ async fn generate_2fa_setup(
     State(totp_store): State<Arc<TotpStore>>
 ) -> Result<Response> {
     let secret = totp_store.generate_secret(&user.id);
-    let issuer = "Oxidite App";
+    let issuer = "Toxi App";
     let account = &user.id;
     
     // Generate QR code URL
@@ -938,7 +938,7 @@ async fn regenerate_session(
 
 ## Summary
 
-Authentication in Oxidite provides multiple secure methods:
+Authentication in Toxi provides multiple secure methods:
 
 - **JWT**: Stateless authentication with tokens
 - **Sessions**: Server-side state management

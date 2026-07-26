@@ -1,17 +1,17 @@
 # Socket.IO Bridge Adapter Guide
 
-This guide shows how to keep existing Socket.IO clients while migrating backend APIs to Oxidite.
+This guide shows how to keep existing Socket.IO clients while migrating backend APIs to Toxi.
 
 ## Target scenario
 
 - Existing frontend depends on Socket.IO event names and room semantics.
-- You want Oxidite to own business APIs without breaking realtime clients.
+- You want Toxi to own business APIs without breaking realtime clients.
 
 ## Recommended architecture
 
 1. Keep current Socket.IO edge process (Node) temporarily.
-2. Move domain logic/API routes to Oxidite.
-3. Publish realtime domain events from Oxidite to Redis/Kafka.
+2. Move domain logic/API routes to Toxi.
+3. Publish realtime domain events from Toxi to Redis/Kafka.
 4. Socket.IO edge consumes those events and emits unchanged client events.
 
 ## Event contract freeze
@@ -22,12 +22,12 @@ Before migration, freeze:
 - event names (`leaderboard:update`, `notification:new`, etc.)
 - payload shape and nullable fields
 
-## Oxidite producer pattern
+## Toxi producer pattern
 
-Use `oxidite-realtime` + queue/pubsub layer to emit canonical domain events.
+Use `toxi-realtime` + queue/pubsub layer to emit canonical domain events.
 
 ```rust,ignore
-use oxidite_realtime::{Event, EventType};
+use toxi_realtime::{Event, EventType};
 
 let event = Event::new(
     EventType::Custom("leaderboard:update".into()),
@@ -39,7 +39,7 @@ let event = Event::new(
 
 In bridge service:
 
-1. Consume Oxidite domain events.
+1. Consume Toxi domain events.
 2. Map to legacy Socket.IO event names.
 3. Emit to existing rooms.
 4. Log unmapped events as warnings.
@@ -52,7 +52,7 @@ In bridge service:
 
 ## Cutover plan
 
-1. Shadow mode: Oxidite emits but clients still served from legacy path.
+1. Shadow mode: Toxi emits but clients still served from legacy path.
 2. Dual emit: compare payloads from both paths.
-3. Flip write source to Oxidite.
+3. Flip write source to Toxi.
 4. Remove legacy emitters after stable release window.

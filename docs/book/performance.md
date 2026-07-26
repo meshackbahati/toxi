@@ -1,6 +1,6 @@
 # Performance
 
-Performance optimization is crucial for delivering fast, responsive Oxidite applications. This chapter covers various techniques and strategies to optimize your application's performance.
+Performance optimization is crucial for delivering fast, responsive Toxi applications. This chapter covers various techniques and strategies to optimize your application's performance.
 
 ## Overview
 
@@ -18,7 +18,7 @@ Performance optimization includes:
 Optimize how your application handles incoming requests:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 // Efficient request handler with minimal allocations
@@ -87,7 +87,7 @@ async fn preprocessing_middleware(req: Request, next: Next) -> Result<Response> 
 Optimize database interactions:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 // Optimized model with proper indexing hints
@@ -239,7 +239,7 @@ pub trait ToSql {
 Implement effective caching:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::{RwLock, Mutex};
@@ -443,7 +443,7 @@ impl CachedRepository {
 Optimize memory usage:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 // Efficient data structures
@@ -618,7 +618,7 @@ impl EfficientJsonHandler {
 Optimize concurrent operations:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use tokio::task;
 use std::sync::Arc;
 
@@ -829,7 +829,7 @@ async fn fetch_from_backup_db() -> Result<String> { Ok("backup_data".to_string()
 Optimize network performance:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // HTTP/2 and HTTP/3 optimizations
 pub struct HttpOptimizations;
@@ -1003,7 +1003,7 @@ fn get_content_type(path: &str) -> &'static str {
 Monitor and profile your application:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 use tokio::time::{Duration, Instant};
 
@@ -1214,7 +1214,7 @@ async fn run_benchmarks() -> Result<()> {
 
 ## Summary
 
-Performance optimization in Oxidite applications involves:
+Performance optimization in Toxi applications involves:
 
 - **Request Handling**: Efficient request processing and middleware
 - **Database Optimization**: Query optimization, connection pooling, batching
@@ -1224,4 +1224,4 @@ Performance optimization in Oxidite applications involves:
 - **Network Optimization**: HTTP/2, compression, and streaming
 - **Profiling**: Monitoring and measuring performance metrics
 
-Following these optimization techniques will help you build fast, efficient Oxidite applications that can handle high loads while maintaining responsiveness.
+Following these optimization techniques will help you build fast, efficient Toxi applications that can handle high loads while maintaining responsiveness.

@@ -1,4 +1,4 @@
-/* Oxidite docs website branding and readability enhancements. */
+/* Toxi docs website branding and readability enhancements. */
 :root {
   --content-max-width: 980px;
   --ox-border: #d7dee9;
@@ -35,7 +35,7 @@ a {
   font-weight: 700;
 }
 
-.oxidite-docs-brand {
+.toxi-docs-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -44,13 +44,13 @@ a {
   margin-right: 10px;
 }
 
-.oxidite-docs-brand img {
+.toxi-docs-brand img {
   width: 30px;
   height: 30px;
   display: block;
 }
 
-.oxidite-docs-brand span {
+.toxi-docs-brand span {
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -58,7 +58,7 @@ a {
 }
 
 @media (max-width: 1024px) {
-  .oxidite-docs-brand span {
+  .toxi-docs-brand span {
     display: none;
   }
 }

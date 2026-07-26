@@ -1,4 +1,4 @@
-use oxidite_core::{Request, Response, Error, text};
+use toxi_core::{Request, Response, Error, text};
 
 /// WebSocket connection handler
 pub async fn websocket_handler(_req: Request) -> Result<Response, Error> {

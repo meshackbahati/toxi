@@ -1,5 +1,5 @@
-use oxidite::prelude::*;
-use oxidite_queue::Queue;
+use toxi::prelude::*;
+use toxi_queue::Queue;
 use std::sync::Arc;
 
 pub async fn init_queue() -> Result<Arc<Queue>> {

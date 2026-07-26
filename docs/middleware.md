@@ -1,10 +1,10 @@
 # Middleware
 
-Oxidite provides a powerful middleware system built on top of the `tower` ecosystem, allowing you to intercept and modify requests and responses.
+Toxi provides a powerful middleware system built on top of the `tower` ecosystem, allowing you to intercept and modify requests and responses.
 
 ## Overview
 
-Middleware in Oxidite allows you to:
+Middleware in Toxi allows you to:
 
 - Log requests and responses
 - Handle cross-origin resource sharing (CORS)
@@ -21,18 +21,18 @@ Middleware components are included with the core framework:
 
 ```toml
 [dependencies]
-oxidite = "1.0"
+toxi = "1.0"
 ```
 
 ## Middleware Layers
 
 ### Router-Level vs Service-Level Middleware
 
-Oxidite supports two levels of middleware:
+Toxi supports two levels of middleware:
 
 **Router-Level Middleware** (applied via `router.layer()`):
 - Custom middleware that doesn't change response body types
-- Middleware that works with `OxiditeRequest` and `OxiditeResponse` directly
+- Middleware that works with `Request` and `Response` directly
 - Examples: LoggerLayer, custom auth middleware
 
 **Service-Level Middleware** (applied via `ServiceBuilder`):
@@ -47,8 +47,8 @@ Oxidite supports two levels of middleware:
 The recommended way to add middleware is using `ServiceBuilder`:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
+use toxi::prelude::*;
+use toxi_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -75,7 +75,7 @@ async fn main() -> Result<()> {
 Logs incoming requests and outgoing responses:
 
 ```rust
-use oxidite_middleware::LoggerLayer;
+use toxi_middleware::LoggerLayer;
 
 let service = ServiceBuilder::new()
     .layer(LoggerLayer)
@@ -94,7 +94,7 @@ The logger includes:
 Handles Cross-Origin Resource Sharing:
 
 ```rust
-use oxidite_middleware::{CorsLayer, Any};
+use toxi_middleware::{CorsLayer, Any};
 
 // Permissive CORS (allows all origins, methods, and headers)
 let cors_layer = CorsLayer::permissive();
@@ -116,10 +116,10 @@ let service = ServiceBuilder::new()
 
 ### Framework-Level CORS (Recommended)
 
-Oxidite provides a built-in CORS implementation that doesn't require tower-http. This is simpler to use and integrates directly with the Router:
+Toxi provides a built-in CORS implementation that doesn't require tower-http. This is simpler to use and integrates directly with the Router:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -161,7 +161,7 @@ let router = Router::new()
 Adds response compression:
 
 ```rust
-use oxidite_middleware::CompressionLayer;
+use toxi_middleware::CompressionLayer;
 
 let service = ServiceBuilder::new()
     .layer(CompressionLayer::new())
@@ -173,7 +173,7 @@ let service = ServiceBuilder::new()
 Adds security headers to responses:
 
 ```rust
-use oxidite_middleware::{SecurityHeadersLayer, SecurityHeadersConfig, FrameOptions};
+use toxi_middleware::{SecurityHeadersLayer, SecurityHeadersConfig, FrameOptions};
 
 let security_config = SecurityHeadersConfig::new()
     .with_frame_options(FrameOptions::Deny)
@@ -190,7 +190,7 @@ let service = ServiceBuilder::new()
 Adds unique request IDs for tracing:
 
 ```rust
-use oxidite_middleware::RequestIdLayer;
+use toxi_middleware::RequestIdLayer;
 
 let service = ServiceBuilder::new()
     .layer(RequestIdLayer)
@@ -202,7 +202,7 @@ let service = ServiceBuilder::new()
 Implements request rate limiting:
 
 ```rust
-use oxidite_middleware::{RateLimiter, RateLimitConfig};
+use toxi_middleware::{RateLimiter, RateLimitConfig};
 
 let rate_limit_config = RateLimitConfig::new()
     .with_requests_per_minute(100)
@@ -218,7 +218,7 @@ let service = ServiceBuilder::new()
 Adds request timeout:
 
 ```rust
-use oxidite_middleware::{TimeoutMiddleware, TimeoutError};
+use toxi_middleware::{TimeoutMiddleware, TimeoutError};
 use std::time::Duration;
 
 let timeout_service = TimeoutMiddleware::new(Duration::from_secs(30));
@@ -290,7 +290,7 @@ where
 
             // Post-processing: modify response if needed
             let mut response_clone = response.map(|body| body);
-            response_clone.headers_mut().insert("x-powered-by", "Oxidite".parse().unwrap());
+            response_clone.headers_mut().insert("x-powered-by", "Toxi".parse().unwrap());
 
             Ok(response_clone)
         })
@@ -384,7 +384,7 @@ where
         Box::pin(async {
             let response = Response::builder()
                 .status(StatusCode::UNAUTHORIZED)
-                .body(oxidite_core::types::ResponseBody::empty())
+                .body(toxi_core::types::ResponseBody::empty())
                 .unwrap();
             Ok(response)
         })
@@ -403,19 +403,19 @@ fn validate_token(token: &str, secret: &str) -> bool {
 Here's a complete example showing how to use multiple middleware components:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
+use toxi::prelude::*;
+use toxi_middleware::{ServiceBuilder, LoggerLayer, CorsLayer, CompressionLayer};
 use std::time::Duration;
 
-async fn handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
-        "message": "Hello from Oxidite with middleware!",
+async fn handler(_req: Request) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
+        "message": "Hello from Toxi with middleware!",
         "timestamp": chrono::Utc::now().to_rfc3339()
     })))
 }
 
-async fn protected_handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
+async fn protected_handler(_req: Request) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
         "message": "This is a protected endpoint",
         "status": "authorized"
     })))
@@ -423,7 +423,7 @@ async fn protected_handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("Starting Oxidite server with middleware...");
+    println!("Starting Toxi server with middleware...");
 
     let mut router = Router::new();
     router.get("/", handler);
@@ -463,7 +463,7 @@ pub struct ErrorHandlingMiddleware<S> {
 
 impl<S, ReqBody, ResBody> Service<Request<ReqBody>> for ErrorHandlingMiddleware<S>
 where
-    S: Service<Request<ReqBody>, Response = Response<ResBody>, Error = oxidite_core::Error> 
+    S: Service<Request<ReqBody>, Response = Response<ResBody>, Error = toxi_core::Error> 
         + Clone 
         + Send 
         + 'static,
@@ -472,7 +472,7 @@ where
     ResBody: Send + 'static,
 {
     type Response = Response<ResBody>;
-    type Error = oxidite_core::Error;
+    type Error = toxi_core::Error;
     type Future = BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -489,16 +489,16 @@ where
                 Err(error) => {
                     // Convert framework errors to appropriate HTTP responses
                     let status_code = match &error {
-                        oxidite_core::Error::NotFound => StatusCode::NOT_FOUND,
-                        oxidite_core::Error::BadRequest(_) => StatusCode::BAD_REQUEST,
-                        oxidite_core::Error::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+                        toxi_core::Error::NotFound => StatusCode::NOT_FOUND,
+                        toxi_core::Error::BadRequest(_) => StatusCode::BAD_REQUEST,
+                        toxi_core::Error::Unauthorized(_) => StatusCode::UNAUTHORIZED,
                         _ => StatusCode::INTERNAL_SERVER_ERROR,
                     };
                     
                     let response = Response::builder()
                         .status(status_code)
                         .header("content-type", "application/json")
-                        .body(oxidite_core::types::ResponseBody::from(
+                        .body(toxi_core::types::ResponseBody::from(
                             serde_json::json!({
                                 "error": status_code.as_str(),
                                 "message": error.to_string()

@@ -1,6 +1,6 @@
 # Features
 
-This chapter consolidates all the features of the Oxidite framework into a single comprehensive overview, as requested in the documentation consolidation rule.
+This chapter consolidates all the features of the Toxi framework into a single comprehensive overview, as requested in the documentation consolidation rule.
 
 ## Core Features
 
@@ -11,7 +11,7 @@ This chapter consolidates all the features of the Oxidite framework into a singl
 - Concurrent request handling with async runtime
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn hello_world(_req: Request) -> Result<Response> {
     Ok(Response::text("Hello, World!"))
@@ -34,7 +34,7 @@ async fn main() -> Result<()> {
 - Error handling with custom error types
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -63,7 +63,7 @@ async fn api_handler(
 - Proper HTTP status codes
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn various_responses(_req: Request) -> Result<Response> {
     // JSON response
@@ -94,7 +94,7 @@ async fn various_responses(_req: Request) -> Result<Response> {
 - Validation and hooks
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Model, Deserialize)]
@@ -148,7 +148,7 @@ async fn user_operations() -> Result<()> {
 - Two-factor authentication (2FA)
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // JWT authentication middleware
 async fn jwt_auth_middleware(req: Request, next: Next) -> Result<Response> {
@@ -183,7 +183,7 @@ async fn verify_jwt(_token: &str) -> Result<()> {
 - Built-in middleware for common tasks
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
     println!("Request: {} {}", req.method(), req.uri());
@@ -217,8 +217,8 @@ async fn cors_middleware(req: Request, next: Next) -> Result<Response> {
 - Direct integration with Response system
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_template::{TemplateContext, TemplateEngine};
+use toxi::prelude::*;
+use toxi_template::{TemplateContext, TemplateEngine};
 
 async fn template_example(
     State(engine): State<TemplateEngine>,
@@ -244,7 +244,7 @@ async fn template_example(
 - Worker management
 
 ```rust,ignore
-use oxidite_queue::{Job, Queue, Worker};
+use toxi_queue::{Job, Queue, Worker};
 
 // Define a job
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -293,8 +293,8 @@ async fn queue_example() -> Result<()> {
 - Live updates and notifications
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_realtime::websocket::{WebSocket, Message};
+use toxi::prelude::*;
+use toxi_realtime::websocket::{WebSocket, Message};
 
 async fn websocket_handler(ws: WebSocket) -> Result<()> {
     ws.on_message(|msg| async move {
@@ -315,7 +315,7 @@ async fn websocket_handler(ws: WebSocket) -> Result<()> {
 }
 
 async fn sse_example(_req: Request) -> Result<Response> {
-    use oxidite_realtime::sse::EventStream;
+    use toxi_realtime::sse::EventStream;
     
     let mut stream = EventStream::new();
     stream.send("Connected", Some("connection"), None).await?;
@@ -339,7 +339,7 @@ async fn sse_example(_req: Request) -> Result<Response> {
 - Streaming uploads for large files
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn upload_handler(_req: Request) -> Result<Response> {
     // In a real implementation, handle multipart form data
@@ -361,7 +361,7 @@ async fn upload_handler(_req: Request) -> Result<Response> {
 - Secure headers
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn security_middleware(req: Request, next: Next) -> Result<Response> {
     // Rate limiting
@@ -401,7 +401,7 @@ async fn is_request_allowed(_req: &Request) -> bool {
 - Hot reloading support
 
 ```rust,ignore
-use oxidite_config::Config;
+use toxi_config::Config;
 
 #[derive(serde::Deserialize)]
 struct AppConfig {
@@ -437,16 +437,16 @@ enum ConfigSource {
 
 ```bash
 # Create a new project
-oxidite new my-app
+toxi new my-app
 
 # Generate a model
-oxidite generate model User email:string name:string
+toxi generate model User email:string name:string
 
 # Run migrations
-oxidite migrate
+toxi migrate
 
 # Start development server
-oxidite dev
+toxi dev
 ```
 
 ### 14. Testing Utilities
@@ -456,8 +456,8 @@ oxidite dev
 - Fixture management
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_testing::{TestServer, RequestBuilder};
+use toxi::prelude::*;
+use toxi_testing::{TestServer, RequestBuilder};
 
 #[cfg(test)]
 mod tests {
@@ -485,10 +485,10 @@ mod tests {
 - Validation against OpenAPI spec
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_openapi::OpenApi;
+use toxi::prelude::*;
+use toxi_openapi::OpenApi;
 
-#[derive(oxidite_macros::RouteInfo)]
+#[derive(toxi_macros::RouteInfo)]
 #[openapi(path = "/users/{id}", method = "GET")]
 async fn get_user(Path(id): Path<u32>) -> Result<Response> {
     Ok(Response::json(serde_json::json!({
@@ -515,7 +515,7 @@ async fn setup_openapi_docs() -> Result<()> {
 - Custom middleware and handlers
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 trait Plugin {
     fn name(&self) -> &str;
@@ -548,7 +548,7 @@ impl Plugin for LoggingPlugin {
 
 ## Summary
 
-Oxidite is a comprehensive web framework that combines:
+Toxi is a comprehensive web framework that combines:
 
 - **Performance**: Built on async/await with Hyper and Tokio
 - **Safety**: Type-safe request handling with compile-time validation

@@ -1,16 +1,16 @@
 # Core Stack Crates
 
-## `oxidite`
+## `toxi`
 
 Use when you want a single entry point for framework features.
 
 Main exports:
 
-- `oxidite_core::*`
+- `toxi_core::*`
 - feature-gated re-exports (`db`, `auth`, `queue`, `cache`, `realtime`, `template`, `mail`, `storage`, `security`, `utils`)
 - `prelude` module
 
-## `oxidite-core`
+## `toxi-core`
 
 Primary APIs:
 
@@ -26,7 +26,7 @@ Typical scenario:
 2. register routes
 3. start `Server`
 
-## `oxidite-middleware`
+## `toxi-middleware`
 
 Main APIs:
 
@@ -40,7 +40,7 @@ Main APIs:
 
 Use to compose middleware with `tower::ServiceBuilder`.
 
-## `oxidite-config`
+## `toxi-config`
 
 Typed config structs:
 
@@ -54,7 +54,7 @@ Typed config structs:
 
 Use for environment-aware startup configuration.
 
-## `oxidite-utils`
+## `toxi-utils`
 
 Main utility groups:
 

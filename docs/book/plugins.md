@@ -1,10 +1,10 @@
 # Plugin System
 
-Oxidite features a powerful, extensible plugin system that allows you to hook into the framework's lifecycle, add global middleware, register custom routes, and extend the application state.
+Toxi features a powerful, extensible plugin system that allows you to hook into the framework's lifecycle, add global middleware, register custom routes, and extend the application state.
 
 ## Overview
 
-A plugin in Oxidite is any type that implements the `Plugin` trait. Plugins are registered during the application setup and are executed in the order they are added.
+A plugin in Toxi is any type that implements the `Plugin` trait. Plugins are registered during the application setup and are executed in the order they are added.
 
 ## The Plugin Trait
 
@@ -36,7 +36,7 @@ pub trait Plugin: Send + Sync {
 Here's an example of a simple `RequestTracker` plugin that logs request statistics.
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use async_trait::async_trait;
 
 pub struct RequestTrackerPlugin;
@@ -105,7 +105,7 @@ async fn on_setup(&self, router: &mut Router) -> Result<()> {
 
 ### Hooking into Events
 
-If your application uses the `oxidite-events` system, plugins can register listeners for global events.
+If your application uses the `toxi-events` system, plugins can register listeners for global events.
 
 ```rust,ignore
 async fn on_setup(&self, router: &mut Router) -> Result<()> {

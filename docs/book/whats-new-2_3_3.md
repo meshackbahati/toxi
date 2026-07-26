@@ -1,6 +1,6 @@
-# What's New in Oxidite 2.3.3
+# What's New in Toxi 2.3.3
 
-Oxidite 2.3.3 introduces **namespaced environment variables** in `oxidite.toml`, making it easier to organise related secrets and configuration without long `SCREAMING_SNAKE_CASE` key lists.
+Toxi 2.3.3 introduces **namespaced environment variables** in `toxi.toml`, making it easier to organise related secrets and configuration without long `SCREAMING_SNAKE_CASE` key lists.
 
 This release is fully backwards-compatible. Existing `[env]` tables and `.env` files continue to work unchanged.
 
@@ -88,7 +88,7 @@ GOOGLE_CLIENT_SECRET=secret-xyz
 
 ### Mixing Strategies
 
-You can use any combination in the same `oxidite.toml`:
+You can use any combination in the same `toxi.toml`:
 
 ```toml
 [env]
@@ -133,8 +133,8 @@ When the same variable is defined in multiple places, the highest-priority sourc
 This means:
 
 - **Production**: set secrets via OS env vars or your hosting platform's secret manager. They always win.
-- **Local development**: put per-developer values in `.env` (which is gitignored). They override `oxidite.toml`.
-- **Project defaults**: put non-secret defaults in `oxidite.toml` so new contributors get a working setup out of the box.
+- **Local development**: put per-developer values in `.env` (which is gitignored). They override `toxi.toml`.
+- **Project defaults**: put non-secret defaults in `toxi.toml` so new contributors get a working setup out of the box.
 
 ### Non-String Values
 
@@ -186,10 +186,10 @@ Any root-level TOML table that is **not** one of the known config sections is tr
 
 ## 2. Fullstack Template Improvements
 
-The `oxidite new` template for fullstack projects now includes:
+The `toxi new` template for fullstack projects now includes:
 
-- **SVG logo** at `public/images/oxidite.svg` — used as the favicon and displayed on the welcome page
-- **Favicon link** in `templates/index.html` — points to `/images/oxidite.svg`
+- **SVG logo** at `public/images/toxi.svg` — used as the favicon and displayed on the welcome page
+- **Favicon link** in `templates/index.html` — points to `/images/toxi.svg`
 - **Comprehensive comments** in all generated files — every `mod.rs`, `main.rs`, route file, CSS, JS, and HTML template includes inline documentation explaining what each piece does and how to extend it
 
 The logo is a plain static file. Delete it or replace it with your own — the HTML will still work, it will just show a broken image until you add a replacement.
@@ -202,10 +202,10 @@ Update your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = "2.3.3"
+toxi = "2.3.3"
 ```
 
-No code changes are required. Existing `oxidite.toml` files work without modification.
+No code changes are required. Existing `toxi.toml` files work without modification.
 
 To adopt namespaced env vars, simply move related keys from `[env]` into their own table:
 

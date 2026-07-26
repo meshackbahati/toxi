@@ -1,6 +1,6 @@
 # Migration and Adoption Guide
 
-This chapter explains how to adopt Oxidite in existing systems without risky rewrites.
+This chapter explains how to adopt Toxi in existing systems without risky rewrites.
 
 ## Adoption principles
 
@@ -14,10 +14,10 @@ This chapter explains how to adopt Oxidite in existing systems without risky rew
 
 ## 1. Strangler Pattern (recommended)
 
-Use a reverse proxy and route selected endpoints to Oxidite first.
+Use a reverse proxy and route selected endpoints to Toxi first.
 
 1. Keep current app as primary.
-2. Introduce Oxidite service behind the same domain.
+2. Introduce Toxi service behind the same domain.
 3. Move low-risk read endpoints first.
 4. Move write endpoints after parity tests.
 5. Decommission old routes gradually.
@@ -38,7 +38,7 @@ This reduces blast radius and speeds rollback.
 
 When schema compatibility is the hardest part:
 
-1. connect Oxidite to the existing database
+1. connect Toxi to the existing database
 2. port models with `#[derive(Model)]`
 3. keep complex SQL via raw query escape hatch
 4. replace ORM paths incrementally

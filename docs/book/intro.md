@@ -1,14 +1,14 @@
-# Introduction to Oxidite
+# Introduction to Toxi
 
 <p align="center">
-  <img src="assets/oxidite.svg" alt="Oxidite Logo" width="180">
+  <img src="assets/toxi.svg" alt="Toxi Logo" width="180">
 </p>
 
-Welcome to the Oxidite documentation. This guide covers everything from installation to advanced features.
+Welcome to the Toxi documentation. This guide covers everything from installation to advanced features.
 
-## What is Oxidite?
+## What is Toxi?
 
-Oxidite is a batteries-included web framework for Rust. It wraps existing Rust libraries (hyper, sqlx, tokio, serde) and adds code generation to reduce boilerplate.
+Toxi is a batteries-included web framework for Rust. It wraps existing Rust libraries (hyper, sqlx, tokio, serde) and adds code generation to reduce boilerplate.
 
 ### What It Actually Does
 

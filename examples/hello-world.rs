@@ -1,9 +1,9 @@
-// Example: Simple Hello World with Oxidite
+// Example: Simple Hello World with Toxi
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn hello(_req: Request) -> Result<Response> {
-    Ok(Response::text("Hello, Oxidite!"))
+    Ok(Response::text("Hello, Toxi!"))
 }
 
 #[tokio::main]

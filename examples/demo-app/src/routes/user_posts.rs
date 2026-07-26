@@ -1,8 +1,8 @@
-use oxidite_core::{Request, Response, Error, State, FromRequest, html};
+use toxi_core::{Request, Response, Error, State, FromRequest, html};
 use crate::{AppState, models::{User, Post}};
 use std::sync::Arc;
-use oxidite_db::{Database,sqlx::Row};
-use oxidite_template::Context;
+use toxi_db::{Database,sqlx::Row};
+use toxi_template::Context;
 use serde_json::json;
 
 /// Show posts by a specific user

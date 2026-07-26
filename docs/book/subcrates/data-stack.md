@@ -1,6 +1,6 @@
 # Data and State Crates
 
-## `oxidite-db`
+## `toxi-db`
 
 Key types:
 
@@ -19,7 +19,7 @@ Golden path:
 3. query with `Model::query()` + typed filters/order/pagination
 4. use `with_transaction` for multi-step writes
 
-## `oxidite-macros`
+## `toxi-macros`
 
 Main macro:
 
@@ -30,9 +30,9 @@ Attribute forms:
 - `#[model(table = "...")]`
 - supports validation attributes handled by the derive
 
-Use this crate with `oxidite-db` to reduce model boilerplate while keeping compile-time diagnostics.
+Use this crate with `toxi-db` to reduce model boilerplate while keeping compile-time diagnostics.
 
-## `oxidite-cache`
+## `toxi-cache`
 
 Main APIs:
 
@@ -43,7 +43,7 @@ Main APIs:
 
 Use for caching read-heavy paths and invalidating by namespace/tag strategy.
 
-## `oxidite-queue`
+## `toxi-queue`
 
 Main APIs:
 
@@ -55,7 +55,7 @@ Main APIs:
 
 Use for background jobs with selectable backends.
 
-## `oxidite-storage`
+## `toxi-storage`
 
 Main APIs:
 

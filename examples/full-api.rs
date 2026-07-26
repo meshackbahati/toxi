@@ -1,8 +1,8 @@
-// Example: Full-featured API with Oxidite
+// Example: Full-featured API with Toxi
 // Demonstrates routing, extractors, middleware, and more
 
-use oxidite_core::{Router, Server, OxiditeRequest, OxiditeResponse, Result, Path, Query, Json};
-use oxidite_middleware::{ServiceBuilder, LoggerLayer};
+use toxi_core::{Router, Server, ToxiRequest, ToxiResponse, Result, Path, Query, Json};
+use toxi_middleware::{ServiceBuilder, LoggerLayer};
 use serde::{Deserialize, Serialize};
 use http_body_util::Full;
 use bytes::Bytes;
@@ -32,12 +32,12 @@ struct UserId {
 }
 
 // GET / - Hello world
-async fn index(_req: OxiditeRequest) -> Result<OxiditeResponse> {
-    Ok(hyper::Response::new(Full::new(Bytes::from("Welcome to Oxidite API!"))))
+async fn index(_req: ToxiRequest) -> Result<ToxiResponse> {
+    Ok(hyper::Response::new(Full::new(Bytes::from("Welcome to Toxi API!"))))
 }
 
 // GET /users - List users with pagination
-async fn list_users(req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn list_users(req: ToxiRequest) -> Result<ToxiResponse> {
     // In a real app, this would query the database
     let users = vec![
         User {
@@ -53,7 +53,7 @@ async fn list_users(req: OxiditeRequest) -> Result<OxiditeResponse> {
     ];
 
     let body = serde_json::to_vec(&users)
-        .map_err(|e| oxidite_core::Error::Server(format!("Serialization error: {}", e)))?;
+        .map_err(|e| toxi_core::Error::Server(format!("Serialization error: {}", e)))?;
 
     Ok(hyper::Response::builder()
         .header("content-type", "application/json")
@@ -62,7 +62,7 @@ async fn list_users(req: OxiditeRequest) -> Result<OxiditeResponse> {
 }
 
 // GET /users/:id - Get single user
-async fn get_user(req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn get_user(req: ToxiRequest) -> Result<ToxiResponse> {
     // Extract path parameter
     // In a real app, use Path extractor after router enhancement
     
@@ -73,7 +73,7 @@ async fn get_user(req: OxiditeRequest) -> Result<OxiditeResponse> {
     };
 
     let body = serde_json::to_vec(&user)
-        .map_err(|e| oxidite_core::Error::Server(format!("Serialization error: {}", e)))?;
+        .map_err(|e| toxi_core::Error::Server(format!("Serialization error: {}", e)))?;
 
     Ok(hyper::Response::builder()
         .header("content-type", "application/json")
@@ -82,7 +82,7 @@ async fn get_user(req: OxiditeRequest) -> Result<OxiditeResponse> {
 }
 
 // POST /users - Create user
-async fn create_user(req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn create_user(req: ToxiRequest) -> Result<ToxiResponse> {
     // In a real app, extract JSON body and create in database
     
     let user = User {
@@ -92,7 +92,7 @@ async fn create_user(req: OxiditeRequest) -> Result<OxiditeResponse> {
     };
 
     let body = serde_json::to_vec(&user)
-        .map_err(|e| oxidite_core::Error::Server(format!("Serialization error: {}", e)))?;
+        .map_err(|e| toxi_core::Error::Server(format!("Serialization error: {}", e)))?;
 
     Ok(hyper::Response::builder()
         .status(201)
@@ -102,7 +102,7 @@ async fn create_user(req: OxiditeRequest) -> Result<OxiditeResponse> {
 }
 
 // GET /health - Health check
-async fn health(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn health(_req: ToxiRequest) -> Result<ToxiResponse> {
     let health = serde_json::json!({
         "status": "ok",
         "uptime": 12345,
@@ -110,7 +110,7 @@ async fn health(_req: OxiditeRequest) -> Result<OxiditeResponse> {
     });
 
     let body = serde_json::to_vec(&health)
-        .map_err(|e| oxidite_core::Error::Server(format!("Serialization error: {}", e)))?;
+        .map_err(|e| toxi_core::Error::Server(format!("Serialization error: {}", e)))?;
 
     Ok(hyper::Response::builder()
         .header("content-type", "application/json")
@@ -120,7 +120,7 @@ async fn health(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("🚀 Starting Oxidite Example API");
+    println!("🚀 Starting Toxi Example API");
     println!("📍 Listening on http://127.0.0.1:3000");
     println!("📝 Available endpoints:");
     println!("   GET  /         - Welcome message");

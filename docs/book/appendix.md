@@ -1,13 +1,13 @@
 # Appendix: Common Patterns and Recipes
 
-This appendix contains common patterns, recipes, and solutions to frequently encountered scenarios when building applications with Oxidite.
+This appendix contains common patterns, recipes, and solutions to frequently encountered scenarios when building applications with Toxi.
 
 ## Request Data Extraction Patterns
 
 ### Extracting Multiple Types of Data from One Request
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -41,7 +41,7 @@ async fn advanced_search(
 ### Working with Cookies
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn handle_cookies(cookies: Cookies) -> Result<Response> {
     let session_id = cookies.get("session_id");
@@ -65,7 +65,7 @@ async fn handle_cookies(cookies: Cookies) -> Result<Response> {
 ### Conditional Responses
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn conditional_response(query: Query<serde_json::Value>) -> Result<Response> {
     let format = query.0.get("format")
@@ -83,7 +83,7 @@ async fn conditional_response(query: Query<serde_json::Value>) -> Result<Respons
 ### Streaming Large Data
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use futures::stream::{self, StreamExt};
 use http_body_util::StreamBody;
 use hyper::body::Frame;
@@ -119,7 +119,7 @@ async fn stream_large_data(_req: Request) -> Result<Response> {
 ### Custom Error Responses
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Create a custom error response
 fn custom_error_response(message: &str, status: u16) -> Response {
@@ -145,7 +145,7 @@ async fn custom_error_handler(_req: Request) -> Result<Response> {
 ### Error Recovery Pattern
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn recoverable_operation(_req: Request) -> Result<Response> {
     // Attempt operation that might fail
@@ -178,7 +178,7 @@ fn get_cached_data() -> serde_json::Value {
 ### Authentication Middleware
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn auth_middleware(req: Request, next: Next) -> Result<Response> {
     // Check for auth token in headers
@@ -227,7 +227,7 @@ async fn protected_route(user: CurrentUser) -> Result<Response> {
 ### Repository Pattern
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 // Simplified repository pattern
@@ -301,7 +301,7 @@ struct PageParams {
 ### Environment-Based Configuration
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize, Clone)]
@@ -337,7 +337,7 @@ async fn config_endpoint(State(config): State<AppConfig>) -> Result<Response> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use oxidite_testing::TestClient;
+    use toxi_testing::TestClient;
     use tokio;
 
     #[tokio::test]
@@ -350,7 +350,7 @@ mod tests {
         
         assert_eq!(response.status(), 200);
         let body = response.text().await;
-        assert!(body.contains("Welcome to Oxidite!"));
+        assert!(body.contains("Welcome to Toxi!"));
     }
     
     #[tokio::test]
@@ -373,7 +373,7 @@ mod tests {
 ### Caching with Memoization
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -512,4 +512,4 @@ async fn some_operation() -> Result<serde_json::Value, Error> {
 }
 ```
 
-This appendix provides practical patterns for common scenarios you'll encounter when building Oxidite applications. Use these as starting points for your own implementations, adapting them to your specific needs.
+This appendix provides practical patterns for common scenarios you'll encounter when building Toxi applications. Use these as starting points for your own implementations, adapting them to your specific needs.

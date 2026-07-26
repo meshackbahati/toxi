@@ -1,6 +1,6 @@
-# Contributing to Oxidite
+# Contributing to Toxi
 
-Thank you for your interest in contributing to Oxidite! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Toxi! This document provides guidelines and instructions for contributing.
 
 ---
 
@@ -28,8 +28,8 @@ Thank you for your interest in contributing to Oxidite! This document provides g
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/oxidite.git
-cd oxidite
+git clone https://github.com/meshackbahati/toxi.git
+cd toxi
 
 # Build all workspace crates
 cargo build
@@ -49,11 +49,11 @@ cargo run --example hello-world
 
 ```bash
 # Fork on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/oxidite.git
-cd oxidite
+git clone https://github.com/YOUR_USERNAME/toxi.git
+cd toxi
 
 # Add upstream remote
-git remote add upstream https://github.com/yourusername/oxidite.git
+git remote add upstream https://github.com/yourusername/toxi.git
 ```
 
 ### 2. Create a Branch
@@ -81,7 +81,7 @@ git checkout -b feature/your-feature-name
 cargo test --all
 
 # Run specific crate tests
-cargo test -p oxidite-core
+cargo test -p toxi-core
 
 # Check formatting
 cargo fmt --check
@@ -207,12 +207,12 @@ mod tests {
 ## 🏗️ Project Structure
 
 ```
-oxidite/
+toxi/
 ├── crates/
-│   ├── oxidite-core/        # Core HTTP functionality
-│   ├── oxidite-router/      # Routing system
-│   ├── oxidite-middleware/  # Middleware
-│   ├── oxidite-db/          # Database layer
+│   ├── toxi-core/        # Core HTTP functionality
+│   ├── toxi-router/      # Routing system
+│   ├── toxi-middleware/  # Middleware
+│   ├── toxi-db/          # Database layer
 │   └── ...                  # Other crates
 ├── examples/                # Example applications
 ├── tests/                   # Integration tests
@@ -275,7 +275,7 @@ What actually happened.
 **Environment**
 - OS: [e.g., Ubuntu 22.04]
 - Rust version: [e.g., 1.75]
-- Oxidite version: [e.g., 0.1.0]
+- Toxi version: [e.g., 0.1.0]
 
 **Additional context**
 Any other relevant information.
@@ -289,7 +289,7 @@ We welcome feature suggestions! Please:
 
 1. Check if the feature has been requested
 2. Describe the use case
-3. Explain why it fits Oxidite's goals
+3. Explain why it fits Toxi's goals
 4. Suggest an implementation approach
 
 ---
@@ -342,8 +342,8 @@ Contributors will be:
 
 - **GitHub Discussions**: For general questions
 - **GitHub Issues**: For bugs and features
-- **Email**: maintainer@oxidite.dev (for private concerns)
+- **Email**: maintainer@toxi.dev (for private concerns)
 
 ---
 
-Thank you for contributing to Oxidite! 🦀❤️
+Thank you for contributing to Toxi! 🦀❤️

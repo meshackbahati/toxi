@@ -1,6 +1,6 @@
-# Migration Guide: Oxidite 2.2.x to 2.3
+# Migration Guide: Toxi 2.2.x to 2.3
 
-Oxidite 2.3 is a major release focusing on production readiness and framework stabilization. It introduces several breaking changes to improve ergonomics and solve long-standing issues.
+Toxi 2.3 is a major release focusing on production readiness and framework stabilization. It introduces several breaking changes to improve ergonomics and solve long-standing issues.
 
 ## 1. Handler Trait - Expanded Extractor Support
 Handlers now support up to 12 extractors total (previously limited to 3). No changes are required to existing handlers, but you can now remove combined extractor workarounds.
@@ -58,7 +58,7 @@ let users = sqlx::query_as!(User, "SELECT * FROM users WHERE ...")
 For database-specific features like PostgreSQL JSONB, arrays, or `#[derive(FromRow)]` with complex types, you can now access the concrete pool directly:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Get PostgreSQL-specific pool
 let pg_pool = db.postgres_pool().expect("PostgreSQL required");
@@ -85,4 +85,4 @@ The `Model` derive macro now supports `i64`, `Uuid`, and `String` for the `id` f
 If you were manually matching on `OrmError::NotFound { id, .. }`, you will need to update it to expect a `String`.
 
 ## 6. Config System
-`SecurityConfig` now includes `cors_allowed_methods` and `cors_allowed_headers` fields. Update your `oxidite.toml` if you need to configure these.
+`SecurityConfig` now includes `cors_allowed_methods` and `cors_allowed_headers` fields. Update your `toxi.toml` if you need to configure these.

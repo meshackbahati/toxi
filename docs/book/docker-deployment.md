@@ -1,6 +1,6 @@
 # Docker Deployment Guide
 
-This chapter covers Docker-based development and production deployment for Oxidite apps.
+This chapter covers Docker-based development and production deployment for Toxi apps.
 
 ## Goals
 
@@ -34,7 +34,7 @@ COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 COPY templates ./templates
 COPY public ./public
-COPY oxidite.toml ./
+COPY toxi.toml ./
 
 RUN cargo build --release
 
@@ -49,7 +49,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /app/target/release/example-project /app/example-project
 COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/public /app/public
-COPY --from=builder /app/oxidite.toml /app/oxidite.toml
+COPY --from=builder /app/toxi.toml /app/toxi.toml
 
 EXPOSE 8080
 CMD ["/app/example-project"]
@@ -72,7 +72,7 @@ target
 services:
   app:
     build: .
-    image: oxidite-example:dev
+    image: toxi-example:dev
     ports:
       - "8080:8080"
     environment:

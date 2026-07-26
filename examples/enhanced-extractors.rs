@@ -1,7 +1,7 @@
-// Example: Demonstration of enhanced extractors in Oxidite
+// Example: Demonstration of enhanced extractors in Toxi
 // Shows the new Form, Cookies, and Body extractors
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 use http_body_util::Full;
 use bytes::Bytes;
@@ -33,14 +33,14 @@ struct Pagination {
 }
 
 // GET / - Hello world
-async fn index(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn index(_req: ToxiRequest) -> Result<ToxiResponse> {
     Ok(hyper::Response::new(Full::new(Bytes::from(
         r#"
         <!DOCTYPE html>
         <html>
-        <head><title>Oxidite Enhanced Extractors Demo</title></head>
+        <head><title>Toxi Enhanced Extractors Demo</title></head>
         <body>
-            <h1>Oxidite Enhanced Extractors Demo</h1>
+            <h1>Toxi Enhanced Extractors Demo</h1>
             <ul>
                 <li><a href="/users">GET /users</a> - List users with query params</li>
                 <li><a href="/login">GET /login</a> - Show login form</li>
@@ -69,7 +69,7 @@ async fn index(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 }
 
 // GET /users - List users with pagination
-async fn list_users(Query(params): Query<Pagination>) -> Result<OxiditeResponse> {
+async fn list_users(Query(params): Query<Pagination>) -> Result<ToxiResponse> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
@@ -99,7 +99,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<OxiditeResponse>
 }
 
 // GET /login - Show login form
-async fn show_login_form(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn show_login_form(_req: ToxiRequest) -> Result<ToxiResponse> {
     Ok(hyper::Response::new(Full::new(Bytes::from(
         r#"
         <!DOCTYPE html>
@@ -119,7 +119,7 @@ async fn show_login_form(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 }
 
 // POST /login - Process login with form data
-async fn process_login(Form(login_data): Form<LoginForm>) -> Result<OxiditeResponse> {
+async fn process_login(Form(login_data): Form<LoginForm>) -> Result<ToxiResponse> {
     // In a real app, you'd validate credentials here
     println!("Processing login for: {}", login_data.username);
     
@@ -134,7 +134,7 @@ async fn process_login(Form(login_data): Form<LoginForm>) -> Result<OxiditeRespo
 }
 
 // POST /register - Process registration with form data
-async fn process_registration(Form(reg_data): Form<RegistrationForm>) -> Result<OxiditeResponse> {
+async fn process_registration(Form(reg_data): Form<RegistrationForm>) -> Result<ToxiResponse> {
     // In a real app, you'd create a user in the database
     println!("Processing registration for: {}", reg_data.name);
     
@@ -153,7 +153,7 @@ async fn process_registration(Form(reg_data): Form<RegistrationForm>) -> Result<
 }
 
 // GET /webhook - Endpoint that receives raw body
-async fn show_webhook_info(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn show_webhook_info(_req: ToxiRequest) -> Result<ToxiResponse> {
     Ok(hyper::Response::new(Full::new(Bytes::from(
         r#"
         <!DOCTYPE html>
@@ -170,7 +170,7 @@ async fn show_webhook_info(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 }
 
 // POST /webhook - Process webhook with raw body
-async fn process_webhook(Body(raw_body): Body<String>) -> Result<OxiditeResponse> {
+async fn process_webhook(Body(raw_body): Body<String>) -> Result<ToxiResponse> {
     println!("Received webhook with body length: {}", raw_body.len());
     println!("Raw body: {}", raw_body);
     
@@ -184,7 +184,7 @@ async fn process_webhook(Body(raw_body): Body<String>) -> Result<OxiditeResponse
 }
 
 // GET /cookies - Show cookies
-async fn show_cookies(cookies: Cookies) -> Result<OxiditeResponse> {
+async fn show_cookies(cookies: Cookies) -> Result<ToxiResponse> {
     let mut cookies_list = Vec::new();
     for (name, value) in cookies.iter() {
         cookies_list.push(serde_json::json!({
@@ -203,7 +203,7 @@ async fn show_cookies(cookies: Cookies) -> Result<OxiditeResponse> {
 }
 
 // POST /set-cookie - Set a cookie
-async fn set_cookie(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn set_cookie(_req: ToxiRequest) -> Result<ToxiResponse> {
     let mut response = hyper::Response::new(Full::new(Bytes::from(
         "Cookie set! Visit /cookies to see it."
     )));
@@ -219,7 +219,7 @@ async fn set_cookie(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("🚀 Starting Oxidite Enhanced Extractors Demo");
+    println!("🚀 Starting Toxi Enhanced Extractors Demo");
     println!("📍 Listening on http://127.0.0.1:3000");
     println!("📝 Available endpoints:");
     println!("   GET  /                    - Main demo page");

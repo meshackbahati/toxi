@@ -1,10 +1,10 @@
-# Oxidite Documentation
+# Toxi Documentation
 
-This directory contains the complete documentation for the Oxidite web framework, including a comprehensive book with tutorials and guides.
+This directory contains the complete documentation for the Toxi web framework, including a comprehensive book with tutorials and guides.
 
 ## Documentation Structure
 
-- `/book/` - Source files for the Oxidite book (in Markdown format)
+- `/book/` - Source files for the Toxi book (in Markdown format)
 - `/book-output/` - Generated HTML documentation (created by mdBook)
 
 ## Generating HTML Documentation
@@ -51,7 +51,7 @@ This will start a local server and open the documentation in your browser.
 
 The documentation book covers:
 
-- Introduction to Oxidite
+- Introduction to Toxi
 - Installation and Setup
 - Hello World Example
 - Routing
@@ -83,4 +83,4 @@ To contribute to the documentation:
 
 ## License
 
-The documentation is licensed under the same license as the Oxidite framework.
+The documentation is licensed under the same license as the Toxi framework.

@@ -1,8 +1,8 @@
-use oxidite_core::{Request, Response, Error, json, RequestExt, State, FromRequest};
+use toxi_core::{Request, Response, Error, json, RequestExt, State, FromRequest};
 use serde::{Deserialize, Serialize};
 use crate::AppState;
 use std::sync::Arc;
-use oxidite_db::{Database, sqlx::Row};
+use toxi_db::{Database, sqlx::Row};
 
 #[derive(Serialize, Deserialize)]
 pub struct User {

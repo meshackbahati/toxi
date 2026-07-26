@@ -1,6 +1,6 @@
 # Production Setup
 
-Deploying Oxidite applications to production requires careful consideration of performance, security, monitoring, and reliability. This chapter covers everything you need to know to run Oxidite applications in production.
+Deploying Toxi applications to production requires careful consideration of performance, security, monitoring, and reliability. This chapter covers everything you need to know to run Toxi applications in production.
 
 ## Overview
 
@@ -15,12 +15,12 @@ Production setup includes:
 
 ## Environment Configuration
 
-Oxidite uses `oxidite.toml` as the primary configuration source, with optional `.env` support.
+Toxi uses `toxi.toml` as the primary configuration source, with optional `.env` support.
 
-### oxidite.toml for production
+### toxi.toml for production
 
 ```toml
-# oxidite.toml
+# toxi.toml
 [server]
 host = "0.0.0.0"
 port = 80
@@ -47,7 +47,7 @@ export JWT_SECRET="long-random-string-here"
 ```
 
 ```toml
-# oxidite.toml
+# toxi.toml
 [database]
 url = "postgres://localhost/app_dev"  # development default
 
@@ -55,15 +55,15 @@ url = "postgres://localhost/app_dev"  # development default
 JWT_SECRET = "dev-secret-change-in-prod"
 ```
 
-In production, the OS `DATABASE_URL` and `JWT_SECRET` will override the `oxidite.toml` defaults.
+In production, the OS `DATABASE_URL` and `JWT_SECRET` will override the `toxi.toml` defaults.
 
 ### Configuration Loading
 
 Load configuration with `Config::load()`:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_config::Config;
+use toxi::prelude::*;
+use toxi_config::Config;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -91,10 +91,10 @@ async fn main() -> Result<()> {
 
 ### Skipping .env in production
 
-In production deployments, set `OXIDITE_SKIP_DOTENV=1` so that config comes entirely from OS environment variables and `oxidite.toml`:
+In production deployments, set `TOXI_SKIP_DOTENV=1` so that config comes entirely from OS environment variables and `toxi.toml`:
 
 ```bash
-OXIDITE_SKIP_DOTENV=1 ./target/release/myapp
+TOXI_SKIP_DOTENV=1 ./target/release/myapp
 ```
 
 ## Security Hardening
@@ -102,7 +102,7 @@ OXIDITE_SKIP_DOTENV=1 ./target/release/myapp
 Implement security best practices:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Security middleware
 async fn security_middleware(req: Request, next: Next) -> Result<Response> {
@@ -247,7 +247,7 @@ async fn rate_limiting_middleware(
 Optimize your application for production performance:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 // Connection pooling configuration
@@ -486,7 +486,7 @@ fn get_content_type(path: &str) -> &'static str {
 Implement comprehensive monitoring:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde_json::json;
 
 // Structured logging middleware
@@ -519,7 +519,7 @@ async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
         "remote_addr": remote_addr,
         "status": response.as_ref().map(|r| r.status().as_u16()).unwrap_or(500),
         "duration_ms": duration.as_millis(),
-        "service": "oxidite-app"
+        "service": "toxi-app"
     });
     
     // Log to stdout in JSON format
@@ -541,7 +541,7 @@ async fn error_logging_middleware(req: Request, next: Next) -> Result<Response> 
                 "error_type": error_type_name(&error),
                 "method": req.method().to_string(),
                 "uri": req.uri().to_string(),
-                "service": "oxidite-app"
+                "service": "toxi-app"
             });
             
             eprintln!("{}", error_log);
@@ -727,20 +727,20 @@ volumes:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: oxidite-app
+  name: toxi-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: oxidite-app
+      app: toxi-app
   template:
     metadata:
       labels:
-        app: oxidite-app
+        app: toxi-app
     spec:
       containers:
       - name: app
-        image: my-org/oxidite-app:latest
+        image: my-org/toxi-app:latest
         ports:
         - containerPort: 80
         env:
@@ -774,10 +774,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: oxidite-app-service
+  name: toxi-app-service
 spec:
   selector:
-    app: oxidite-app
+    app: toxi-app
   ports:
     - protocol: TCP
       port: 80
@@ -790,7 +790,7 @@ spec:
 Implement health check endpoints:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Health check endpoint
 async fn health_check(_req: Request) -> Result<Response> {
@@ -866,7 +866,7 @@ async fn check_readiness_conditions() -> bool {
 Implement backup strategies:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use tokio::fs;
 use std::path::Path;
 
@@ -984,7 +984,7 @@ async fn list_backups(_req: Request) -> Result<Response> {
 Design for horizontal scaling:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Horizontal scaling considerations
 pub struct ScalableAppState {
@@ -1074,7 +1074,7 @@ async fn instance_info(
 
 ## Summary
 
-Production setup for Oxidite applications requires attention to:
+Production setup for Toxi applications requires attention to:
 
 - **Environment Configuration**: Proper configuration loading and environment variables
 - **Security Hardening**: Headers, validation, rate limiting, and input sanitization
@@ -1084,4 +1084,4 @@ Production setup for Oxidite applications requires attention to:
 - **Backup and Recovery**: Regular backups and restore procedures
 - **Scaling**: Horizontal scaling with shared resources
 
-Following these practices ensures your Oxidite applications are secure, performant, and reliable in production environments.
+Following these practices ensures your Toxi applications are secure, performant, and reliable in production environments.

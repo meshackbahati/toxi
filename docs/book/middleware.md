@@ -1,10 +1,10 @@
 # Middleware
 
-Middleware in Oxidite provides a way to modify requests and responses globally or for specific routes. This chapter covers how to create, use, and compose middleware.
+Middleware in Toxi provides a way to modify requests and responses globally or for specific routes. This chapter covers how to create, use, and compose middleware.
 
 ## Overview
 
-Middleware in Oxidite is a function that sits between the server and your route handlers. It can:
+Middleware in Toxi is a function that sits between the server and your route handlers. It can:
 - Modify incoming requests
 - Modify outgoing responses
 - Perform authentication/validation
@@ -16,7 +16,7 @@ Middleware in Oxidite is a function that sits between the server and your route 
 A basic middleware function has the signature `async fn(Request, Next) -> Result<Response>`:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn basic_middleware(req: Request, next: Next) -> Result<Response> {
     // Process request before handler
@@ -37,7 +37,7 @@ async fn basic_middleware(req: Request, next: Next) -> Result<Response> {
 You can add middleware to specific routes:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn handler(_req: Request) -> Result<Response> {
     Ok(Response::text("Hello from protected route".to_string()))
@@ -62,7 +62,7 @@ async fn main() -> Result<()> {
 Add middleware to apply to all routes:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn global_middleware(req: Request, next: Next) -> Result<Response> {
     println!("Global middleware: {}", req.uri());
@@ -97,7 +97,7 @@ async fn main() -> Result<()> {
 Middleware can modify both requests and responses:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn request_modifier(req: Request, next: Next) -> Result<Response> {
     // Modify the request (e.g., add headers)
@@ -132,7 +132,7 @@ async fn response_modifier(req: Request, next: Next) -> Result<Response> {
 A common use case is authentication:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn auth_middleware(req: Request, next: Next) -> Result<Response> {
     // Check for authentication token
@@ -174,7 +174,7 @@ async fn protected_route(_req: Request) -> Result<Response> {
 A comprehensive logging middleware:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use chrono::Utc;
 
 async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
@@ -216,7 +216,7 @@ async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
 Cross-Origin Resource Sharing middleware:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn cors_middleware(req: Request, next: Next) -> Result<Response> {
     // Handle preflight requests
@@ -250,10 +250,10 @@ fn set_cors_headers(headers: &mut http::HeaderMap) {
 
 ### Framework-Level CORS (Recommended)
 
-Oxidite provides a built-in CORS implementation that integrates directly with the Router. This is simpler and doesn't require writing custom middleware:
+Toxi provides a built-in CORS implementation that integrates directly with the Router. This is simpler and doesn't require writing custom middleware:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -290,7 +290,7 @@ The framework-level CORS automatically:
 Simple rate limiting middleware:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
@@ -364,7 +364,7 @@ async fn rate_limit_middleware(
 You can compose multiple middleware functions:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn middleware_a(req: Request, next: Next) -> Result<Response> {
     println!("A: Before");
@@ -422,7 +422,7 @@ async fn main() -> Result<()> {
 Middleware can catch and handle errors:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn error_handling_middleware(req: Request, next: Next) -> Result<Response> {
     match next.run(req).await {
@@ -450,7 +450,7 @@ async fn error_handling_middleware(req: Request, next: Next) -> Result<Response>
 Apply middleware conditionally:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn conditional_middleware(req: Request, next: Next) -> Result<Response> {
     // Only apply to certain paths
@@ -487,7 +487,7 @@ async fn main() -> Result<()> {
 Middleware can use application state:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -525,11 +525,11 @@ async fn main() -> Result<()> {
 
 ## Built-in Middleware
 
-Oxidite provides several built-in middleware options:
+Toxi provides several built-in middleware options:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_middleware::{Logger, RateLimiter, Cors};
+use toxi::prelude::*;
+use toxi_middleware::{Logger, RateLimiter, Cors};
 
 // Logger middleware
 async fn with_logger() -> Result<()> {
@@ -574,7 +574,7 @@ async fn with_rate_limit() -> Result<()> {
 
 ## Summary
 
-Middleware in Oxidite is a powerful way to handle cross-cutting concerns:
+Middleware in Toxi is a powerful way to handle cross-cutting concerns:
 
 - Use `async fn(Request, Next) -> Result<Response>` signature
 - Apply globally with `router.middleware()` or to specific routes

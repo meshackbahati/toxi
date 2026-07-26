@@ -1,7 +1,7 @@
-// Example: Advanced error handling in Oxidite
+// Example: Advanced error handling in Toxi
 // Demonstrates the enhanced error types and status codes
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
@@ -183,7 +183,7 @@ fn validate_email(email: &str) -> Result<()> {
 // GET / - API info
 async fn api_info(_req: Request) -> Result<Response> {
     Ok(response::json(serde_json::json!({
-        "message": "Oxidite Advanced Error Handling Demo API",
+        "message": "Toxi Advanced Error Handling Demo API",
         "version": "1.0",
         "endpoints": {
             "GET /users": "List all users",
@@ -455,7 +455,7 @@ async fn handle_errors(req: Request) -> Result<Response> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("🚀 Starting Oxidite Advanced Error Handling Demo");
+    println!("🚀 Starting Toxi Advanced Error Handling Demo");
     println!("📍 Listening on http://127.0.0.1:3000");
     println!("📋 Features demonstrated:");
     println!("   • Enhanced error types with HTTP status codes");
@@ -496,7 +496,7 @@ async fn main() -> Result<()> {
     router.get("/validation-test", validation_test);
 
     // Add state to service
-    let service = oxidite_middleware::tower::ServiceBuilder::new()
+    let service = toxi_middleware::tower::ServiceBuilder::new()
         .service(router);
 
     // Create a wrapper service that injects state
@@ -533,8 +533,8 @@ where
     B::Data: Send,
     B::Error: Into<oxiddte_core::error::BoxError>,
 {
-    type Response = hyper::Response<http_body_util::combinators::BoxBody<bytes::Bytes, oxidite_core::error::BoxError>>;
-    type Error = oxidite_core::error::BoxError;
+    type Response = hyper::Response<http_body_util::combinators::BoxBody<bytes::Bytes, toxi_core::error::BoxError>>;
+    type Error = toxi_core::error::BoxError;
     type Future = futures::future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
     fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {

@@ -1,6 +1,6 @@
-# Getting Started with Oxidite
+# Getting Started with Toxi
 
-This guide will walk you through creating your first Oxidite application.
+This guide will walk you through creating your first Toxi application.
 
 ## Prerequisites
 
@@ -12,26 +12,26 @@ Before you begin, ensure you have:
 
 ## Installation
 
-### Install the Oxidite CLI
+### Install the Toxi CLI
 
-The easiest way to start is by installing the Oxidite CLI tool:
+The easiest way to start is by installing the Toxi CLI tool:
 
 ```bash
 # Install from the repository
-cargo install --path oxidite-cli
+cargo install --path toxi-cli
 
 # Or from crates.io
-cargo install oxidite-cli
+cargo install toxi-cli
 ```
 
-The installed executable is `oxidite`.
+The installed executable is `toxi`.
 
 ### Create a New Project
 
 Use the CLI to create a new project:
 
 ```bash
-oxidite new my-awesome-app
+toxi new my-awesome-app
 cd my-awesome-app
 ```
 
@@ -41,7 +41,7 @@ This creates a project with the following structure:
 my-awesome-app/
 ├── Cargo.toml
 ├── README.md
-├── oxidite.toml
+├── toxi.toml
 ├── migrations/
 ├── seeds/
 ├── src/
@@ -65,10 +65,10 @@ my-awesome-app/
 Let's look at the main application file (`src/main.rs`):
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn hello_world(_req: Request) -> Result<Response> {
-    Ok(response::text("Hello, Oxidite!"))
+    Ok(Response::text("Hello, Toxi!"))
 }
 
 #[tokio::main]
@@ -87,10 +87,10 @@ async fn main() -> Result<()> {
 
 ```bash
 # Start the development server
-oxidite dev
+toxi dev
 
 # Override the app port
-oxidite dev --port 8080
+toxi dev --port 8080
 
 # Or build and run normally
 cargo run
@@ -98,12 +98,12 @@ cargo run
 
 ## Routing Basics
 
-Oxidite provides flexible routing with support for different HTTP methods and path parameters.
+Toxi provides flexible routing with support for different HTTP methods and path parameters.
 
 ### Basic Routes
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 let mut router = Router::new();
 
@@ -131,22 +131,22 @@ router.get("/files/*", serve_file);
 
 ## Request Handling
 
-Handlers are async functions that receive a `Request` (alias for `OxiditeRequest`) and return a `Result<Response>` (alias for `OxiditeResponse`).
+Handlers are async functions that receive a `Request` (alias for `ToxiRequest`) and return a `Result<Response>` (alias for `ToxiResponse`).
 
 ### Simple Handler
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn simple_handler(_req: Request) -> Result<Response> {
-    Ok(response::text("Hello from a handler!"))
+    Ok(Response::text("Hello from a handler!"))
 }
 ```
 
 ### Handler with JSON Response
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn api_handler(_req: Request) -> Result<Response> {
     let data = serde_json::json!({
@@ -154,7 +154,7 @@ async fn api_handler(_req: Request) -> Result<Response> {
         "status": "success"
     });
     
-    Ok(response::json(data))
+    Ok(Response::json(data))
 }
 ```
 
@@ -165,7 +165,7 @@ Extractors make it easy to extract data from requests in a type-safe way.
 ### JSON Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -182,14 +182,14 @@ async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<Response>
         "email": payload.email
     });
     
-    Ok(response::json(user))
+    Ok(Response::json(user))
 }
 ```
 
 ### Query Parameters Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -202,7 +202,7 @@ async fn list_items(Query(params): Query<ListQuery>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "page": page,
         "limit": limit,
         "items": []
@@ -213,7 +213,7 @@ async fn list_items(Query(params): Query<ListQuery>) -> Result<Response> {
 ### Path Parameters Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -221,8 +221,8 @@ struct UserId {
     id: u64,
 }
 
-async fn get_user(Path(params): Path<UserId>) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
+async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
         "id": params.id,
         "name": "User Name"
     })))
@@ -235,7 +235,7 @@ To use the database features, enable the database feature in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = { version = "2.1", features = ["database"] }
+toxi = { version = "3.0", features = ["database"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 ```
@@ -243,8 +243,8 @@ serde = { version = "1", features = ["derive"] }
 ### Define a Model
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::db::{Model, Database};
+use toxi::prelude::*;
+use toxi::db::{Model, Database};
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize, Clone)]
@@ -261,8 +261,8 @@ pub struct User {
 ### Database Operations
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::db::Database;
+use toxi::prelude::*;
+use toxi::db::Database;
 
 // Create a user
 async fn create_user_handler(
@@ -296,11 +296,11 @@ async fn all_users_handler(db: &impl Database) -> Result<Vec<User>> {
 
 ## Adding Middleware
 
-Oxidite integrates with the `tower` ecosystem for middleware. Use `ServiceBuilder` to compose middleware:
+Toxi integrates with the `tower` ecosystem for middleware. Use `ServiceBuilder` to compose middleware:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite_middleware::{ServiceBuilder, LoggerLayer, CorsLayer};
+use toxi::prelude::*;
+use toxi_middleware::{ServiceBuilder, LoggerLayer, CorsLayer};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -324,8 +324,8 @@ async fn main() -> Result<()> {
 Here's a complete example of a user management API:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::db::{Model, Database, DbPool};
+use toxi::prelude::*;
+use toxi::db::{Model, Database, DbPool};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -357,7 +357,7 @@ struct UserIdParam {
 async fn create_user(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateUserRequest>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let mut user = User {
         id: 0,
         name: payload.name,
@@ -369,15 +369,15 @@ async fn create_user(
     user.create(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(response::json(serde_json::json!(user)))
+    Ok(Response::json(serde_json::json!(user)))
 }
 
 async fn get_user(
     State(state): State<Arc<AppState>>,
     Path(params): Path<UserIdParam>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     match User::find(&state.db, params.id).await {
-        Ok(Some(user)) => Ok(response::json(serde_json::json!(user))),
+        Ok(Some(user)) => Ok(Response::json(serde_json::json!(user))),
         Ok(None) => Err(Error::NotFound),
         Err(e) => Err(Error::Server(format!("Database error: {}", e))),
     }
@@ -385,11 +385,11 @@ async fn get_user(
 
 async fn list_users(
     State(state): State<Arc<AppState>>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let users = User::all(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "users": users,
         "total": users.len()
     })))
@@ -399,7 +399,7 @@ async fn update_user(
     State(state): State<Arc<AppState>>,
     Path(params): Path<UserIdParam>,
     Json(payload): Json<CreateUserRequest>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let mut user = match User::find(&state.db, params.id).await {
         Ok(Some(u)) => u,
         Ok(None) => return Err(Error::NotFound),
@@ -413,13 +413,13 @@ async fn update_user(
     user.update(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(response::json(serde_json::json!(user)))
+    Ok(Response::json(serde_json::json!(user)))
 }
 
 async fn delete_user(
     State(state): State<Arc<AppState>>,
     Path(params): Path<UserIdParam>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let user = match User::find(&state.db, params.id).await {
         Ok(Some(u)) => u,
         Ok(None) => return Err(Error::NotFound),
@@ -429,7 +429,7 @@ async fn delete_user(
     user.delete(&state.db).await
         .map_err(|e| Error::Server(format!("Database error: {}", e)))?;
     
-    Ok(response::json(serde_json::json!({ "message": "User deleted" })))
+    Ok(Response::json(serde_json::json!({ "message": "User deleted" })))
 }
 
 #[tokio::main]
@@ -448,10 +448,12 @@ async fn main() -> Result<()> {
     router.put("/users/:id", update_user);
     router.delete("/users/:id", delete_user);
     
+    // Inject state into router
+    let router = router.with_state(state);
+    
     // Add middleware
     let service = ServiceBuilder::new()
         .layer(LoggerLayer)
-        .layer(AddExtensionLayer::new(state))
         .service(router);
     
     println!("User API server starting on http://127.0.0.1:3000");
@@ -487,11 +489,11 @@ cargo test -- --nocapture
 
 A typical development workflow:
 
-1. **Create project**: `oxidite new my-app`
-2. **Generate code**: `oxidite generate model User` or `oxidite generate controller UserController`
-3. **Create migrations**: `oxidite migrate create create_users_table`
-4. **Run migrations**: `oxidite migrate`
-5. **Start development server**: `oxidite dev`
+1. **Create project**: `toxi new my-app`
+2. **Generate code**: `toxi generate model User` or `toxi generate controller UserController`
+3. **Create migrations**: `toxi migrate create create_users_table`
+4. **Run migrations**: `toxi migrate`
+5. **Start development server**: `toxi dev`
 6. **Iterate on code**
 
 ## Next Steps

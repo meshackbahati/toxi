@@ -1,5 +1,5 @@
-use oxidite_db::{Database, DbPool, PoolOptions};
-use oxidite_core::Error;
+use toxi_db::{Database, DbPool, PoolOptions};
+use toxi_core::Error;
 use std::sync::Arc;
 
 pub async fn init_db() -> Result<Arc<dyn Database>, Error> {

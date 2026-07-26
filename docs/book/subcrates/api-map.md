@@ -2,7 +2,7 @@
 
 This page maps core public APIs so you can quickly find the right type, trait, or function.
 
-## `oxidite-core`
+## `toxi-core`
 
 - modules: `error`, `extract`, `request`, `response`, `router`, `server`, `tls`, `types`, `versioning`, `cookie`
 - common exports:
@@ -12,7 +12,7 @@ This page maps core public APIs so you can quickly find the right type, trait, o
 - extractors: `FromRequest`, `Json`, `Path`, `Query`, `State`, `Form`, `Cookies`, `Body`
 - versioning: `ApiVersion`, `VersionedRouter`
 
-## `oxidite-db`
+## `toxi-db`
 
 - db types: `DatabaseType`, `PoolOptions`, `DbPool`, `DbTransaction`
 - traits: `Database`, `Model`
@@ -21,7 +21,7 @@ This page maps core public APIs so you can quickly find the right type, trait, o
 - relations: `HasMany`, `HasOne`, `BelongsTo`
 - migrations: `Migration`, `MigrationManager`
 
-## `oxidite-auth`
+## `toxi-auth`
 
 - password hashing: `PasswordHasher`, `hash_password`, `verify_password`
 - JWT: `JwtManager`, `create_token`, `verify_token`, `Claims`
@@ -32,21 +32,21 @@ This page maps core public APIs so you can quickly find the right type, trait, o
 - API keys: `ApiKey`
 - errors: `AuthError`, auth `Result`
 
-## `oxidite-cache`
+## `toxi-cache`
 
 - trait: `Cache`
 - implementations: `MemoryCache`, `RedisCache`, `NamespacedCache`
 - support types: `CacheStats`
 - errors: `CacheError`, cache `Result`
 
-## `oxidite-queue`
+## `toxi-queue`
 
 - queue/job: `Queue`, `QueueBackend`, `MemoryBackend`, `RedisBackend`, `PostgresBackend`
 - job model: `Job`, `JobStatus`, `JobResult`
 - workers/stats: `Worker`, `QueueStats`, `StatsTracker`
 - errors: `QueueError`, queue `Result`
 
-## `oxidite-realtime`
+## `toxi-realtime`
 
 - SSE: `SseEvent`, `SseStream`, `SseConfig`
 - pubsub: `PubSub`, `Subscriber`, `Channel`
@@ -54,14 +54,14 @@ This page maps core public APIs so you can quickly find the right type, trait, o
 - websocket: `WebSocketConnection`, `WebSocketManager`, `WsMessage`, `WebSocketError`
 - errors: `RealtimeError`, realtime `Result`
 
-## `oxidite-template`
+## `toxi-template`
 
 - rendering: `TemplateEngine`, `Template`, `Context`
 - internals: `Parser`, `TemplateNode`, `Renderer`, `Filters`
 - static serving: `StaticFiles`, `serve_static`, `static_handler`
 - errors: `TemplateError`, template `Result`
 
-## `oxidite-storage`
+## `toxi-storage`
 
 - trait: `Storage`
 - backends: `LocalStorage`, `S3Storage`
@@ -69,7 +69,7 @@ This page maps core public APIs so you can quickly find the right type, trait, o
 - metadata: `StoredFile`, `FileMetadata`
 - errors: `StorageError`, storage `Result`
 
-## `oxidite-security`
+## `toxi-security`
 
 - crypto: `encrypt`, `decrypt`, `AesKey`
 - hash/HMAC: `sha256`, `sha512`, `hmac_sha256`, `verify_hmac_sha256`
@@ -77,49 +77,49 @@ This page maps core public APIs so you can quickly find the right type, trait, o
 - sanitize: `sanitize_html`, `escape_html`, `strip_tags`
 - errors: `SecurityError`, security `Result`
 
-## `oxidite-openapi`
+## `toxi-openapi`
 
 - spec types: `OpenApiSpec`, `Info`, `Server`, `PathItem`, `Operation`, `Parameter`, `RequestBody`, `Response`, `MediaType`, `Schema`, `Components`
 - builders/helpers: `OpenApiBuilder`, `get_operation`, `post_operation`, `generate_docs_html`
 - traits: `ToSchema`, `AutoDocs`
 
-## `oxidite-graphql`
+## `toxi-graphql`
 
 - runtime: `GraphQLSchema`, `GraphQLHandler`, `create_handler`
 - context/resolvers: `Context`, `ResolverExtension`, `ResolverRegistry`
 
-## `oxidite-plugin`
+## `toxi-plugin`
 
 - plugin model: `Plugin`, `PluginInfo`, `PluginHook`, `HookResult`
 - runtime: `PluginLoader`, `PluginManager`
 - setup: `PluginConfig`, `create_manager`
 
-## `oxidite-mail`
+## `toxi-mail`
 
 - mail APIs: `Mailer`, `Message`, `Attachment`
 - transport: `SmtpTransport`, `SmtpConfig`
 - errors: `MailError`, mail `Result`
 
-## `oxidite-config`
+## `toxi-config`
 
 - `Config`, `Environment`
 - `AppConfig`, `ServerConfig`, `DatabaseConfig`, `CacheConfig`, `QueueConfig`, `SecurityConfig`
 - errors: `ConfigError`
 
-## `oxidite-testing`
+## `toxi-testing`
 
 - `TestRequest`, `TestRequestError`
 - `TestResponse`
 - `TestServer`, `test_router`
 - async test support: `tokio::test` re-export
 
-## `oxidite-utils`
+## `toxi-utils`
 
 - date utilities
 - id utilities
 - string utilities
 - validation utilities
 
-## `oxidite-cli`
+## `toxi-cli`
 
 - command surface for project scaffolding, code generation, migrations, seeds, dev/runtime workflows.

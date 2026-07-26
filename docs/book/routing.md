@@ -1,13 +1,13 @@
 # Basic Routing
 
-Routing is how your Oxidite application maps HTTP requests to handler functions. This chapter covers the fundamentals of routing in Oxidite.
+Routing is how your Toxi application maps HTTP requests to handler functions. This chapter covers the fundamentals of routing in Toxi.
 
 ## Basic Route Definitions
 
-Routes in Oxidite are defined by mapping HTTP methods and paths to handler functions:
+Routes in Toxi are defined by mapping HTTP methods and paths to handler functions:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Define a handler function
 async fn hello_world(_req: Request) -> Result<Response> {
@@ -29,10 +29,10 @@ async fn main() -> Result<()> {
 
 ## Supported HTTP Methods
 
-Oxidite supports all standard HTTP methods:
+Toxi supports all standard HTTP methods:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn handle_get(_req: Request) -> Result<Response> {
     Ok(Response::text("GET request handled"))
@@ -72,10 +72,10 @@ async fn main() -> Result<()> {
 
 ## Path Parameters
 
-Oxidite supports path parameters that can be extracted using the `Path` extractor:
+Toxi supports path parameters that can be extracted using the `Path` extractor:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 // Handler with path parameter
@@ -117,7 +117,7 @@ async fn main() -> Result<()> {
 You can also use a named struct for better organization:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -152,7 +152,7 @@ async fn get_user_post_by_struct(Path(params): Path<UserPostId>) -> Result<Respo
 Query parameters can be extracted using the `Query` extractor:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -201,7 +201,7 @@ async fn main() -> Result<()> {
 You can group related routes for better organization:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // API versioning example
 async fn v1_users(_req: Request) -> Result<Response> {
@@ -228,10 +228,10 @@ async fn main() -> Result<()> {
 
 ## Wildcard Routes
 
-Oxidite supports wildcard routes for catch-all functionality:
+Toxi supports wildcard routes for catch-all functionality:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn catch_all(_req: Request) -> Result<Response> {
     Ok(Response::text("Page not found".to_string()))
@@ -260,7 +260,7 @@ async fn main() -> Result<()> {
 You can apply middleware to specific routes or route groups:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
     println!("Request: {} {}", req.method(), req.uri());
@@ -337,7 +337,7 @@ Make your route patterns descriptive and consistent:
 
 ## Summary
 
-Routing in Oxidite is straightforward and flexible:
+Routing in Toxi is straightforward and flexible:
 
 - Use `.get()`, `.post()`, `.put()`, `.delete()`, etc. to register routes
 - Extract path parameters with `Path<T>`

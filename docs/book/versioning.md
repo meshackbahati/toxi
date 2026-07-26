@@ -1,6 +1,6 @@
 # API Versioning
 
-API versioning allows you to manage changes to your API over time while maintaining backward compatibility. This chapter covers various approaches to API versioning in Oxidite.
+API versioning allows you to manage changes to your API over time while maintaining backward compatibility. This chapter covers various approaches to API versioning in Toxi.
 
 ## Overview
 
@@ -16,7 +16,7 @@ API versioning strategies include:
 The most common approach is to include the version in the URL path:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // V1 API routes
 async fn v1_get_users(_req: Request) -> Result<Response> {
@@ -86,7 +86,7 @@ async fn main() -> Result<()> {
 Use HTTP headers to specify the API version:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Middleware to extract version from headers
 async fn version_middleware(req: Request, next: Next) -> Result<Response> {
@@ -163,7 +163,7 @@ async fn v2_get_users(_req: Request) -> Result<Response> {
 Use query parameters to specify the API version:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -236,7 +236,7 @@ async fn query_version_middleware(req: Request, next: Next) -> Result<Response> 
 Handle different versions of data models:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 // V1 User Model
@@ -368,7 +368,7 @@ impl UserV1 {
 Implement automatic version negotiation:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Clone)]
 struct ApiVersionManager {
@@ -477,7 +477,7 @@ async fn api_version_info(State(version_manager): State<Arc<ApiVersionManager>>)
 Manage deprecated versions:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Clone)]
 struct VersionDeprecationPolicy {
@@ -570,7 +570,7 @@ async fn deprecation_middleware(
 Handle different content types based on version:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Content negotiation middleware
 async fn content_negotiation_middleware(req: Request, next: Next) -> Result<Response> {
@@ -663,7 +663,7 @@ async fn versioned_content_handler(req: Request) -> Result<Response> {
 Apply different middleware based on API version:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Version-specific rate limiting
 async fn v1_rate_limit_middleware(req: Request, next: Next) -> Result<Response> {
@@ -734,8 +734,8 @@ impl<F> Next<F> {
 Write tests for versioned APIs:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_testing::{TestServer, RequestBuilder};
+use toxi::prelude::*;
+use toxi_testing::{TestServer, RequestBuilder};
 
 #[cfg(test)]
 mod version_tests {
@@ -825,7 +825,7 @@ mod version_tests {
 Plan for API migrations:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Migration guide endpoint
 async fn migration_guide(_req: Request) -> Result<Response> {
@@ -923,7 +923,7 @@ async fn feature_flagged_handler(
 
 ## Summary
 
-API versioning in Oxidite supports multiple strategies:
+API versioning in Toxi supports multiple strategies:
 
 - **URL-based**: `/api/v1/resource` (most common)
 - **Header-based**: `Accept: application/vnd.api.v1+json`

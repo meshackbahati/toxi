@@ -1,17 +1,17 @@
 # Requests
 
-The Request type in Oxidite represents incoming HTTP requests. This chapter covers how to work with requests, extract information from them, and handle different types of request data.
+The Request type in Toxi represents incoming HTTP requests. This chapter covers how to work with requests, extract information from them, and handle different types of request data.
 
 ## Overview
 
-In Oxidite, the `Request` type wraps the underlying `hyper::Request` and provides access to all the information contained in an HTTP request. While extractors provide a convenient way to access specific parts of the request, sometimes you need direct access to the request object itself.
+In Toxi, the `Request` type wraps the underlying `hyper::Request` and provides access to all the information contained in an HTTP request. While extractors provide a convenient way to access specific parts of the request, sometimes you need direct access to the request object itself.
 
 ## Basic Request Access
 
 You can access a request directly in your handler:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn inspect_request(req: Request) -> Result<Response> {
     let method = req.method();
@@ -44,7 +44,7 @@ fn extract_headers(req: &Request) -> serde_json::Value {
 You can access headers from the request object:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn handle_headers(req: Request) -> Result<Response> {
     // Access specific headers
@@ -88,7 +88,7 @@ async fn handle_specific_header(req: Request) -> Result<Response> {
 You can access the URI and its components:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn inspect_uri(req: Request) -> Result<Response> {
     let uri = req.uri();
@@ -127,7 +127,7 @@ async fn manual_query_parsing(req: Request) -> Result<Response> {
 You can inspect the HTTP method and protocol version:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn method_inspector(req: Request) -> Result<Response> {
     let method = req.method();
@@ -166,7 +166,7 @@ async fn method_inspector(req: Request) -> Result<Response> {
 Request extensions provide a way to store and access custom data:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::any::Any;
 
 // Define custom extension types
@@ -200,7 +200,7 @@ async fn handle_extensions(mut req: Request) -> Result<Response> {
 While extractors are preferred for body access, you can access the raw body directly:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use http_body_util::BodyExt;
 
 async fn access_raw_body(mut req: Request) -> Result<Response> {
@@ -227,7 +227,7 @@ async fn access_raw_body(mut req: Request) -> Result<Response> {
 You can perform validation directly on the request:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn validate_request(req: Request) -> Result<Response> {
     // Validate content type
@@ -266,7 +266,7 @@ async fn validate_request(req: Request) -> Result<Response> {
 Access application state alongside the request:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -311,7 +311,7 @@ async fn contextual_handler(
 You can access and modify requests in middleware:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn request_logging_middleware(req: Request, next: Next) -> Result<Response> {
     let method = req.method().clone();
@@ -352,7 +352,7 @@ async fn add_request_id_middleware(req: Request, next: Next) -> Result<Response>
 When working with requests, consider these security aspects:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn secure_request_handler(req: Request) -> Result<Response> {
     // Check for suspicious headers
@@ -405,7 +405,7 @@ fn contains_sql_patterns(text: &str) -> bool {
 
 ## Summary
 
-Working with requests in Oxidite involves:
+Working with requests in Toxi involves:
 
 - Direct access to request metadata (method, URI, headers, version)
 - Use of extensions for storing custom request data

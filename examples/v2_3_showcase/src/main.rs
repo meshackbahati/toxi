@@ -1,4 +1,4 @@
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 use chrono::{DateTime, Utc};
 
@@ -38,7 +38,7 @@ async fn authenticated_ws(ws: WebSocketUpgrade) -> Result<Response> {
 #[tokio::main]
 async fn main() -> Result<()> {
     let state = Arc::new(AppState {
-        app_name: "Oxidite 2.3 Showcase".to_string(),
+        app_name: "Toxi 2.3 Showcase".to_string(),
     });
 
     let mut router = Router::new()
@@ -49,7 +49,7 @@ async fn main() -> Result<()> {
     router.get("/heavy", handler_12_extractors);
     router.get("/ws", authenticated_ws);
 
-    println!("Oxidite 2.3 showcase ready.");
+    println!("Toxi 2.3 showcase ready.");
 
     Server::new(router)
         .bind("127.0.0.1:3000".parse().unwrap())

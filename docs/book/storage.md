@@ -1,13 +1,13 @@
 # Unified File Storage API
 
-Oxidite provides a unified `Storage` facade to abstract away file storage mechanisms. Whether you're using the local filesystem, AWS S3, DigitalOcean Spaces, Cloudinary, or ImageKit, the API remains the same.
+Toxi provides a unified `Storage` facade to abstract away file storage mechanisms. Whether you're using the local filesystem, AWS S3, DigitalOcean Spaces, Cloudinary, or ImageKit, the API remains the same.
 
 ## Setup & Configuration
 
-Oxidite comes with the `StorageFacade` configured globally. By default, it uses the local disk.
+Toxi comes with the `StorageFacade` configured globally. By default, it uses the local disk.
 
 ```rust
-use oxidite::storage::{StorageFacade as Storage, LocalStorage};
+use toxi::storage::{StorageFacade as Storage, LocalStorage};
 
 // Add disks to the storage manager on application boot
 Storage::add_disk("local", Arc::new(LocalStorage::new("uploads/")?)).await;
@@ -21,10 +21,10 @@ Storage::set_default("local").await;
 With the facade configured, you can perform storage operations asynchronously from anywhere in your application without needing to pass database or state references explicitly.
 
 ```rust
-use oxidite::storage::StorageFacade as Storage;
+use toxi::storage::StorageFacade as Storage;
 use bytes::Bytes;
 
-async fn upload_avatar(user_id: i64, data: Bytes) -> Result<String, oxidite::storage::StorageError> {
+async fn upload_avatar(user_id: i64, data: Bytes) -> Result<String, toxi::storage::StorageError> {
     let path = format!("avatars/{}.png", user_id);
     
     // Store file
@@ -34,12 +34,12 @@ async fn upload_avatar(user_id: i64, data: Bytes) -> Result<String, oxidite::sto
     Ok(file.url.unwrap_or(path))
 }
 
-async fn download_file(path: &str) -> Result<Bytes, oxidite::storage::StorageError> {
+async fn download_file(path: &str) -> Result<Bytes, toxi::storage::StorageError> {
     // Read file from default disk
     Storage::get(path).await
 }
 
-async fn remove_avatar(user_id: i64) -> Result<(), oxidite::storage::StorageError> {
+async fn remove_avatar(user_id: i64) -> Result<(), toxi::storage::StorageError> {
     let path = format!("avatars/{}.png", user_id);
     
     if Storage::exists(&path).await? {
@@ -52,19 +52,19 @@ async fn remove_avatar(user_id: i64) -> Result<(), oxidite::storage::StorageErro
 
 ## Cloud Storage Integrations
 
-Oxidite's `Storage` trait makes it incredibly easy to plug in popular third-party services. Because you only interact with `StorageFacade`, your application logic never changes when migrating from Local to Cloud.
+Toxi's `Storage` trait makes it incredibly easy to plug in popular third-party services. Because you only interact with `StorageFacade`, your application logic never changes when migrating from Local to Cloud.
 
 ### AWS S3 / DigitalOcean Spaces
 
-Oxidite includes built-in support for S3-compatible APIs.
+Toxi includes built-in support for S3-compatible APIs.
 
 ```toml
 # Cargo.toml
-oxidite = { version = "2.3", features = ["storage-s3"] }
+toxi = { version = "2.3", features = ["storage-s3"] }
 ```
 
 ```rust
-use oxidite::storage::{StorageFacade as Storage, S3Storage, S3Config};
+use toxi::storage::{StorageFacade as Storage, S3Storage, S3Config};
 
 let s3_config = S3Config {
     bucket: "my-bucket".to_string(),
@@ -89,7 +89,7 @@ It's extremely simple to create a custom driver. Just implement the `Storage` tr
 
 ```rust
 use async_trait::async_trait;
-use oxidite::storage::{Storage, StoredFile, FileMetadata, Result};
+use toxi::storage::{Storage, StoredFile, FileMetadata, Result};
 use bytes::Bytes;
 
 pub struct CloudinaryStorage {

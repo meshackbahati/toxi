@@ -8,22 +8,22 @@
 
   function addBrand() {
     const leftButtons = document.querySelector("#mdbook-menu-bar .left-buttons");
-    if (!leftButtons || leftButtons.querySelector(".oxidite-docs-brand")) {
+    if (!leftButtons || leftButtons.querySelector(".toxi-docs-brand")) {
       return;
     }
 
     const brandLink = document.createElement("a");
-    brandLink.className = "oxidite-docs-brand";
+    brandLink.className = "toxi-docs-brand";
     brandLink.href = `${root}index.html`;
-    brandLink.setAttribute("aria-label", "Oxidite Documentation Home");
+    brandLink.setAttribute("aria-label", "Toxi Documentation Home");
 
     const logo = document.createElement("img");
-    logo.src = `${root}assets/oxidite.svg`;
-    logo.alt = "Oxidite logo";
+    logo.src = `${root}assets/toxi.svg`;
+    logo.alt = "Toxi logo";
     logo.loading = "eager";
 
     const label = document.createElement("span");
-    label.textContent = "OXIDITE";
+    label.textContent = "TOXI";
 
     brandLink.appendChild(logo);
     brandLink.appendChild(label);
@@ -32,22 +32,22 @@
 
   function updateSEO() {
     const title = document.querySelector("h1")?.textContent || "Documentation";
-    document.title = `${title} | Oxidite - Professional Rust Web Framework`;
+    document.title = `${title} | Toxi - Professional Rust Web Framework`;
 
     // Add meta description if not exists
     if (!document.querySelector('meta[name="description"]')) {
       const meta = document.createElement('meta');
       meta.name = "description";
-      meta.content = "Official documentation for Oxidite, the high-performance, enterprise-ready web framework for Rust. Explore routing, ORM, real-time, and plugin systems.";
+      meta.content = "Official documentation for Toxi, the high-performance, enterprise-ready web framework for Rust. Explore routing, ORM, real-time, and plugin systems.";
       document.head.appendChild(meta);
     }
 
     // Add OpenGraph tags
     const ogTags = [
       { property: 'og:title', content: document.title },
-      { property: 'og:description', content: "Oxidite: Modern, Fast & Powerful Rust Web Framework." },
+      { property: 'og:description', content: "Toxi: Modern, Fast & Powerful Rust Web Framework." },
       { property: 'og:type', content: 'website' },
-      { property: 'og:image', content: `${window.location.origin}${root}assets/oxidite-og.png` }
+      { property: 'og:image', content: `${window.location.origin}${root}assets/toxi-og.png` }
     ];
 
     ogTags.forEach(tag => {
@@ -63,7 +63,7 @@
   function updateLabels() {
     const title = document.querySelector("#mdbook-menu-bar .menu-title");
     if (title) {
-      title.textContent = "Oxidite Handbook";
+      title.textContent = "Toxi Handbook";
     }
 
     const search = document.getElementById("mdbook-searchbar");

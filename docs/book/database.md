@@ -1,10 +1,10 @@
 # Database ORM
 
-Oxidite provides a powerful Object-Relational Mapping (ORM) system that allows you to work with databases using Rust structs. This chapter covers how to define models, perform database operations, and use relationships.
+Toxi provides a powerful Object-Relational Mapping (ORM) system that allows you to work with databases using Rust structs. This chapter covers how to define models, perform database operations, and use relationships.
 
 ## Overview
 
-The Oxidite ORM provides:
+The Toxi ORM provides:
 - Type-safe database operations
 - Model definitions with derive macros
 - Relationship management
@@ -17,7 +17,7 @@ The Oxidite ORM provides:
 Define your database models using the `Model` derive macro:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, sqlx::FromRow, Serialize, Deserialize)]
@@ -36,7 +36,7 @@ pub struct User {
 ### Creating Records
 
 ```rust,ignore
-use oxidite_db::{DbPool, Model};
+use toxi_db::{DbPool, Model};
 
 async fn create_user(db: &DbPool) -> Result<()> {
     let user = User {
@@ -105,7 +105,7 @@ async fn delete_user(db: &DbPool) -> Result<()> {
 Define relationships between models:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize)]
@@ -172,7 +172,7 @@ async fn work_with_relationships() -> Result<()> {
 Use the query builder for complex queries:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn complex_queries() -> Result<()> {
     // Find users with custom conditions
@@ -206,11 +206,11 @@ async fn execute_raw_query<T>(_sql: &str) -> Result<Vec<T>> {
 
 ## Migrations
  
-Oxidite uses SQL-based migrations managed by the `oxidite-cli`. 
+Toxi uses SQL-based migrations managed by the `toxi-cli`. 
  
 Create a migration:
 ```bash
-oxidite generate migration create_users_table
+toxi generate migration create_users_table
 ```
 
 This creates a `.sql` file in `migrations/`:
@@ -230,7 +230,7 @@ DROP TABLE users;
 
 Run migrations:
 ```bash
-oxidite migrate run
+toxi migrate run
 ```
 
 ## Validation
@@ -238,7 +238,7 @@ oxidite migrate run
 Add validation to your models:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize)]
@@ -288,7 +288,7 @@ impl ValidatedUser {
 Perform operations within transactions:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn transaction_example() -> Result<()> {
     // Start a transaction
@@ -357,7 +357,7 @@ impl Transaction {
 Models can support soft deletes:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize)]
@@ -405,7 +405,7 @@ async fn soft_delete_example() -> Result<()> {
 Configure database connections:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn configure_database() -> Result<()> {
     // Configure database connection
@@ -450,7 +450,7 @@ The `Any` database abstraction is great for write-once-run-anywhere code, but it
 ### API
 
 ```rust,ignore
-use oxidite_db::DbPool;
+use toxi_db::DbPool;
 
 // Get the concrete pool for your database
 let pg_pool = db.postgres_pool().expect("PostgreSQL required");
@@ -461,7 +461,7 @@ let sqlite_pool = db.sqlite_pool();  // Option<&SqlitePool>
 ### Using PostgreSQL Pool with `query_as`
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Serialize, Deserialize};
 
 #[derive(FromRow, Serialize, Deserialize)]
@@ -495,7 +495,7 @@ async fn get_audit_logs(db: &DbPool) -> Result<Vec<AdminAuditLog>> {
 For common patterns, `DbPool` provides typed query helpers:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // fetch_all_as - fetch all rows as typed struct
 let users: Vec<User> = db.fetch_all_as(
@@ -529,7 +529,7 @@ This doubles the connection count but enables type-safe queries while maintainin
 Handle database errors appropriately:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn error_handling_example() -> Result<()> {
     match User::find_by_id(999999).await {
@@ -570,7 +570,7 @@ async fn error_handling_example() -> Result<()> {
 
 ## Summary
 
-The Oxidite ORM provides a comprehensive solution for database operations:
+The Toxi ORM provides a comprehensive solution for database operations:
 
 - Define models with the `Model` derive macro
 - Perform CRUD operations with type safety

@@ -2,15 +2,15 @@
 authors = ["Meshack Bahati Ouma"]
 language = "en"
 src = "."
-title = "Oxidite Documentation"
+title = "Toxi Documentation"
 
 [build]
 build-dir = "book"
 
 [output.html]
 default-theme = "light"
-git-repository-url = "https://github.com/meshackbahati/rust-oxidite/tree/main/docs/book"
-edit-url-template = "https://github.com/meshackbahati/rust-oxidite/edit/main/docs/book/{path}"
+git-repository-url = "https://github.com/meshackbahati/rust-toxi/tree/main/docs/book"
+edit-url-template = "https://github.com/meshackbahati/rust-toxi/edit/main/docs/book/{path}"
 site-url = "/docs/book/book/"
 additional-css = ["custom.css"]
 additional-js = ["branding.js"]

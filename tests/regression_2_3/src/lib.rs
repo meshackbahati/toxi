@@ -1,6 +1,6 @@
 #[tokio::test]
 async fn test_12_extractors_compilation() {
-    use oxidite::prelude::*;
+    use toxi::prelude::*;
 
     async fn h12(
         _e1: State<()>, _e2: State<()>, _e3: State<()>, _e4: State<()>,
@@ -17,7 +17,7 @@ async fn test_12_extractors_compilation() {
 
 #[test]
 fn test_orm_error_not_found_id_type() {
-    let err = oxidite::db::OrmError::NotFound {
+    let err = toxi::db::OrmError::NotFound {
         model: "User",
         id: "abc-123".to_string(),
     };

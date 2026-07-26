@@ -11,7 +11,7 @@ A typical model uses:
 - optional `deleted_at: Option<i64>` for soft deletes
 
 ```rust,ignore
-use oxidite_db::{Model, sqlx};
+use toxi_db::{Model, sqlx};
 
 #[derive(Model, sqlx::FromRow)]
 #[model(table = "users")]

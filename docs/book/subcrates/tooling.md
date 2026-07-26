@@ -1,6 +1,6 @@
 # Tooling Crates
 
-## `oxidite-cli`
+## `toxi-cli`
 
 CLI provides:
 
@@ -9,9 +9,9 @@ CLI provides:
 - migrations and seed management
 - dev workflow helpers
 
-Use this for the default developer workflow in Oxidite projects.
+Use this for the default developer workflow in Toxi projects.
 
-## `oxidite-testing`
+## `toxi-testing`
 
 Main APIs:
 

@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-07-26
+
+### Added
+- **Rename to Toxi**: The framework has been renamed from **Oxidite** to **Toxi**. All crates, directories, environment variables (`OXIDITE_*` → `TOXI_*`), config files (`oxidite.toml` → `toxi.toml`), and code references have been updated. Prior changelog entries before this version refer to the framework under its former name, Oxidite.
+- **HTTP/2 ALPN Negotiation**: Server now negotiates HTTP/2 via ALPN when TLS is used (`toxi-core/src/tls.rs`).
+- **Proxy Configuration Docs**: Added nginx/ALB/Cloudflare WebSocket proxy setup guide.
+- **Connection Error Logging**: Improved error logging to distinguish HTTP/2 vs HTTP/1.1 parser issues.
+- **Savepoint SQL Injection Protection**: Added identifier validation for savepoint names in `toxi-db`.
+
+### Fixed
+- **WebSocket over HTTP/2**: Resolved `"invalid HTTP method parsed"` error when reverse proxies forward WebSocket connections using HTTP/2.
+- **CORS Double-Header Issue**: Removed duplicate CORS header addition from `Router::add_cors_headers` — CORS headers now set only at the server level in `BodyAdapter`.
+- **Handler Impl Ordering**: Reordered `Handler` trait impl blocks to sequential order (T1..T12).
+
+### Changed
+- **Version Bump**: All workspace crates bumped to `3.0.0`.
+- **Config Env Vars**: `OXIDITE_ENV` → `TOXI_ENV`, `OXIDITE_SKIP_DOTENV` → `TOXI_SKIP_DOTENV`.
+- **Default App Name**: Changed from `"oxidite-app"` to `"toxi-app"`.
+- **Modularity Messaging**: README rewritten with "Pick Only What You Need" section, minimal dependency examples, and feature flag matrix.
+- **Examples**: All examples updated to use `TemplateContext` with `load_dir()` from the `templates/` directory, demonstrating the fullstack template pattern.
+
+### Removed
+- **Stale `example-project/`**: Removed the old example-project directory.
+- **Stale `hello_oxidite.rs`**: Removed obsolete example file.
+
 ## [2.3.5] - 2026-06-26
 
 ### Fixed
@@ -20,35 +45,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Version Bump**: All workspace crates bumped to `2.3.4`.
 
 ### Added
-- **`Application` Boot Coordinator** (`oxidite-core`): New `Application` struct orchestrates the predictable startup sequence: Config → Router → Middleware → Server. Routes are registered macro-free via `app.router_mut()`. Fully backward-compatible — existing `Router::new()` / `Server::new()` patterns continue to work.
-- **`TemplateContext`** (`oxidite-template`): Read-only template rendering context for use with `State<T>` extractor. Holds template directory path; `TemplateEngine` is instantiated per-request to keep the server runtime decoupled from presentation failures.
-- **`oxidite-config` Integration** (`oxidite-core`): `Application` depends on `oxidite-config` for server host/port configuration, removing manual address parsing from user code.
+- **`Application` Boot Coordinator** (`toxi-core`): New `Application` struct orchestrates the predictable startup sequence: Config → Router → Middleware → Server. Routes are registered macro-free via `app.router_mut()`. Fully backward-compatible — existing `Router::new()` / `Server::new()` patterns continue to work.
+- **`TemplateContext`** (`toxi-template`): Read-only template rendering context for use with `State<T>` extractor. Holds template directory path; `TemplateEngine` is instantiated per-request to keep the server runtime decoupled from presentation failures.
+- **`toxi-config` Integration** (`toxi-core`): `Application` depends on `toxi-config` for server host/port configuration, removing manual address parsing from user code.
 
 ### Changed
-- **Docs**: Updated `oxidite` facade Quick Start to use `Application` builder pattern.
+- **Docs**: Updated `toxi` facade Quick Start to use `Application` builder pattern.
 - **Example Project**: Updated `src/main.rs` and `src/routes/mod.rs` to demonstrate `Application` builder and `State<Arc<TemplateContext>>` extractor usage.
-- **CLI Scaffolds**: Updated all `oxidite new` templates (Fullstack, API, Microservice, Serverless) to emit `Application` builder pattern with comments explaining the boot sequence and the alternative manual `Router::new()` + `Server::new()` approach. Fullstack template now uses `TemplateContext` + `State` extractor in generated routes.
+- **CLI Scaffolds**: Updated all `toxi new` templates (Fullstack, API, Microservice, Serverless) to emit `Application` builder pattern with comments explaining the boot sequence and the alternative manual `Router::new()` + `Server::new()` approach. Fullstack template now uses `TemplateContext` + `State` extractor in generated routes.
 
 ## [2.3.3-1] - 2026-06-23
 
 ### Added
 - **`Error::internal()` Helper**: New method `Error::internal(err)` preserves the original source error in `InternalServerErrorWithSource` variant, retaining type info and backtrace for debugging.
-- **`OxiditeResponse` Convenience Methods**: Added `status()`, `headers()`, `headers_mut()` on `OxiditeResponse` for tests and handler code that only need status/header access without body conversion.
-- **`From<OxiditeResponse>` for `hyper::Response<B>`**: Generic conversion for any body type `B: Default + From<BoxBody>`, fixing integration test ergonomics.
+- **`ToxiResponse` Convenience Methods**: Added `status()`, `headers()`, `headers_mut()` on `ToxiResponse` for tests and handler code that only need status/header access without body conversion.
+- **`From<ToxiResponse>` for `hyper::Response<B>`**: Generic conversion for any body type `B: Default + From<BoxBody>`, fixing integration test ergonomics.
 - **CORS Builder Methods**: `CorsConfig` now has `.allow_origin()`, `.allow_method()`, `.allow_header()`, `.credentials()`, `.max_age()` chainable builders.
 - **`Result<T>` Closure Helper**: `pub fn Ok<T>(value: T)` shadows `std::result::Result::Ok` to fix type inference in `.map()` closures — no more turbofish needed.
-- **`json!` Macro in Prelude**: `serde_json::json!` is re-exported as `json!` in `oxidite::prelude`, so users write `Response::json(json!({...}))` without any serde import.
-- **Scaffolded Test Files**: `oxidite new` now generates `tests/integration_test.rs` with a working test using `oxidite-testing`.
+- **`json!` Macro in Prelude**: `serde_json::json!` is re-exported as `json!` in `toxi::prelude`, so users write `Response::json(json!({...}))` without any serde import.
+- **Scaffolded Test Files**: `toxi new` now generates `tests/integration_test.rs` with a working test using `toxi-testing`.
 
 ### Changed
-- Bumped `oxidite-core`, `oxidite-testing`, `oxidite-middleware`, `oxidite-template`, `oxidite-openapi`, `oxidite-graphql`, `oxidite-plugin`, `oxidite-auth`, `oxidite`, and `oxidite-cli` to `2.3.3-1`.
+- Bumped `toxi-core`, `toxi-testing`, `toxi-middleware`, `toxi-template`, `toxi-openapi`, `toxi-graphql`, `toxi-plugin`, `toxi-auth`, `toxi`, and `toxi-cli` to `2.3.3-1`.
 - Updated dependency version references across all dependant crates.
 - Book HTML documentation updated to `v2.3.3-1`.
 - CLI templates now use `Response::json_val(json!(...))` instead of `serde_json::json!(...)` for better ergonomics.
 
 ### Fixed
 - **`Result<T>` Type Inference (#1)**: Compilation failure in closure/iterator mapping patterns resolved — see `Ok<T>` helper above.
-- **`OxiditeResponse` Conversion (#2)**: Integration tests can now convert `OxiditeResponse` into `hyper::Response<Incoming>`.
+- **`ToxiResponse` Conversion (#2)**: Integration tests can now convert `ToxiResponse` into `hyper::Response<Incoming>`.
 - **`CorsConfig` Builder Pattern (#5)**: Added missing chainable setters for all CORS fields.
 - **`TestServer` Ergonomics (#6)**: Added `Clone` impl and expanded documentation clarifying single-threaded design.
 - **`Error::InternalServerError` Source Loss (#7)**: New `InternalServerErrorWithSource` variant and `Error::internal()` preserve the original error chain.
@@ -62,8 +87,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Authenticated WebSocket Support**: Enhanced `WebSocketUpgrade` to capture and preserve request extensions (auth state, etc.) during the protocol upgrade.
 - **Direct Database Access**: Added `.pool()`, `.inner()`, and `.as_sqlx_pool()` to `DbPool`, providing raw `sqlx` access for advanced queries.
 - **Universal Model IDs**: The `Model` derive macro now supports `Uuid` and `String` for primary keys, in addition to `i64`.
-- **Streamlined API Discoverability**: Re-exported `extract`, `middleware`, and `config` modules at the crate root of `oxidite`.
-- **CORS Config Integration**: Added native CORS method and header configuration support in `oxidite.toml`.
+- **Streamlined API Discoverability**: Re-exported `extract`, `middleware`, and `config` modules at the crate root of `toxi`.
+- **CORS Config Integration**: Added native CORS method and header configuration support in `toxi.toml`.
 - **Enhanced Prelude**: Included `PathParams` in the prelude for easier custom extractor implementation.
 
 ### Changed
@@ -77,17 +102,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.2.0] - 2026-05-16
 
 ### Added
-- **Native WebSocket Orchestration**: Implemented a professional-grade `WebSocketUpgrade` extractor in `oxidite-core`, featuring automated 101 Switching Protocols handshake generation and header validation.
+- **Native WebSocket Orchestration**: Implemented a professional-grade `WebSocketUpgrade` extractor in `toxi-core`, featuring automated 101 Switching Protocols handshake generation and header validation.
 - **Thread-Safe State Management**: Added `with_state()` to `Router` utilizing `Arc<RwLock<Extensions>>` for reliable, concurrent shared state access across handlers.
-- **Automated Declarative Migrations**: Introduced a powerful schema drift detection engine in `oxidite-cli`. Users can now generate incremental SQL migrations (UP/DOWN) directly from Rust model changes via `oxidite make-migrations`.
-- **Introspective Database Layer**: Added the `DbInspector` trait to `oxidite-db`, enabling runtime schema inspection and validation across PostgreSQL, MySQL, and SQLite.
+- **Automated Declarative Migrations**: Introduced a powerful schema drift detection engine in `toxi-cli`. Users can now generate incremental SQL migrations (UP/DOWN) directly from Rust model changes via `toxi make-migrations`.
+- **Introspective Database Layer**: Added the `DbInspector` trait to `toxi-db`, enabling runtime schema inspection and validation across PostgreSQL, MySQL, and SQLite.
 - **Self-Describing Models**: Enhanced the `Model` trait and its derive macro to automatically generate schema metadata, bridging the gap between Rust type safety and database structure.
-- **Enhanced Framework Prelude**: Integrated `StatusCode`, `mpsc`, and `BodyExt` re-exports directly into the `oxidite` prelude to streamline asynchronous logic and HTTP status management.
+- **Enhanced Framework Prelude**: Integrated `StatusCode`, `mpsc`, and `BodyExt` re-exports directly into the `toxi` prelude to streamline asynchronous logic and HTTP status management.
 - **Protocol Foundations**: Added `sha1` and `base64` dependencies to the core kernel to support low-level protocol requirements natively.
 
 ### Changed
 - **Strategic Rebranding**: Executed a comprehensive framework overhaul to project an enterprise-grade, mission-critical positioning across all documentation, metadata, and introductory materials.
-- **Macro Robustness**: Refactored the `Model` derive macro in `oxidite-macros` to utilize explicit absolute paths (`::oxidite::db`), ensuring reliable crate resolution across complex workspace architectures.
+- **Macro Robustness**: Refactored the `Model` derive macro in `toxi-macros` to utilize explicit absolute paths (`::toxi::db`), ensuring reliable crate resolution across complex workspace architectures.
 
 ### Fixed
 - **Crate Resolution**: Resolved critical bugs in the procedural macro layer that prevented successful compilation in projects using the umbrella framework structure.
@@ -96,12 +121,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Typed ORM error surface with ergonomic query builder extensions (`ModelQuery`, pagination, sort helpers, `find_or_fail`)
-- Relation eager-loading helpers and bulk operation primitives in `oxidite-db`
+- Relation eager-loading helpers and bulk operation primitives in `toxi-db`
 - Checked migration APIs with typed migration errors and backend-specific migration-table DDL
 - Macro diagnostics improvements for `#[derive(Model)]` misuse cases with expanded `trybuild` coverage
 - Shared SQL script execution utility in CLI commands
 - CLI integration tests for real subcommands in temporary project directories
-- Additional `oxidite make` generators (`job`, `policy`, `event`)
+- Additional `toxi make` generators (`job`, `policy`, `event`)
 - Expanded mdBook deployment support to static HTML root (`doc/book/book`) with index/search assets
 - Deep migration assessment documentation for external project interoperability (notably `g24sec`)
 
@@ -130,10 +155,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive CLI tools with hot reload functionality
 - Testing framework with utilities and helpers
 - OpenAPI/Swagger documentation generation
-- Request/Response aliases (Request/Response as shortcuts for OxiditeRequest/OxiditeResponse)
+- Request/Response aliases (Request/Response as shortcuts for ToxiRequest/ToxiResponse)
 - Enhanced cookie parsing with security validations and URL decoding
 - Production-ready documentation structure with consolidated features
-- README files for all subcrates (oxidite-config, oxidite-graphql, oxidite-macros, oxidite-plugin)
+- README files for all subcrates (toxi-config, toxi-graphql, toxi-macros, toxi-plugin)
 
 ### Changed
 - Major architectural overhaul to modular crate structure
@@ -158,7 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2024-12-07
 
 ### Added
-- Initial release of Oxidite framework
+- Initial release of Toxi framework
 - Basic routing and middleware support
 - Simple ORM implementation
 - Authentication features

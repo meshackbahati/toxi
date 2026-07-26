@@ -1,6 +1,6 @@
 # Security and Identity Crates
 
-## `oxidite-auth`
+## `toxi-auth`
 
 Main modules/exports:
 
@@ -19,7 +19,7 @@ Error model:
 
 - `AuthError`
 
-## `oxidite-security`
+## `toxi-security`
 
 Main APIs:
 

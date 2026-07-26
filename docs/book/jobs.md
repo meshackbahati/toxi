@@ -1,6 +1,6 @@
 # Background Jobs
 
-Background jobs allow you to process tasks asynchronously outside of the main request-response cycle. This chapter covers how to create, queue, and process background jobs in Oxidite.
+Background jobs allow you to process tasks asynchronously outside of the main request-response cycle. This chapter covers how to create, queue, and process background jobs in Toxi.
 
 ## Overview
 
@@ -16,7 +16,7 @@ Background jobs are essential for:
 Define jobs by implementing the Job trait:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -72,8 +72,8 @@ impl Job for ProcessImageJob {
 Configure queues for job processing:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_queue::{Queue, QueueBackend, RedisBackend};
+use toxi::prelude::*;
+use toxi_queue::{Queue, QueueBackend, RedisBackend};
 
 async fn configure_queues() -> Result<()> {
     // Configure Redis backend
@@ -96,7 +96,7 @@ async fn configure_queues() -> Result<()> {
 Add jobs to the queue for processing:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn enqueue_examples() -> Result<()> {
     // Get the queue (in a real app, this would come from state)
@@ -182,8 +182,8 @@ pub trait Job: Send + Sync + serde::Serialize + serde::de::DeserializeOwned {
 Set up workers to process jobs:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_queue::{Worker, Queue};
+use toxi::prelude::*;
+use toxi_queue::{Worker, Queue};
 
 async fn start_workers() -> Result<()> {
     let queue = get_queue("emails").await?;
@@ -240,7 +240,7 @@ async fn graceful_shutdown_worker() -> Result<()> {
 Monitor job queues and their status:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn monitor_jobs() -> Result<()> {
     let queue = get_queue("emails").await?;
@@ -314,7 +314,7 @@ pub struct ListedJob {
 Implement robust error handling and retry mechanisms:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Serialize, Deserialize)]
 pub struct RobustJob {
@@ -407,7 +407,7 @@ async fn execute_with_retry(job: RobustJob, strategy: &RetryStrategy) -> Result<
 Schedule jobs to run at specific times:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Serialize, Deserialize)]
 pub struct ScheduledReportJob {
@@ -492,7 +492,7 @@ impl Scheduler {
 Chain jobs that depend on each other:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Serialize, Deserialize)]
 pub struct ProcessUserDataJob {
@@ -573,7 +573,7 @@ impl JobChainer {
 Optimize job processing for performance:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 pub struct JobProcessorConfig {
     pub concurrency: usize,
@@ -635,7 +635,7 @@ impl<J: Job> MemoryEfficientProcessor<J> {
 Implement robust error recovery:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 pub struct JobRecoverySystem {
     dead_letter_queue: Queue,
@@ -687,7 +687,7 @@ impl MonitoringClient {
 Trigger jobs from HTTP requests:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Deserialize)]
 pub struct EmailRequest {
@@ -740,7 +740,7 @@ async fn check_job_status(
 
 ## Summary
 
-Background jobs in Oxidite provide:
+Background jobs in Toxi provide:
 
 - **Asynchronous Processing**: Handle long-running tasks without blocking requests
 - **Reliability**: Built-in retry logic and error handling

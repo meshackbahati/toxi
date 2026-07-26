@@ -1,6 +1,6 @@
 # Database ORM
 
-Oxidite provides a comprehensive database ORM (Object-Relational Mapping) system that makes it easy to work with databases in Rust applications.
+Toxi provides a comprehensive database ORM (Object-Relational Mapping) system that makes it easy to work with databases in Rust applications.
 
 ## Overview
 
@@ -20,7 +20,7 @@ Add the database feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = { version = "2.2", features = ["database"] }
+toxi = { version = "2.2", features = ["database"] }
 ```
 
 ## Database Connection
@@ -28,7 +28,7 @@ oxidite = { version = "2.2", features = ["database"] }
 ### Connecting to a Database
 
 ```rust
-use oxidite::db::DbPool;
+use toxi::db::DbPool;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -48,7 +48,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Connection Pool Options
 
 ```rust
-use oxidite::db::{DbPool, PoolOptions};
+use toxi::db::{DbPool, PoolOptions};
 use std::time::Duration;
 
 let options = PoolOptions {
@@ -66,7 +66,7 @@ let db = DbPool::connect_with_options("sqlite:my_database.db", options).await?;
 Define database models using the `#[derive(Model)]` macro:
 
 ```rust
-use oxidite::db::{Model, Database};
+use toxi::db::{Model, Database};
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize, Clone)]
@@ -116,7 +116,7 @@ With soft deletes enabled, the `delete()` method will set the `deleted_at` field
 
 #### Field Validation
 
-Models support expressive validation rules via the `#[validate(...)]` attribute. Oxidite will automatically generate a `validate(&self, db: &DbPool)` method for you.
+Models support expressive validation rules via the `#[validate(...)]` attribute. Toxi will automatically generate a `validate(&self, db: &DbPool)` method for you.
 
 ```rust
 #[derive(Model, Serialize, Deserialize, Clone)]
@@ -174,7 +174,7 @@ user.save_checked(&db).await?;
 ### Create
 
 ```rust
-use oxidite::db::Database;
+use toxi::db::Database;
 
 async fn create_user(db: &impl Database) -> Result<(), Box<dyn std::error::Error>> {
     let mut user = User {
@@ -274,11 +274,11 @@ async fn save_user(db: &impl Database) -> Result<(), Box<dyn std::error::Error>>
 
 ## Relationships
 
-Oxidite provides a fluent ActiveRecord-style syntax for defining relationships between models. 
+Toxi provides a fluent ActiveRecord-style syntax for defining relationships between models. 
 Using the `has_many`, `has_one`, and `belongs_to` attributes, the framework will automatically generate asynchronous lazy-loading accessor methods for your models.
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[derive(Model, Clone, Serialize, Deserialize)]
 #[has_many(model = "Post", foreign_key = "user_id", name = "posts")]
@@ -329,7 +329,7 @@ async fn fetch_user_data(db: &impl Database) -> Result<(), Box<dyn std::error::E
 For more complex operations, you can execute raw SQL queries:
 
 ```rust
-use oxidite::db::Database;
+use toxi::db::Database;
 
 async fn custom_query(db: &impl Database) -> Result<(), Box<dyn std::error::Error>> {
     // Execute a query that doesn't return results
@@ -352,10 +352,10 @@ async fn custom_query(db: &impl Database) -> Result<(), Box<dyn std::error::Erro
 
 ## Transactions
 
-Oxidite supports database transactions:
+Toxi supports database transactions:
 
 ```rust
-use oxidite::db::{Database, DbTransaction};
+use toxi::db::{Database, DbTransaction};
 
 async fn transaction_example(db: &impl Database) -> Result<(), Box<dyn std::error::Error>> {
     let tx = db.begin_transaction().await?;
@@ -410,10 +410,10 @@ async fn transaction_with_rollback(db: &impl Database) -> Result<(), Box<dyn std
 
 ## Migrations
 
-Oxidite provides a migration system to manage database schema changes:
+Toxi provides a migration system to manage database schema changes:
 
 ```rust
-use oxidite::db::{Migration, MigrationManager};
+use toxi::db::{Migration, MigrationManager};
 
 // Run all pending migrations
 async fn run_migrations(db: &impl Database) -> Result<(), Box<dyn std::error::Error>> {
@@ -427,8 +427,8 @@ async fn run_migrations(db: &impl Database) -> Result<(), Box<dyn std::error::Er
 Here's a complete example showing how to use the database functionality:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::db::{Model, Database, DbPool};
+use toxi::prelude::*;
+use toxi::db::{Model, Database, DbPool};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -450,7 +450,7 @@ struct AppState {
 async fn create_user_handler(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<User>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let mut user = User {
         id: 0,
         name: payload.name,
@@ -463,17 +463,17 @@ async fn create_user_handler(
     user.create(&state.db).await
         .map_err(|e| Error::Server(e.to_string()))?;
   
-    Ok(response::json(serde_json::json!(user)))
+    Ok(Response::json(serde_json::json!(user)))
 }
 
 async fn get_user_handler(
     State(state): State<Arc<AppState>>,
     Path(params): Path<serde_json::Value>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let id = params["id"].as_i64().unwrap_or(0);
   
     match User::find(&state.db, id).await {
-        Ok(Some(user)) => Ok(response::json(serde_json::json!(user))),
+        Ok(Some(user)) => Ok(Response::json(serde_json::json!(user))),
         Ok(None) => Err(Error::NotFound),
         Err(e) => Err(Error::Server(e.to_string())),
     }
@@ -489,11 +489,9 @@ async fn main() -> Result<()> {
     router.post("/users", create_user_handler);
     router.get("/users/:id", get_user_handler);
   
-    let service = ServiceBuilder::new()
-        .layer(AddExtensionLayer::new(state))
-        .service(router);
+    let router = router.with_state(state);
   
-    Server::new(service)
+    Server::new(router)
         .listen("127.0.0.1:3000".parse().unwrap())
         .await
 }

@@ -1,6 +1,6 @@
 # Web/API Feature Crates
 
-## `oxidite-realtime`
+## `toxi-realtime`
 
 Main modules/exports:
 
@@ -9,7 +9,7 @@ Main modules/exports:
 - event model: `Event`, `EventType`
 - websocket: `WebSocketConnection`, `WebSocketManager`, `WsMessage`, `WebSocketError`
 
-## `oxidite-template`
+## `toxi-template`
 
 Main APIs:
 
@@ -18,7 +18,7 @@ Main APIs:
 - filters module
 - static files: `StaticFiles`, `serve_static`, `static_handler`
 
-## `oxidite-openapi`
+## `toxi-openapi`
 
 Main APIs:
 
@@ -27,7 +27,7 @@ Main APIs:
 - traits: `ToSchema`, `AutoDocs`
 - docs renderer: `generate_docs_html`
 
-## `oxidite-graphql`
+## `toxi-graphql`
 
 Main APIs:
 
@@ -37,7 +37,7 @@ Main APIs:
 - `GraphQLHandler`
 - `create_handler()`
 
-## `oxidite-mail`
+## `toxi-mail`
 
 Main APIs:
 
@@ -46,7 +46,7 @@ Main APIs:
 - `SmtpTransport`, `SmtpConfig`
 - `Attachment`
 
-## `oxidite-plugin`
+## `toxi-plugin`
 
 Main APIs:
 

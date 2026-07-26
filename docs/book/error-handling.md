@@ -54,7 +54,7 @@ Recommended map:
 
 ## Macro diagnostics
 
-For `oxidite-macros` derive errors:
+For `toxi-macros` derive errors:
 
 - keep model fields explicit
 - use supported attribute forms
@@ -70,7 +70,7 @@ Before a migration rollout:
 
 ## Ignition-Style Error Pages
 
-Oxidite includes a built-in rich HTML error page for developers. When you encounter a 500 Internal Server Error, Oxidite will display a beautiful, actionable stack trace with your framework version, request details, and environment context.
+Toxi includes a built-in rich HTML error page for developers. When you encounter a 500 Internal Server Error, Toxi will display a beautiful, actionable stack trace with your framework version, request details, and environment context.
 
 ### Enabling the Error Page
 
@@ -78,12 +78,12 @@ The error page is enabled by default when your application requests `text/html` 
 
 ```bash
 # Display rich HTML errors
-OXIDITE_ENV=development cargo run
+TOXI_ENV=development cargo run
 ```
 
 When you switch to production:
 
 ```bash
 # Returns standard JSON error responses without leaking stack traces
-OXIDITE_ENV=production cargo run
+TOXI_ENV=production cargo run
 ```

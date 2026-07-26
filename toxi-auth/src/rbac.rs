@@ -1,0 +1,65 @@
+use toxi_db::sqlx;
+use toxi_db::sqlx::FromRow;
+
+/// A role that can be assigned to users.
+#[derive(FromRow, Clone, Debug)]
+pub struct Role {
+    pub id: i64,
+    pub name: String,
+    pub description: Option<String>,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+/// A permission that can be granted to roles.
+#[derive(FromRow, Clone, Debug)]
+pub struct Permission {
+    pub id: i64,
+    pub name: String,
+    pub resource: String,
+    pub action: String,
+    pub description: Option<String>,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+impl Role {
+    /// Get all permissions for this role
+    pub async fn permissions(&self, db: &impl toxi_db::Database) -> toxi_db::Result<Vec<Permission>> {
+        let query = toxi_db::sqlx::query(
+            "SELECT p.* FROM permissions p
+             INNER JOIN role_permissions rp ON p.id = rp.permission_id
+             WHERE rp.role_id = ?"
+        )
+            .bind(self.id);
+
+        let rows = db.fetch_all(query).await?;
+        let mut permissions = Vec::new();
+        
+        for row in rows {
+            permissions.push(sqlx::FromRow::from_row(&row)?);
+        }
+        
+        Ok(permissions)
+    }
+    
+    /// Check if role has a specific permission
+    pub async fn has_permission(&self, db: &impl toxi_db::Database, permission_name: &str) -> toxi_db::Result<bool> {
+        let query = toxi_db::sqlx::query(
+            "SELECT 1 FROM permissions p
+             INNER JOIN role_permissions rp ON p.id = rp.permission_id
+             WHERE rp.role_id = ? AND p.name = ?
+             LIMIT 1"
+        )
+            .bind(self.id)
+            .bind(permission_name);
+        Ok(db.fetch_one(query).await?.is_some())
+    }
+}
+
+impl Permission {
+    /// Check if permission matches resource and action
+    pub fn matches(&self, resource: &str, action: &str) -> bool {
+        self.resource == resource && self.action == action
+    }
+}

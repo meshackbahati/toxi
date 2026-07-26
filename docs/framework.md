@@ -1,15 +1,15 @@
 # Advanced Features
 
-This document covers the advanced features of the Oxidite framework that go beyond basic routing and request handling.
+This document covers the advanced features of the Toxi framework that go beyond basic routing and request handling.
 
 ## API Versioning
 
-Oxidite supports multiple approaches to API versioning to maintain backward compatibility while evolving your API.
+Toxi supports multiple approaches to API versioning to maintain backward compatibility while evolving your API.
 
 ### URL-based Versioning
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 let mut router = Router::new();
 
@@ -25,9 +25,9 @@ router.post("/api/v2/users", create_user_v2);
 ### Header-based Versioning
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
-async fn versioned_handler(req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn versioned_handler(req: Request) -> Result<Response> {
     let version = req.headers()
         .get("accept")
         .and_then(|hv| hv.to_str().ok())
@@ -51,7 +51,7 @@ async fn versioned_handler(req: OxiditeRequest) -> Result<OxiditeResponse> {
 ### Query Parameter Versioning
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -60,9 +60,9 @@ struct ApiVersionQuery {
 }
 
 async fn query_versioned_handler(
-    req: OxiditeRequest,
+    req: Request,
     Query(params): Query<ApiVersionQuery>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let version = params.version.unwrap_or(1);
     
     match version {
@@ -75,12 +75,12 @@ async fn query_versioned_handler(
 
 ## Background Jobs
 
-Oxidite includes a robust background job system for processing tasks asynchronously.
+Toxi includes a robust background job system for processing tasks asynchronously.
 
 ### Job Definition
 
 ```rust
-use oxidite::queue::{Job, Queue};
+use toxi::queue::{Job, Queue};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -103,7 +103,7 @@ impl Job for EmailJob {
 ### Queue Usage
 
 ```rust
-use oxidite::queue::{Queue, Job};
+use toxi::queue::{Queue, Job};
 
 async fn example_job_queue() -> Result<(), Box<dyn std::error::Error>> {
     // Create a queue
@@ -129,7 +129,7 @@ async fn example_job_queue() -> Result<(), Box<dyn std::error::Error>> {
 ### Scheduled Jobs (Cron)
 
 ```rust
-use oxidite::queue::{Job, Queue};
+use toxi::queue::{Job, Queue};
 use cron::Schedule;
 use chrono::Utc;
 
@@ -159,18 +159,18 @@ async fn schedule_cron_jobs() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Real-time Features
 
-Oxidite provides real-time communication capabilities through WebSockets and Server-Sent Events (SSE).
+Toxi provides real-time communication capabilities through WebSockets and Server-Sent Events (SSE).
 
 ### WebSocket Support
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::realtime::{WebSocketManager, WebSocketConnection};
+use toxi::prelude::*;
+use toxi::realtime::{WebSocketManager, WebSocketConnection};
 
 async fn websocket_handler(
-    mut req: OxiditeRequest,
+    mut req: Request,
     ws_manager: &WebSocketManager
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     // Upgrade to WebSocket connection
     if let Some(upgrade) = req.extensions().get::<hyper::upgrade::OnUpgrade>() {
         tokio::spawn(async move {
@@ -196,7 +196,7 @@ async fn websocket_handler(
             }
         });
         
-        Ok(response::text("WebSocket upgrade initiated"))
+        Ok(Response::text("WebSocket upgrade initiated"))
     } else {
         Err(Error::BadRequest("Expected WebSocket upgrade".to_string()))
     }
@@ -206,10 +206,10 @@ async fn websocket_handler(
 ### Server-Sent Events (SSE)
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use futures::stream::StreamExt;
 
-async fn sse_handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn sse_handler(_req: Request) -> Result<Response> {
     use futures::stream::iter;
     use tokio_stream::Stream;
     
@@ -236,12 +236,12 @@ async fn sse_handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 
 ## Caching
 
-Oxidite provides caching capabilities to improve performance.
+Toxi provides caching capabilities to improve performance.
 
 ### Cache Setup
 
 ```rust
-use oxidite::cache::{Cache, InMemoryCache, RedisCache};
+use toxi::cache::{Cache, InMemoryCache, RedisCache};
 
 // In-memory cache (for development/simple use)
 let memory_cache = InMemoryCache::new();
@@ -253,7 +253,7 @@ let memory_cache = InMemoryCache::new();
 ### Cache Operations
 
 ```rust
-use oxidite::cache::Cache;
+use toxi::cache::Cache;
 
 async fn cache_examples(cache: &impl Cache) -> Result<(), Box<dyn std::error::Error>> {
     // Store data in cache
@@ -279,12 +279,12 @@ async fn cache_examples(cache: &impl Cache) -> Result<(), Box<dyn std::error::Er
 
 ## File Storage
 
-Oxidite provides file storage capabilities with support for local and cloud storage.
+Toxi provides file storage capabilities with support for local and cloud storage.
 
 ### Local Storage
 
 ```rust
-use oxidite::storage::{Storage, LocalStorage};
+use toxi::storage::{Storage, LocalStorage};
 
 let local_storage = LocalStorage::new("./uploads")?;
 ```
@@ -292,7 +292,7 @@ let local_storage = LocalStorage::new("./uploads")?;
 ### S3 Storage
 
 ```rust
-use oxidite::storage::{Storage, S3Storage};
+use toxi::storage::{Storage, S3Storage};
 
 let s3_storage = S3Storage::new(
     "access-key".to_string(),
@@ -305,7 +305,7 @@ let s3_storage = S3Storage::new(
 ### File Operations
 
 ```rust
-use oxidite::storage::Storage;
+use toxi::storage::Storage;
 
 async fn file_operations(storage: &impl Storage) -> Result<(), Box<dyn std::error::Error>> {
     // Upload a file
@@ -331,12 +331,12 @@ async fn file_operations(storage: &impl Storage) -> Result<(), Box<dyn std::erro
 
 ## Email Sending
 
-Oxidite provides email sending capabilities.
+Toxi provides email sending capabilities.
 
 ### Email Configuration
 
 ```rust
-use oxidite::mail::{Mailer, SmtpTransport};
+use toxi::mail::{Mailer, SmtpTransport};
 
 let smtp_transport = SmtpTransport::new(
     "smtp.example.com".to_string(),
@@ -351,13 +351,13 @@ let mailer = Mailer::new(smtp_transport);
 ### Sending Emails
 
 ```rust
-use oxidite::mail::{Mailer, Message};
+use toxi::mail::{Mailer, Message};
 
 async fn send_emails(mailer: &Mailer) -> Result<(), Box<dyn std::error::Error>> {
     let message = Message::new()
         .to("recipient@example.com")
-        .subject("Hello from Oxidite!")
-        .body("This is a test email from the Oxidite framework.")
+        .subject("Hello from Toxi!")
+        .body("This is a test email from the Toxi framework.")
         .html_body("<h1>Hello!</h1><p>This is a <strong>HTML</strong> email.</p>");
     
     mailer.send(message).await?;
@@ -371,7 +371,7 @@ async fn send_emails(mailer: &Mailer) -> Result<(), Box<dyn std::error::Error>> 
 ### Rate Limiting
 
 ```rust
-use oxidite_middleware::{RateLimiter, RateLimitConfig};
+use toxi_middleware::{RateLimiter, RateLimitConfig};
 
 let rate_limiter = RateLimiter::new(
     RateLimitConfig::new()
@@ -383,7 +383,7 @@ let rate_limiter = RateLimiter::new(
 ### CSRF Protection
 
 ```rust
-use oxidite_middleware::{CsrfLayer, CsrfConfig};
+use toxi_middleware::{CsrfLayer, CsrfConfig};
 
 let csrf_layer = CsrfLayer::new(
     CsrfConfig::new()
@@ -395,7 +395,7 @@ let csrf_layer = CsrfLayer::new(
 ### XSS Sanitization
 
 ```rust
-use oxidite::security::sanitize;
+use toxi::security::sanitize;
 
 // Sanitize user input to prevent XSS
 let user_input = "<script>alert('XSS')</script>";
@@ -405,12 +405,12 @@ println!("Sanitized: {}", sanitized); // Safe output
 
 ## Configuration Management
 
-Oxidite provides flexible configuration management.
+Toxi provides flexible configuration management.
 
 ### Configuration Struct
 
 ```rust
-use oxidite::config::Config;
+use toxi::config::Config;
 use serde::Deserialize;
 
 #[derive(Deserialize, Clone)]
@@ -458,18 +458,18 @@ let port = env::var("PORT")
 
 ## Testing Utilities
 
-Oxidite provides testing utilities to make testing easier.
+Toxi provides testing utilities to make testing easier.
 
 ### Test Server
 
 ```rust
-use oxidite_testing::{TestServer, TestResponse};
+use toxi_testing::{TestServer, TestResponse};
 
 async fn test_example() -> Result<(), Box<dyn std::error::Error>> {
     // Create a test server with your router
     let server = TestServer::new(|| {
         let mut router = Router::new();
-        router.get("/test", |_| async { Ok(response::text("OK")) });
+        router.get("/test", |_| async { Ok(Response::text("OK")) });
         router
     })?;
     
@@ -487,7 +487,7 @@ async fn test_example() -> Result<(), Box<dyn std::error::Error>> {
 ### Request Testing
 
 ```rust
-use oxidite_testing::TestRequest;
+use toxi_testing::TestRequest;
 
 // Build test requests
 let request = TestRequest::get("/")
@@ -502,11 +502,11 @@ let response = server.execute(request).await?;
 Here's a complete example demonstrating several advanced features:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::auth::{JwtManager, create_token, Claims};
-use oxidite::db::{Model, Database, DbPool};
-use oxidite::template::{TemplateEngine, Context};
-use oxidite_middleware::{ServiceBuilder, LoggerLayer, CorsLayer};
+use toxi::prelude::*;
+use toxi::auth::{JwtManager, create_token, Claims};
+use toxi::db::{Model, Database, DbPool};
+use toxi::template::{TemplateEngine, Context};
+use toxi_middleware::{ServiceBuilder, LoggerLayer, CorsLayer};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use std::collections::HashMap;
@@ -536,7 +536,7 @@ struct CreateUser {
 async fn create_user(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateUser>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let mut user = User {
         id: 0,
         name: payload.name,
@@ -558,7 +558,7 @@ async fn create_user(
     let token = create_token(&state.jwt_manager, claims)
         .map_err(|e| Error::Server(e.to_string()))?;
     
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "user": user,
         "token": token
     })))
@@ -566,7 +566,7 @@ async fn create_user(
 
 async fn analytics(
     State(state): State<Arc<AppState>>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let users = User::all(&state.db).await
         .map_err(|e| Error::Server(e.to_string()))?;
     
@@ -577,7 +577,7 @@ async fn analytics(
     let html = state.template_engine.render("analytics.html", &context)
         .map_err(|e| Error::Server(e.to_string()))?;
     
-    Ok(response::html(html))
+    Ok(Response::html(html))
 }
 
 #[tokio::main]
@@ -605,6 +605,7 @@ async fn main() -> Result<()> {
     </body>
     </html>
     "#)?;
+    // Note: For production apps, prefer TemplateContext::new("templates")?.load_dir()?
     
     let app_state = Arc::new(AppState {
         db,
@@ -617,23 +618,21 @@ async fn main() -> Result<()> {
     router.post("/api/users", create_user);
     router.get("/analytics", analytics);
     
+    // Inject state into router
+    let router = router.with_state(app_state);
+    
     // Apply middleware
     let service = ServiceBuilder::new()
         .layer(LoggerLayer)
         .layer(CorsLayer::permissive())
         .service(router);
     
-    // Add state to service
-    let service_with_state = ServiceBuilder::new()
-        .layer(AddExtensionLayer::new(app_state))
-        .service(service);
-    
-    println!("Advanced Oxidite app running on http://127.0.0.1:3000");
+    println!("Advanced Toxi app running on http://127.0.0.1:3000");
     println!("Features: Database ORM, JWT Authentication, Templates, Middleware");
     println!("API: POST /api/users");
     println!("Analytics: GET /analytics");
     
-    Server::new(service_with_state)
+    Server::new(service)
         .listen("127.0.0.1:3000".parse().unwrap())
         .await
 }

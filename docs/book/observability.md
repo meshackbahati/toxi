@@ -27,14 +27,14 @@ Use span boundaries around handlers and service-layer operations.
 
 ## Metrics
 
-Oxidite includes a high-performance, atomic-backed telemetry system for tracking application performance metrics. It captures request counters, active concurrent requests, latencies, and success/error status across all endpoints.
+Toxi includes a high-performance, atomic-backed telemetry system for tracking application performance metrics. It captures request counters, active concurrent requests, latencies, and success/error status across all endpoints.
 
 ### Global Metrics Registry
 
-The `GLOBAL_METRICS` registry (`oxidite::utils::GLOBAL_METRICS`) is a concurrent, lock-free global registry that records real-time performance statistics:
+The `GLOBAL_METRICS` registry (`toxi::utils::GLOBAL_METRICS`) is a concurrent, lock-free global registry that records real-time performance statistics:
 
 ```rust
-use oxidite::utils::GLOBAL_METRICS;
+use toxi::utils::GLOBAL_METRICS;
 
 // Get the current number of concurrent active HTTP requests
 let active_requests = GLOBAL_METRICS.concurrent_requests();
@@ -51,11 +51,11 @@ for (path, (reqs, successes, errors, duration)) in metrics_snapshot {
 
 ### Metrics Middleware Layer
 
-To automatically track metrics for all incoming requests, register the `MetricsLayer` middleware from `oxidite::middleware` in your router definition:
+To automatically track metrics for all incoming requests, register the `MetricsLayer` middleware from `toxi::middleware` in your router definition:
 
 ```rust
-use oxidite::core::Router;
-use oxidite::middleware::MetricsLayer;
+use toxi::core::Router;
+use toxi::middleware::MetricsLayer;
 
 let app = Router::new()
     // Register the advanced telemetry metrics middleware

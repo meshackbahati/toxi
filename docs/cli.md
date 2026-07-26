@@ -1,28 +1,28 @@
 # CLI Tools
 
-The CLI package name is `oxidite-cli`. The installed executable is `oxidite`.
+The CLI package name is `toxi-cli`. The installed executable is `toxi`.
 
 ## Installation
 
 ```bash
 # Install from crates.io
-cargo install oxidite-cli
+cargo install toxi-cli
 
 # Install from this repository
-cargo install --path oxidite-cli
+cargo install --path toxi-cli
 ```
 
-After installation, the first time you run `oxidite`, it will suggest adding an alias for shorter commands.
+After installation, the first time you run `toxi`, it will suggest adding an alias for shorter commands.
 
 **Recommended**: Add this to your shell config:
 
 ```bash
 # For bash
-echo "alias oxi='oxidite'" >> ~/.bashrc
+echo "alias oxi='toxi'" >> ~/.bashrc
 source ~/.bashrc
 
 # For zsh
-echo "alias oxi='oxidite'" >> ~/.zshrc
+echo "alias oxi='toxi'" >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -30,13 +30,13 @@ source ~/.zshrc
 
 ```powershell
 # PowerShell - add to your $PROFILE
-Set-Alias oxi oxidite
+Set-Alias oxi toxi
 
 # CMD (temporary, per session)
-doskey oxi=oxidite
+doskey oxi=toxi
 ```
 
-After this, you can use `oxi` instead of `oxidite` for all commands.
+After this, you can use `oxi` instead of `toxi` for all commands.
 
 ## What the CLI Actually Does
 
@@ -67,7 +67,7 @@ Generated projects include a standard directory structure. You can reorganize it
 ```text
 my-project/
 ├── Cargo.toml
-├── oxidite.toml
+├── toxi.toml
 ├── migrations/
 ├── src/
 │   ├── main.rs
@@ -178,7 +178,7 @@ oxi dev --no-hot-reload
 The dev server:
 - Watches files and recompiles on changes
 - Uses `cargo run` under the hood (not faster than cargo)
-- Passes environment variables from `.env` and `oxidite.toml`
+- Passes environment variables from `.env` and `toxi.toml`
 - Can be slow on large projects (full recompile each change)
 
 ## Run Single Files
@@ -197,14 +197,14 @@ oxi run api.rs --deps serde,chrono
 ```
 
 **How it works:**
-- **Standalone mode**: Creates a temporary Cargo project in `/tmp`, compiles with oxidite dependencies, runs, then deletes the temp directory
+- **Standalone mode**: Creates a temporary Cargo project in `/tmp`, compiles with toxi dependencies, runs, then deletes the temp directory
 - **Project mode**: Places the file in `src/bin/` and runs via `cargo run --bin`
 - Compile errors display directly in your terminal
 - Not meant for production - use `oxi build` for deployable binaries
 
 ## Process Management
 
-Manage long-running oxidite processes:
+Manage long-running toxi processes:
 
 ```bash
 oxi pm2 start
@@ -216,15 +216,15 @@ oxi pm2 info my-api
 oxi pm2 monitor
 ```
 
-Process state is stored in `.oxidite_procs.json` in the current directory. This is **not** a replacement for systemd, Docker, or proper process managers in production.
+Process state is stored in `.toxi_procs.json` in the current directory. This is **not** a replacement for systemd, Docker, or proper process managers in production.
 
 ## Debug Logging
 
 Enable verbose output:
 
 ```bash
-OXIDITE_DEBUG=1 oxi dev
-OXIDITE_DEBUG=true oxi serve
+TOXI_DEBUG=1 oxi dev
+TOXI_DEBUG=true oxi serve
 ```
 
 Shows environment loading, configuration details, file paths, and internal operations.
@@ -250,7 +250,7 @@ oxi doctor
 
 Checks for:
 - Rust and Cargo installation
-- Required project files (`Cargo.toml`, `oxidite.toml`)
+- Required project files (`Cargo.toml`, `toxi.toml`)
 - Migration directory
 - Common environment variables
 

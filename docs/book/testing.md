@@ -1,10 +1,10 @@
 # Testing
 
-Testing is a crucial part of the Oxidite framework, providing comprehensive tools for unit testing, integration testing, and end-to-end testing. This chapter covers all aspects of testing in Oxidite applications.
+Testing is a crucial part of the Toxi framework, providing comprehensive tools for unit testing, integration testing, and end-to-end testing. This chapter covers all aspects of testing in Toxi applications.
 
 ## Overview
 
-Oxidite provides:
+Toxi provides:
 - Unit testing for individual components
 - Integration testing for routes and middleware
 - End-to-end testing with simulated HTTP requests
@@ -20,14 +20,14 @@ Basic test setup in your project:
 // In your Cargo.toml
 [dev-dependencies]
 tokio = { version = "1.0", features = ["full"] }
-oxidite-testing = "2.0.0"
+toxi-testing = "2.0.0"
 serial_test = "3.0"
 
 // In your src/lib.rs or src/main.rs
 #[cfg(test)]
 mod tests {
     use super::*;
-    use oxidite_testing::TestServer;
+    use toxi_testing::TestServer;
     
     #[tokio::test]
     async fn test_basic_functionality() {
@@ -41,7 +41,7 @@ mod tests {
 Test individual functions and components:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Function to test
 pub fn calculate_discount(price: f64, discount_percent: f64) -> f64 {
@@ -91,8 +91,8 @@ mod unit_tests {
 Test routes and middleware integration:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_testing::{TestServer, RequestBuilder};
+use toxi::prelude::*;
+use toxi_testing::{TestServer, RequestBuilder};
 
 // Sample route handler
 async fn hello_handler(_req: Request) -> Result<Response> {
@@ -163,7 +163,7 @@ mod integration_tests {
 Test routes that use application state:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -215,7 +215,7 @@ mod state_tests {
 Test middleware functionality:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn logging_middleware(req: Request, next: Next) -> Result<Response> {
     println!("Request: {} {}", req.method(), req.uri());
@@ -279,7 +279,7 @@ mod middleware_tests {
 Test database operations with test databases:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize)]
@@ -372,7 +372,7 @@ mod database_tests {
 Create mocks for external dependencies:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Service to be mocked
 pub trait EmailService: Send + Sync {
@@ -494,7 +494,7 @@ mod mock_tests {
 Use property-based testing for comprehensive validation:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Function to test with property-based testing
 pub fn reverse_string(s: &str) -> String {
@@ -543,7 +543,7 @@ mod property_tests {
 Create reusable test data:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Model, Serialize, Deserialize, Clone)]
@@ -644,7 +644,7 @@ test_utils = []
 // Test utilities module
 #[cfg(any(test, feature = "test_utils"))]
 pub mod test_utils {
-    use oxidite::prelude::*;
+    use toxi::prelude::*;
     use std::sync::Arc;
     use tokio::sync::Mutex;
 
@@ -731,7 +731,7 @@ mod configured_tests {
 Handle parallel test execution safely:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serial_test::serial;
 
 // Use serial_test attribute for tests that can't run in parallel
@@ -797,7 +797,7 @@ Measure and improve test coverage:
 // [target.'cfg(coverage)']
 // rustflags = ["-Zinstrument-coverage"]
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Complex function to test thoroughly
 pub fn process_order(
@@ -914,7 +914,7 @@ mod coverage_tests {
 Generate test reports and summaries:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Test result aggregator
 #[derive(Default)]
@@ -1043,7 +1043,7 @@ mod runner_tests {
 
 ## Summary
 
-Testing in Oxidite provides comprehensive tools for:
+Testing in Toxi provides comprehensive tools for:
 
 - **Unit Testing**: Individual function and component testing
 - **Integration Testing**: Route and middleware integration
@@ -1055,4 +1055,4 @@ Testing in Oxidite provides comprehensive tools for:
 - **Coverage Analysis**: Thorough testing measurement
 - **Reporting**: Detailed test results and summaries
 
-Following testing best practices ensures reliable, maintainable Oxidite applications with high quality and confidence in code changes.
+Following testing best practices ensures reliable, maintainable Toxi applications with high quality and confidence in code changes.

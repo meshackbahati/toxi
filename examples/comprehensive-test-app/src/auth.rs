@@ -1,5 +1,5 @@
-use oxidite::prelude::*;
-use oxidite_auth::JwtManager;
+use toxi::prelude::*;
+use toxi_auth::JwtManager;
 use std::sync::Arc;
 
 pub async fn init_auth() -> Result<Arc<JwtManager>> {

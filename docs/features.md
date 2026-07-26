@@ -1,17 +1,17 @@
-# Oxidite Features
+# Toxi Features
 
-This document provides a comprehensive overview of all features available in Oxidite.
+This document provides a comprehensive overview of all features available in Toxi.
 
 ## Core Features
 
 ### Request Handling
-Oxidite provides flexible request handling with multiple extractor types:
+Toxi provides flexible request handling with multiple extractor types:
 
 #### JSON Extractor
 The `Json<T>` extractor handles JSON request bodies:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -22,7 +22,7 @@ struct CreateUser {
 
 async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
     // payload contains deserialized JSON
-    Ok(response::json(serde_json::json!(payload)))
+    Ok(Response::json(serde_json::json!(payload)))
 }
 ```
 
@@ -30,7 +30,7 @@ async fn create_user(Json(payload): Json<CreateUser>) -> Result<Response> {
 The `Query<T>` extractor handles URL query parameters:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -43,7 +43,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(response::json(serde_json::json!({ "page": page, "limit": limit })))
+    Ok(Response::json(serde_json::json!({ "page": page, "limit": limit })))
 }
 ```
 
@@ -51,7 +51,7 @@ async fn list_users(Query(params): Query<Pagination>) -> Result<Response> {
 The `Path<T>` extractor handles URL path parameters:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -60,7 +60,7 @@ struct UserId {
 }
 
 async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
-    Ok(response::json(serde_json::json!({ "id": params.id })))
+    Ok(Response::json(serde_json::json!({ "id": params.id })))
 }
 ```
 
@@ -68,7 +68,7 @@ async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
 The `Form<T>` extractor handles `application/x-www-form-urlencoded` data:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -79,7 +79,7 @@ struct LoginForm {
 
 async fn login_handler(Form(login_data): Form<LoginForm>) -> Result<Response> {
     // login_data contains the deserialized form data
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "message": "Login successful",
         "username": login_data.username
     })))
@@ -90,7 +90,7 @@ async fn login_handler(Form(login_data): Form<LoginForm>) -> Result<Response> {
 The `Cookies` extractor provides access to request cookies:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn handler(cookies: Cookies) -> Result<Response> {
     if let Some(session_id) = cookies.get("session_id") {
@@ -108,7 +108,7 @@ async fn handler(cookies: Cookies) -> Result<Response> {
         println!("{}: {}", name, value);
     }
     
-    Ok(response::json(serde_json::json!({ "status": "ok" })))
+    Ok(Response::json(serde_json::json!({ "status": "ok" })))
 }
 ```
 
@@ -116,18 +116,18 @@ async fn handler(cookies: Cookies) -> Result<Response> {
 The `Body<T>` extractor allows access to raw request body data:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // extract as string
 async fn webhook_handler(Body(raw_body): Body<String>) -> Result<Response> {
     println!("received webhook with {} characters", raw_body.len());
-    Ok(response::text("webhook received"))
+    Ok(Response::text("webhook received"))
 }
 
 // extract as bytes
 async fn binary_handler(Body(bytes): Body<Vec<u8>>) -> Result<Response> {
     println!("received {} bytes", bytes.len());
-    Ok(response::text("binary data received"))
+    Ok(Response::text("binary data received"))
 }
 ```
 
@@ -135,7 +135,7 @@ async fn binary_handler(Body(bytes): Body<Vec<u8>>) -> Result<Response> {
 The `State<T>` extractor manages application state:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -144,18 +144,18 @@ struct AppState {
 }
 
 async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
-    Ok(response::json(serde_json::json!({ "db_url": state.db_url })))
+    Ok(Response::json(serde_json::json!({ "db_url": state.db_url })))
 }
 ```
 
 ## Advanced Features
 
 ### API Versioning
-Oxidite supports multiple approaches to API versioning to maintain backward compatibility while evolving your API.
+Toxi supports multiple approaches to API versioning to maintain backward compatibility while evolving your API.
 
 #### URL-based Versioning
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 let mut router = Router::new();
 
@@ -170,7 +170,7 @@ router.post("/api/v2/users", create_user_v2);
 
 #### Header-based Versioning
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn versioned_handler(req: Request) -> Result<Response> {
     let version = req.headers()
@@ -195,7 +195,7 @@ async fn versioned_handler(req: Request) -> Result<Response> {
 
 #### Query Parameter Versioning
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -218,11 +218,11 @@ async fn query_versioned_handler(
 ```
 
 ### Background Jobs
-Oxidite includes a robust background job system for processing tasks asynchronously.
+Toxi includes a robust background job system for processing tasks asynchronously.
 
 #### Job Definition
 ```rust
-use oxidite::queue::{Job, Queue};
+use toxi::queue::{Job, Queue};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -244,7 +244,7 @@ impl Job for EmailJob {
 
 #### Queue Usage
 ```rust
-use oxidite::queue::{Queue, Job};
+use toxi::queue::{Queue, Job};
 
 async fn example_job_queue() -> Result<(), Box<dyn std::error::Error>> {
     // create a queue
@@ -269,7 +269,7 @@ async fn example_job_queue() -> Result<(), Box<dyn std::error::Error>> {
 
 #### Scheduled Jobs (Cron)
 ```rust
-use oxidite::queue::{Job, Queue};
+use toxi::queue::{Job, Queue};
 use cron::Schedule;
 use chrono::Utc;
 
@@ -298,12 +298,12 @@ async fn schedule_cron_jobs() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 ### Real-time Features
-Oxidite provides real-time communication capabilities through WebSockets and Server-Sent Events (SSE).
+Toxi provides real-time communication capabilities through WebSockets and Server-Sent Events (SSE).
 
 #### WebSocket Support
 ```rust
-use oxidite::prelude::*;
-use oxidite::realtime::{WebSocketManager, WebSocketConnection};
+use toxi::prelude::*;
+use toxi::realtime::{WebSocketManager, WebSocketConnection};
 
 async fn websocket_handler(
     mut req: Request,
@@ -334,7 +334,7 @@ async fn websocket_handler(
             }
         });
         
-        Ok(response::text("websocket upgrade initiated"))
+        Ok(Response::text("websocket upgrade initiated"))
     } else {
         Err(Error::BadRequest("expected websocket upgrade".to_string()))
     }
@@ -343,7 +343,7 @@ async fn websocket_handler(
 
 #### Server-Sent Events (SSE)
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use futures::stream::StreamExt;
 
 async fn sse_handler(_req: Request) -> Result<Response> {
@@ -387,7 +387,7 @@ The error system has been expanded with more specific error types and better HTT
 Each error type now maps to the appropriate HTTP status code:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 impl Error {
     pub fn status_code(&self) -> hyper::StatusCode {
@@ -409,9 +409,9 @@ impl Error {
 
 #### Usage Example
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
-async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<OxiditeResponse> {
+async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<Response> {
     // validate input
     if payload.name.trim().is_empty() {
         return Err(Error::Validation("name cannot be empty".to_string()));
@@ -423,14 +423,14 @@ async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<OxiditeRe
     }
     
     // create user...
-    Ok(response::json(serde_json::json!(user)))
+    Ok(Response::json(serde_json::json!(user)))
 }
 ```
 
 ## Enterprise Features
 
 ### Security & Compliance
-Oxidite provides enterprise-grade security features:
+Toxi provides enterprise-grade security features:
 
 #### Enterprise Security Features
 - Advanced authentication mechanisms (JWT, OAuth2, API Keys)

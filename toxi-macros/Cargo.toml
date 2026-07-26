@@ -1,0 +1,23 @@
+[package]
+name = "toxi-macros"
+version = "3.0.0"
+edition = "2021"
+authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
+description = "Procedural macros for the Toxi web framework (Model derive, etc.)"
+license = "MIT"
+repository = "https://github.com/meshackbahati/toxi"
+keywords = ["macros", "derive", "web", "framework", "orm"]
+categories = ["web-programming", "development-tools::procedural-macro-helpers"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+
+[dev-dependencies]
+trybuild = "1.0"
+toxi-db = { path = "../toxi-db" }
+sqlx = { version = "0.8.2", features = ["macros", "any"] }

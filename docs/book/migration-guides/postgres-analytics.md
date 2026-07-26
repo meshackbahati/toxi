@@ -14,9 +14,9 @@ Use this for leaderboard and heavy reporting endpoints.
 - Use covering indexes for filter + order columns.
 - Use keyset pagination for deep pages.
 
-## Oxidite execution path
+## Toxi execution path
 
-- Use `oxidite-db` query APIs for direct SQL execution.
+- Use `toxi-db` query APIs for direct SQL execution.
 - Map result rows into typed response structs.
 - Add route-level timing + rows-scanned metrics.
 

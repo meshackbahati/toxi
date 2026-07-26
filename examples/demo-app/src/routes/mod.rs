@@ -6,8 +6,8 @@ pub mod web;
 pub mod posts;
 pub mod user_posts;
 
-use oxidite_core::{Request, Response, Error, html, State, FromRequest};
-use oxidite_template::Context;
+use toxi_core::{Request, Response, Error, html, State, FromRequest};
+use toxi_template::Context;
 use serde_json::json;
 use crate::AppState;
 use std::sync::Arc;
@@ -40,12 +40,12 @@ pub async fn api_docs(mut req: Request) -> Result<Response, Error> {
 
 /// Serve OpenAPI Spec JSON
 pub async fn openapi_spec(_req: Request) -> Result<Response, Error> {
-    use oxidite_openapi::{OpenApiBuilder, Info, PathItem, Operation, Response as OpenApiResponse};
+    use toxi_openapi::{OpenApiBuilder, Info, PathItem, Operation, Response as OpenApiResponse};
     
     let mut builder = OpenApiBuilder::new(
-        "Oxidite Demo API",
+        "Toxi Demo API",
         "1.0.0"
-    ).description("API documentation for the Oxidite Demo Application");
+    ).description("API documentation for the Toxi Demo Application");
 
     // Define /api/users
     builder = builder.path("/api/users", PathItem {
@@ -98,12 +98,12 @@ pub async fn openapi_spec(_req: Request) -> Result<Response, Error> {
     });
 
     let spec = builder.build();
-    Ok(oxidite_core::response::json(spec))
+    Ok(toxi_core::response::json(spec))
 }
 
 /// Favicon handler
 pub async fn favicon(_req: Request) -> Result<Response, Error> {
-    let content = std::fs::read_to_string("public/images/oxidite.svg")
+    let content = std::fs::read_to_string("public/images/toxi.svg")
         .map_err(|_| Error::NotFound)?;
         
     let mut response = Response::new(content.into());

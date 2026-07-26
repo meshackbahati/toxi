@@ -1,10 +1,10 @@
 # Real-time Features
 
-Real-time features enable live updates, bidirectional communication, and interactive experiences in your Oxidite applications. This chapter covers WebSocket support, Server-Sent Events (SSE), and pub/sub messaging.
+Real-time features enable live updates, bidirectional communication, and interactive experiences in your Toxi applications. This chapter covers WebSocket support, Server-Sent Events (SSE), and pub/sub messaging.
 
 ## Overview
 
-Real-time features in Oxidite include:
+Real-time features in Toxi include:
 - WebSocket connections for bidirectional communication
 - Server-Sent Events for unidirectional server-to-client updates
 - Pub/Sub messaging for event distribution
@@ -16,8 +16,8 @@ Real-time features in Oxidite include:
 WebSockets provide full-duplex communication channels over a single TCP connection:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_realtime::websocket::{WebSocket, Message, WebSocketHandler};
+use toxi::prelude::*;
+use toxi_realtime::websocket::{WebSocket, Message, WebSocketHandler};
 
 async fn websocket_handler(ws: WebSocket) -> Result<()> {
     // Set up message handler
@@ -71,8 +71,8 @@ async fn websocket_upgrade(_req: Request) -> Result<Response> {
 Manage WebSocket connections with shared state:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_realtime::websocket::{WebSocket, Message};
+use toxi::prelude::*;
+use toxi_realtime::websocket::{WebSocket, Message};
 use std::sync::Arc;
 use tokio::sync::broadcast;
 
@@ -160,8 +160,8 @@ async fn chat_websocket_handler(ws: WebSocket, state: ChatState) -> Result<()> {
 Server-Sent Events provide unidirectional server-to-client communication:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_realtime::sse::EventStream;
+use toxi::prelude::*;
+use toxi_realtime::sse::EventStream;
 
 async fn sse_handler(_req: Request) -> Result<Response> {
     let mut stream = EventStream::new();
@@ -241,7 +241,7 @@ struct AuthenticatedUser {
 Implement publish-subscribe messaging for event distribution:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 use tokio::sync::broadcast;
 
@@ -345,7 +345,7 @@ async fn event_stream_websocket_handler(
 Build a notification system with real-time delivery:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::broadcast;
@@ -451,7 +451,7 @@ async fn notification_websocket_handler(
 Track real-time metrics and analytics:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 use tokio::sync::mpsc;
 
@@ -575,7 +575,7 @@ async fn real_time_metrics(State(analytics): State<Arc<AnalyticsService>>) -> Re
 Optimize real-time features for performance:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 pub struct RealTimeConfig {
     pub websocket_max_connections: usize,
@@ -649,7 +649,7 @@ impl WebSocketPool {
 Secure real-time features properly:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Secure WebSocket middleware
 async fn secure_websocket_middleware(
@@ -771,7 +771,7 @@ fn contains_malicious_content(text: &str) -> bool {
 Provide frontend integration examples:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 // Endpoint to get WebSocket connection details
 async fn websocket_config(_user: AuthenticatedUser) -> Result<Response> {
@@ -837,7 +837,7 @@ async fn sse_connection_helper(_user: AuthenticatedUser) -> Result<Response> {
 
 ## Summary
 
-Real-time features in Oxidite provide:
+Real-time features in Toxi provide:
 
 - **WebSocket Support**: Full-duplex communication for interactive applications
 - **Server-Sent Events**: Unidirectional server-to-client updates

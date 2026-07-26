@@ -1,5 +1,5 @@
-use oxidite::prelude::*;
-use oxidite_realtime::WebSocketManager;
+use toxi::prelude::*;
+use toxi_realtime::WebSocketManager;
 use std::sync::Arc;
 
 pub async fn init_realtime() -> Result<Arc<WebSocketManager>> {

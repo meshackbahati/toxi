@@ -1,9 +1,9 @@
-use oxidite_core::{Request, Response, Error, State, FromRequest, html, json, RequestExt};
+use toxi_core::{Request, Response, Error, State, FromRequest, html, json, RequestExt};
 use crate::{AppState, models::{User, Post}};
 use std::sync::Arc;
-use oxidite_db::{Database, sqlx::Row};
+use toxi_db::{Database, sqlx::Row};
 use serde_json::json;
-use oxidite_template::Context;
+use toxi_template::Context;
 use serde::Deserialize;
 
 /// List all posts (web page)

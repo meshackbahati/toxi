@@ -1,6 +1,6 @@
 # Templating System
 
-Oxidite includes a powerful templating engine for server-side rendering of HTML content.
+Toxi includes a powerful templating engine for server-side rendering of HTML content.
 
 ## Overview
 
@@ -19,7 +19,7 @@ Add the template feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = { version = "2.1", features = ["templates"] }
+toxi = { version = "3.0", features = ["templates"] }
 ```
 
 ## Basic Usage
@@ -27,7 +27,7 @@ oxidite = { version = "2.1", features = ["templates"] }
 ### Creating a Template Engine
 
 ```rust
-use oxidite::template::{TemplateEngine, Context};
+use toxi::template::{TemplateEngine, Context};
 
 // Create a new template engine
 let mut engine = TemplateEngine::new();
@@ -36,10 +36,12 @@ let mut engine = TemplateEngine::new();
 engine.add_template("hello", "<h1>Hello, {{ name }}!</h1>")?;
 ```
 
+> **Modern pattern:** Use `TemplateContext::new("templates")?.load_dir()?` to load templates from a directory instead of embedding them inline.
+
 ### Rendering Templates
 
 ```rust
-use oxidite::template::{TemplateEngine, Context};
+use toxi::template::{TemplateEngine, Context};
 
 let mut engine = TemplateEngine::new();
 engine.add_template("greeting", "<h1>Hello, {{ name }}!</h1>")?;
@@ -132,7 +134,7 @@ Child template (`page.html`):
 ### Setting Variables
 
 ```rust
-use oxidite::template::Context;
+use toxi::template::Context;
 
 let mut context = Context::new();
 
@@ -173,7 +175,7 @@ context.set("user", json!({
 ### Loading Templates from Directory
 
 ```rust
-use oxidite::template::TemplateEngine;
+use toxi::template::TemplateEngine;
 
 let mut engine = TemplateEngine::new();
 
@@ -186,7 +188,7 @@ println!("Loaded {} templates", count);
 ### Adding Multiple Templates
 
 ```rust
-use oxidite::template::TemplateEngine;
+use toxi::template::TemplateEngine;
 
 let mut engine = TemplateEngine::new();
 
@@ -201,10 +203,12 @@ engine.add_template("contact", r#"
 "#)?;
 ```
 
+> **Modern pattern:** Use `TemplateContext::new("templates")?.load_dir()?` to load templates from a directory instead of adding them inline.
+
 ### Checking for Templates
 
 ```rust
-use oxidite::template::TemplateEngine;
+use toxi::template::TemplateEngine;
 
 let engine = TemplateEngine::new();
 // ... add templates ...
@@ -221,14 +225,14 @@ if engine.get_template("home").is_some() {
 ### Basic Template Route
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::template::{TemplateEngine, Context};
+use toxi::prelude::*;
+use toxi::template::{TemplateEngine, Context};
 use serde_json::json;
 
 // Global template engine (in a real app, you'd want to store this in application state)
 static mut TEMPLATE_ENGINE: Option<TemplateEngine> = None;
 
-async fn home_page(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn home_page(_req: Request) -> Result<Response> {
     // In a real app, you'd get the template engine from application state
     let mut engine = TemplateEngine::new();
     engine.add_template("home", r#"
@@ -248,15 +252,17 @@ async fn home_page(_req: OxiditeRequest) -> Result<OxiditeResponse> {
     context.set("message", "This is a template-rendered page");
     
     let html = engine.render("home", &context)?;
-    Ok(response::html(html))
+    Ok(Response::html(html))
 }
 ```
+
+> **Modern pattern:** For real applications, use `TemplateContext::new("templates")?.load_dir()?` to load templates from a directory, then retrieve them via `engine.get_template()`.
 
 ### Template Route with State
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::template::{TemplateEngine, Context};
+use toxi::prelude::*;
+use toxi::template::{TemplateEngine, Context};
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -267,7 +273,7 @@ struct AppState {
 async fn user_profile(
     State(state): State<Arc<AppState>>,
     Path(params): Path<serde_json::Value>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let user_id = params["id"].as_str().unwrap_or("1");
     
     let mut context = Context::new();
@@ -278,7 +284,7 @@ async fn user_profile(
     let html = state.template_engine.render("user_profile.html", &context)
         .map_err(|e| Error::Server(format!("Template error: {}", e)))?;
     
-    Ok(response::html(html))
+    Ok(Response::html(html))
 }
 ```
 
@@ -287,8 +293,8 @@ async fn user_profile(
 ### Serving Static Files
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::template::serve_static;
+use toxi::prelude::*;
+use toxi::template::serve_static;
 
 // Serve static files from the "public" directory
 // This should be registered as the last route to avoid interfering with other routes
@@ -302,7 +308,7 @@ router.get("/static/*", serve_static); // General static files
 ### Static File Configuration
 
 ```rust
-use oxidite::template::{StaticFiles, serve_static};
+use toxi::template::{StaticFiles, serve_static};
 
 // Configure static file serving
 let static_files = StaticFiles::new("public/")
@@ -315,8 +321,8 @@ let static_files = StaticFiles::new("public/")
 Here's a complete example showing how to use the templating system:
 
 ```rust
-use oxidite::prelude::*;
-use oxidite::template::{TemplateEngine, Context};
+use toxi::prelude::*;
+use toxi::template::{TemplateEngine, Context};
 use serde_json::json;
 use std::sync::Arc;
 
@@ -364,11 +370,11 @@ const HOME_TEMPLATE: &str = r#"
 
 async fn home_handler(
     State(state): State<Arc<AppState>>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let mut context = Context::new();
-    context.set("title", "My Oxidite App");
-    context.set("heading", "Welcome to Oxidite");
-    context.set("message", "This page is rendered with the Oxidite templating engine");
+    context.set("title", "My Toxi App");
+    context.set("heading", "Welcome to Toxi");
+    context.set("message", "This page is rendered with the Toxi templating engine");
     context.set("show_users", true);
     context.set("users", vec![
         json!({"name": "Alice", "role": "admin"}),
@@ -379,19 +385,19 @@ async fn home_handler(
     let html = state.template_engine.render("home", &context)
         .map_err(|e| Error::Server(format!("Template error: {}", e)))?;
     
-    Ok(response::html(html))
+    Ok(Response::html(html))
 }
 
 async fn about_handler(
     State(state): State<Arc<AppState>>
-) -> Result<OxiditeResponse> {
+) -> Result<Response> {
     let about_template = r#"
     <!DOCTYPE html>
     <html>
     <head><title>About</title></head>
     <body>
         <h1>About This Site</h1>
-        <p>Built with the Oxidite web framework.</p>
+        <p>Built with the Toxi web framework.</p>
         <p>Current time: {{ current_time }}</p>
     </body>
     </html>
@@ -407,7 +413,7 @@ async fn about_handler(
     let html = temp_engine.render("about", &context)
         .map_err(|e| Error::Server(format!("Template error: {}", e)))?;
     
-    Ok(response::html(html))
+    Ok(Response::html(html))
 }
 
 #[tokio::main]
@@ -427,15 +433,15 @@ async fn main() -> Result<()> {
     // Serve static files (should be last to avoid catching other routes)
     router.get("/public/*", serve_static);
     
-    let service = ServiceBuilder::new()
-        .layer(AddExtensionLayer::new(state))
-        .service(router);
+    let router = router.with_state(state);
     
-    Server::new(service)
+    Server::new(router)
         .listen("127.0.0.1:3000".parse().unwrap())
         .await
 }
 ```
+
+> **Modern pattern:** Replace inline `add_template()` calls with `TemplateContext::new("templates")?.load_dir()?` to load templates from a directory at startup.
 
 ## Best Practices
 

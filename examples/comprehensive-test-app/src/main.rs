@@ -3,7 +3,7 @@ mod auth;
 mod queue;
 mod realtime;
 
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 
 #[tokio::main]

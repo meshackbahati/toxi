@@ -1,21 +1,21 @@
 # Core Concepts
 
-This document explains the fundamental concepts of the Oxidite web framework.
+This document explains the fundamental concepts of the Toxi web framework.
 
 ## Architecture Overview
 
-Oxidite follows a modular architecture with the following main components:
+Toxi follows a modular architecture with the following main components:
 
-- **oxidite-core**: HTTP server, routing, and basic request/response handling
-- **oxidite-db**: Database ORM and migrations
-- **oxidite-auth**: Authentication and authorization
-- **oxidite-middleware**: Middleware components
-- **oxidite-template**: Template engine
-- **oxidite-cli**: Command-line tools
+- **toxi-core**: HTTP server, routing, and basic request/response handling
+- **toxi-db**: Database ORM and migrations
+- **toxi-auth**: Authentication and authorization
+- **toxi-middleware**: Middleware components
+- **toxi-template**: Template engine
+- **toxi-cli**: Command-line tools
 
 ## Request-Response Lifecycle
 
-The typical lifecycle of a request in Oxidite:
+The typical lifecycle of a request in Toxi:
 
 1. **Incoming Request**: HTTP request arrives at the server
 2. **Routing**: Router matches the path to a handler function
@@ -32,7 +32,7 @@ The Router is responsible for mapping incoming HTTP requests to handler function
 ### Creating a Router
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 let mut router = Router::new();
 ```
@@ -73,18 +73,18 @@ Handlers are async functions that process requests and return responses.
 ### Handler Signature
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
-async fn handler(request: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn handler(request: Request) -> Result<Response> {
     // Process request
-    Ok(response::text("Hello, World!"))
+    Ok(Response::text("Hello, World!"))
 }
 ```
 
 ### Handler with Extractors
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -94,8 +94,8 @@ struct UserId {
 
 async fn get_user(
     Path(params): Path<UserId>
-) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
+) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
         "id": params.id,
         "name": "User Name"
     })))
@@ -104,7 +104,7 @@ async fn get_user(
 
 ## Request and Response Types
 
-### OxiditeRequest
+### Request
 
 Represents an incoming HTTP request with:
 
@@ -114,7 +114,7 @@ Represents an incoming HTTP request with:
 - Body
 - Extensions (for storing additional data like path params, state)
 
-### OxiditeResponse
+### Response
 
 Represents an outgoing HTTP response with:
 
@@ -124,19 +124,19 @@ Represents an outgoing HTTP response with:
 
 ## Response Utilities
 
-Oxidite provides utility functions to create common response types:
+Toxi provides utility functions to create common response types:
 
 ```rust
-use oxidite::response;
+use toxi::response;
 
 // JSON response
-let json_resp = response::json(serde_json::json!({"key": "value"}));
+let json_resp = Response::json(serde_json::json!({"key": "value"}));
 
 // HTML response
-let html_resp = response::html("<h1>Hello</h1>");
+let html_resp = Response::html("<h1>Hello</h1>");
 
 // Text response
-let text_resp = response::text("Plain text");
+let text_resp = Response::text("Plain text");
 ```
 
 ## Extractors
@@ -153,7 +153,7 @@ Extractors are types that implement the `FromRequest` trait to extract data from
 ### Json Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -162,8 +162,8 @@ struct CreateUser {
     email: String,
 }
 
-async fn create_user(Json(data): Json<CreateUser>) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
+async fn create_user(Json(data): Json<CreateUser>) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
         "id": 1,
         "name": data.name,
         "email": data.email
@@ -174,7 +174,7 @@ async fn create_user(Json(data): Json<CreateUser>) -> Result<OxiditeResponse> {
 ### Query Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -183,11 +183,11 @@ struct Pagination {
     limit: Option<u32>,
 }
 
-async fn list_items(Query(params): Query<Pagination>) -> Result<OxiditeResponse> {
+async fn list_items(Query(params): Query<Pagination>) -> Result<Response> {
     let page = params.page.unwrap_or(1);
     let limit = params.limit.unwrap_or(10);
     
-    Ok(response::json(serde_json::json!({
+    Ok(Response::json(serde_json::json!({
         "page": page,
         "limit": limit
     })))
@@ -197,7 +197,7 @@ async fn list_items(Query(params): Query<Pagination>) -> Result<OxiditeResponse>
 ### Path Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -205,8 +205,8 @@ struct UserId {
     id: u64,
 }
 
-async fn get_user(Path(params): Path<UserId>) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
+async fn get_user(Path(params): Path<UserId>) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
         "id": params.id
     })))
 }
@@ -215,7 +215,7 @@ async fn get_user(Path(params): Path<UserId>) -> Result<OxiditeResponse> {
 ### State Extractor
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -223,8 +223,8 @@ struct AppState {
     app_name: String,
 }
 
-async fn handler(State(state): State<Arc<AppState>>) -> Result<OxiditeResponse> {
-    Ok(response::json(serde_json::json!({
+async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
+    Ok(Response::json(serde_json::json!({
         "app_name": state.app_name
     })))
 }
@@ -235,7 +235,7 @@ async fn handler(State(state): State<Arc<AppState>>) -> Result<OxiditeResponse> 
 To share state across handlers, use the State extractor:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -244,31 +244,29 @@ struct AppState {
     config: Config,
 }
 
-// When setting up your service, add state to request extensions
+// Inject state into router
 let state = Arc::new(AppState { /* ... */ });
 
-let service = ServiceBuilder::new()
-    .layer(AddExtensionLayer::new(state))
-    .service(router);
+let router = router.with_state(state);
 ```
 
 Then extract it in handlers:
 
 ```rust
-async fn handler(State(state): State<Arc<AppState>>) -> Result<OxiditeResponse> {
+async fn handler(State(state): State<Arc<AppState>>) -> Result<Response> {
     // Use state.db_pool, state.config, etc.
-    Ok(response::text("Success"))
+    Ok(Response::text("Success"))
 }
 ```
 
 ## Error Handling
 
-Oxidite uses a Result-based error handling system:
+Toxi uses a Result-based error handling system:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
-// Error variants in oxidite-core
+// Error variants in toxi-core
 enum Error {
     Server(String),
     NotFound,
@@ -281,11 +279,11 @@ enum Error {
 type Result<T> = std::result::Result<T, Error>;
 
 // In handlers
-async fn handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
+async fn handler(_req: Request) -> Result<Response> {
     // This will return a Server error if it fails
     let data = some_operation_that_might_fail()?;
     
-    Ok(response::json(serde_json::json!(data)))
+    Ok(Response::json(serde_json::json!(data)))
 }
 ```
 
@@ -294,7 +292,7 @@ async fn handler(_req: OxiditeRequest) -> Result<OxiditeResponse> {
 The Server component listens on a socket and handles incoming connections:
 
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {

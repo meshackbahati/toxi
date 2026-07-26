@@ -1,4 +1,4 @@
-use oxidite_core::{Request, Response, Error, json};
+use toxi_core::{Request, Response, Error, json};
 
 /// List users V2 (New format)
 pub async fn list_users_v2(_req: Request) -> Result<Response, Error> {

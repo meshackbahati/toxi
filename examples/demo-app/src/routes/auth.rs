@@ -1,4 +1,4 @@
-use oxidite_core::{Request, Response, Error, State, FromRequest, RequestExt, json};
+use toxi_core::{Request, Response, Error, State, FromRequest, RequestExt, json};
 use serde::Deserialize;
 use crate::AppState;
 use std::sync::Arc;

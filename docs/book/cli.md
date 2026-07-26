@@ -1,28 +1,28 @@
 # CLI Tools
 
-The Oxidite CLI package is `oxidite-cli`, and the installed executable is `oxidite`.
+The Toxi CLI package is `toxi-cli`, and the installed executable is `toxi`.
 
 ## Installation
 
 ```bash
-cargo install oxidite-cli
+cargo install toxi-cli
 ```
 
 **After installation**, add this alias for shorter commands:
 
 ```bash
 # Bash
-echo "alias oxi='oxidite'" >> ~/.bashrc
+echo "alias oxi='toxi'" >> ~/.bashrc
 source ~/.bashrc
 
 # Zsh
-echo "alias oxi='oxidite'" >> ~/.zshrc
+echo "alias oxi='toxi'" >> ~/.zshrc
 source ~/.zshrc
 ```
 
 **Windows PowerShell:**
 ```powershell
-Set-Alias oxi oxidite  # Add to $PROFILE for persistence
+Set-Alias oxi toxi  # Add to $PROFILE for persistence
 ```
 
 The CLI will also suggest this alias on first run.
@@ -107,7 +107,7 @@ Stores process state locally. For production deployment, use systemd, Docker, or
 ## Debug and Output
 
 ```bash
-OXIDITE_DEBUG=1 oxi dev
+TOXI_DEBUG=1 oxi dev
 ```
 
 Colored output: red for errors, green for success, yellow for warnings, blue for info. Errors are categorized by type automatically.

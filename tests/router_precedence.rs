@@ -1,4 +1,4 @@
-use oxidite_core::{Router, Request, Response, Result, Error};
+use toxi_core::{Router, Request, Response, Result, Error};
 use std::sync::Arc;
 
 #[tokio::main]
@@ -18,7 +18,7 @@ async fn main() {
     // Test specific route
     let req = Request::builder()
         .uri("/")
-        .body(oxidite_core::BoxBody::default())
+        .body(toxi_core::BoxBody::default())
         .unwrap();
 
     let res = router.handle(req).await.unwrap();
@@ -30,7 +30,7 @@ async fn main() {
     // Test fallback route
     let req = Request::builder()
         .uri("/other")
-        .body(oxidite_core::BoxBody::default())
+        .body(toxi_core::BoxBody::default())
         .unwrap();
     
     let res = router.handle(req).await.unwrap();

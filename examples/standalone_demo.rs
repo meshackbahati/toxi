@@ -1,5 +1,5 @@
-use oxidite::prelude::*;
-use oxidite::db::Model;
+use toxi::prelude::*;
+use toxi::db::Model;
 use serde::{Deserialize, Serialize};
 
 // Define a simple model
@@ -15,7 +15,7 @@ pub struct User {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("=== Oxidite Single File Example ===\n");
+    println!("=== Toxi Single File Example ===\n");
 
     // Load configuration
     let config = Config::from_env()
@@ -52,7 +52,7 @@ async fn main() -> Result<()> {
 // Route handlers
 async fn get_root(_req: Request) -> Result<Response> {
     let body = serde_json::json!({
-        "message": "Welcome to Oxidite!",
+        "message": "Welcome to Toxi!",
         "version": "2.3.2"
     });
 

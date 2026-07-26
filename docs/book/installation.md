@@ -1,10 +1,10 @@
 # Installation
 
-This chapter covers how to install Oxidite and set up your development environment.
+This chapter covers how to install Toxi and set up your development environment.
 
 ## Prerequisites
 
-Before installing Oxidite, you'll need:
+Before installing Toxi, you'll need:
 
 - Rust 1.75 or higher
 - Cargo (comes with Rust)
@@ -16,19 +16,19 @@ You can install Rust using rustup:
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-## Installing the Oxidite CLI
+## Installing the Toxi CLI
 
-Install the `oxidite-cli` package. It provides the `oxidite` executable:
+Install the `toxi-cli` package. It provides the `toxi` executable:
 
 ```bash
 # Install from source (recommended for development)
-cargo install --path oxidite-cli
+cargo install --path toxi-cli
 
 # Or install from crates.io
-cargo install oxidite-cli
+cargo install toxi-cli
 
 # Or pin this generated CLI build
-cargo install oxidite-cli --version 2.3.4
+cargo install toxi-cli --version 2.3.4
 ```
 
 ## Creating Your First Project
@@ -36,20 +36,20 @@ cargo install oxidite-cli --version 2.3.4
 Once you have the CLI installed, create a new project:
 
 ```bash
-oxidite new my-app
+toxi new my-app
 cd my-app
-oxidite --version
+toxi --version
 ```
 
-This will create a new Oxidite project with a basic structure and all necessary dependencies.
+This will create a new Toxi project with a basic structure and all necessary dependencies.
 
 ## Manual Installation
 
-If you prefer to add Oxidite to an existing project manually, add it to your `Cargo.toml`:
+If you prefer to add Toxi to an existing project manually, add it to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-oxidite = { version = "2.3", features = ["full"] }
+toxi = { version = "2.3", features = ["full"] }
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 ```
@@ -60,7 +60,7 @@ For testing and development, you may also want to add:
 
 ```toml
 [dev-dependencies]
-oxidite-testing = "2.3"
+toxi-testing = "2.3"
 tokio-test = "0.4"
 ```
 
@@ -69,10 +69,10 @@ tokio-test = "0.4"
 To verify your installation, create a simple test file:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn hello(_req: Request) -> Result<Response> {
-    Ok(Response::text("Hello, Oxidite!"))
+    Ok(Response::text("Hello, Toxi!"))
 }
 
 #[tokio::main]

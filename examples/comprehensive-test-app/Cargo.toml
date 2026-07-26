@@ -4,18 +4,18 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-oxidite = { path = "../../oxidite", version = "2.3.4", features = ["full"] }
-oxidite-core = { path = "../../oxidite-core", version = "2.3.4" }
-oxidite-auth = { path = "../../oxidite-auth", version = "2.3.4" }
-oxidite-db = { path = "../../oxidite-db", version = "2.3.4" }
-oxidite-queue = { path = "../../oxidite-queue", version = "2.3.4" }
-oxidite-realtime = { path = "../../oxidite-realtime", version = "2.3.4" }
-oxidite-storage = { path = "../../oxidite-storage", version = "2.3.4" }
-oxidite-mail = { path = "../../oxidite-mail", version = "2.3.4" }
-oxidite-template = { path = "../../oxidite-template", version = "2.3.4" }
-oxidite-middleware = { path = "../../oxidite-middleware", version = "2.3.4" }
-oxidite-config = { path = "../../oxidite-config", version = "2.3.4" }
-oxidite-cache = { path = "../../oxidite-cache", version = "2.3.4" }
+toxi = { path = "../../toxi", version = "3.0.0", features = ["full"] }
+toxi-core = { path = "../../toxi-core", version = "3.0.0" }
+toxi-auth = { path = "../../toxi-auth", version = "3.0.0" }
+toxi-db = { path = "../../toxi-db", version = "3.0.0" }
+toxi-queue = { path = "../../toxi-queue", version = "3.0.0" }
+toxi-realtime = { path = "../../toxi-realtime", version = "3.0.0" }
+toxi-storage = { path = "../../toxi-storage", version = "3.0.0" }
+toxi-mail = { path = "../../toxi-mail", version = "3.0.0" }
+toxi-template = { path = "../../toxi-template", version = "3.0.0" }
+toxi-middleware = { path = "../../toxi-middleware", version = "3.0.0" }
+toxi-config = { path = "../../toxi-config", version = "3.0.0" }
+toxi-cache = { path = "../../toxi-cache", version = "3.0.0" }
 
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }

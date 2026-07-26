@@ -1,17 +1,17 @@
 # Responses
 
-In Oxidite, responses are how you send data back to clients. The framework provides multiple ways to create responses, from simple text to complex HTML templates.
+In Toxi, responses are how you send data back to clients. The framework provides multiple ways to create responses, from simple text to complex HTML templates.
 
 ## Basic Response Types
 
-Oxidite provides several convenience methods on the `Response` type to create different kinds of responses:
+Toxi provides several convenience methods on the `Response` type to create different kinds of responses:
 
 ### JSON Responses
 
 The most common response type for APIs is JSON:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn api_handler(_req: Request) -> Result<Response> {
     let data = serde_json::json!({
@@ -29,7 +29,7 @@ For server-rendered content, you can create HTML responses:
 
 ```rust,ignore
 async fn home_page(_req: Request) -> Result<Response> {
-    Ok(Response::html("<h1>Welcome to Oxidite!</h1>".to_string()))
+    Ok(Response::html("<h1>Welcome to Toxi!</h1>".to_string()))
 }
 ```
 
@@ -62,14 +62,14 @@ async fn no_content(_req: Request) -> Result<Response> {
 While the direct methods on `Response` are preferred, you can also use the response utilities:
 
 ```rust,ignore
-use oxidite::response;
+use toxi::response;
 
 async fn alternative_json(_req: Request) -> Result<Response> {
-    Ok(response::json(serde_json::json!({ "data": "value" })))
+    Ok(Response::json(serde_json::json!({ "data": "value" })))
 }
 
 async fn alternative_html(_req: Request) -> Result<Response> {
-    Ok(response::html("<p>Alternative HTML</p>".to_string()))
+    Ok(Response::html("<p>Alternative HTML</p>".to_string()))
 }
 ```
 
@@ -101,14 +101,14 @@ async fn custom_response(_req: Request) -> Result<Response> {
 When using the template engine, you can render templates directly as responses:
 
 ```rust,ignore
-use oxidite::prelude::*;
-use oxidite_template::{TemplateContext, TemplateEngine};
+use toxi::prelude::*;
+use toxi_template::{TemplateContext, TemplateEngine};
 
 async fn template_handler(
     State(engine): State<TemplateEngine>,
     TemplateContext(mut context): TemplateContext,
 ) -> Result<Response> {
-    context.set("name", "Oxidite");
+    context.set("name", "Toxi");
     let response = engine.render_response("index", &context)?;
     Ok(response)
 }
@@ -116,7 +116,7 @@ async fn template_handler(
 
 ## Error Responses
 
-Oxidite provides various error response types that automatically map to appropriate HTTP status codes:
+Toxi provides various error response types that automatically map to appropriate HTTP status codes:
 
 ```rust,ignore
 async fn error_example(_req: Request) -> Result<Response> {
@@ -217,7 +217,7 @@ async fn streaming_response(_req: Request) -> Result<Response> {
 
 ## Summary
 
-The Response API in Oxidite is designed to be intuitive and flexible:
+The Response API in Toxi is designed to be intuitive and flexible:
 
 - Use `Response::json()`, `Response::html()`, and `Response::text()` for the most common response types
 - Use `Response::ok()` and `Response::no_content()` for empty responses

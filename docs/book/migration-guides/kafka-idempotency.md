@@ -1,6 +1,6 @@
 # Kafka Integration with Idempotent Consumers
 
-Use this guide when migrating event workers from Node to Oxidite.
+Use this guide when migrating event workers from Node to Toxi.
 
 ## Design rules
 

@@ -1,13 +1,13 @@
 # Hello World
 
-Let's start with the classic "Hello, World!" example to get familiar with Oxidite's basic concepts.
+Let's start with the classic "Hello, World!" example to get familiar with Toxi's basic concepts.
 
 ## The Simplest Application
 
-Here's the most basic Oxidite application:
+Here's the most basic Toxi application:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn hello(_req: Request) -> Result<Response> {
     Ok(Response::text("Hello, World!"))
@@ -24,7 +24,7 @@ async fn main() -> Result<()> {
 
 Let's break this down:
 
-1. `use oxidite::prelude::*;` - Imports all the essential types and functions
+1. `use toxi::prelude::*;` - Imports all the essential types and functions
 2. `async fn hello(...)` - Defines a handler function that takes a request and returns a response
 3. `_req: Request` - The incoming request (we use `_` since we don't use it)
 4. `Ok(Response::text(...))` - Creates a text response
@@ -56,7 +56,7 @@ async fn html_hello(_req: Request) -> Result<Response> {
         <head><title>Hello</title></head>
         <body>
             <h1>Hello, World!</h1>
-            <p>Welcome to Oxidite!</p>
+            <p>Welcome to Toxi!</p>
         </body>
         </html>
     "#.to_string()))
@@ -65,7 +65,7 @@ async fn html_hello(_req: Request) -> Result<Response> {
 
 ### Different Routes
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn home(_req: Request) -> Result<Response> {
     Ok(Response::text("Welcome to the home page!"))
@@ -94,10 +94,10 @@ async fn main() -> Result<()> {
 
 ## Using Path Parameters
 
-Oxidite supports path parameters that you can extract:
+Toxi supports path parameters that you can extract:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn greet(Path(name): Path<String>) -> Result<Response> {
     Ok(Response::text(format!("Hello, {}!", name)))
@@ -131,7 +131,7 @@ async fn main() -> Result<()> {
 You can also extract query parameters:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -172,7 +172,7 @@ async fn main() -> Result<()> {
 For POST requests, you can extract JSON data:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -208,7 +208,7 @@ async fn main() -> Result<()> {
 Let's add some error handling:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn maybe_error(query: Query<serde_json::Value>) -> Result<Response> {
     let should_error = query.0.get("error").and_then(|v| v.as_bool()).unwrap_or(false);
@@ -241,7 +241,7 @@ async fn main() -> Result<()> {
 Here's a more complete example combining multiple features:
 
 ```rust,ignore
-use oxidite::prelude::*;
+use toxi::prelude::*;
 use serde::{Serialize, Deserialize};
 
 #[derive(Model, sqlx::FromRow, Serialize, Deserialize)]
@@ -261,9 +261,9 @@ async fn home(_req: Request) -> Result<Response> {
     Ok(Response::html(r#"
         <!DOCTYPE html>
         <html>
-        <head><title>Oxidite Demo</title></head>
+        <head><title>Toxi Demo</title></head>
         <body>
-            <h1>Welcome to Oxidite!</h1>
+            <h1>Welcome to Toxi!</h1>
             <nav>
                 <a href="/api/hello">API Hello</a> |
                 <a href="/users?page=1">Users API</a> |
@@ -277,7 +277,7 @@ async fn home(_req: Request) -> Result<Response> {
 async fn api_hello(_req: Request) -> Result<Response> {
     Ok(Response::json(serde_json::json!({
         "message": "Hello from API",
-        "framework": "Oxidite",
+        "framework": "Toxi",
         "version": "2.3"
     })))
 }
@@ -321,11 +321,11 @@ async fn main() -> Result<()> {
 
 To run any of these examples:
 
-1. Create a new Rust project: `cargo new hello-oxidite`
-2. Add Oxidite to your `Cargo.toml`:
+1. Create a new Rust project: `cargo new hello-toxi`
+2. Add Toxi to your `Cargo.toml`:
    ```toml
    [dependencies]
-   oxidite = { version = "2.3", features = ["full"] }
+   toxi = { version = "2.3", features = ["full"] }
    tokio = { version = "1.0", features = ["full"] }
    serde = { version = "1.0", features = ["derive"] }
    serde_json = "1.0"
@@ -335,4 +335,4 @@ To run any of these examples:
 4. Run with `cargo run`
 5. Visit `http://127.0.0.1:3000` in your browser
 
-This Hello World example demonstrates the fundamental concepts of Oxidite: handlers, routes, responses, and request data extraction. These concepts form the foundation for building more complex applications.
+This Hello World example demonstrates the fundamental concepts of Toxi: handlers, routes, responses, and request data extraction. These concepts form the foundation for building more complex applications.

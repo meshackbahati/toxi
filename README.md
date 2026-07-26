@@ -1,144 +1,246 @@
-# Oxidite Web Framework
+# Toxi
 
 <div align="center">
 
-<img src="docs/logo/oxidite.svg" width="200" alt="Oxidite Logo">
+<img src="docs/logo/toxi.svg" width="200" alt="Toxi Logo">
 
-A modern, high-performance web framework for Rust, inspired by FastAPI & Express.js.
+A modular web framework for Rust.
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub](https://img.shields.io/badge/github-meshackbahati%2Frust--oxidite-black)](https://github.com/meshackbahati/rust-oxidite)
-[![Stability](https://img.shields.io/badge/stability-beta-yellow.svg)](ROADMAP.md)
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](Cargo.toml)
+[![GitHub](https://img.shields.io/badge/github-meshackbahati%2Ftoxi-black)](https://github.com/meshackbahati/toxi)
 
 </div>
 
 ---
 
-## What is Oxidite?
+## What is Toxi?
 
-Oxidite is a modern, high-performance, developer-first web framework for Rust that provides a Rails-like, batteries-included experience. Built on top of the lightning-fast `hyper` and `tokio` asynchronous runtimes, it eliminates boilerplates by providing first-class identity & access management, a fully-featured custom ORM with async validation and eager-loading, a unified cloud/local storage manager, durable background queues, interactive REPL (`oxidite tinker`), hot-reload dev servers, and beautiful diagnostic pages. Oxidite is designed to provide maximum velocity and system-level performance, without compromising on developer ergonomics.
+Toxi is a modular web framework for Rust built on `hyper` and `tokio`. It provides a complete, opt-in stack for building HTTP services — from a lean routing core to a full-featured ORM, authentication, real-time communication, background jobs, and more.
 
-## Key Features
+Every capability is a separate crate. Use `toxi-core` alone for a minimal API, or enable the full stack with `toxi = { features = ["full"] }`. Nothing is forced. Nothing is hidden.
 
-- **High Performance**: Built on `hyper` and `tokio` for blazing speed and high concurrency.
-- **Advanced ORM**: Complete database layer with relationships, soft deletes, validation, and automated migrations.
-- **Native Real-time**: First-class support for WebSockets and SSE with built-in connection orchestration.
-- **Enterprise Security**: Built-in password hashing, JWT, OAuth2, 2FA, and granular RBAC/PBAC.
-- **Developer Experience**: Powerful CLI for scaffolding, hot-reload development, and automated code generation.
-- **Modular Ecosystem**: Optional crates for Caching, Queues, Email, Storage, and OpenAPI generation.
+## Quick Start
 
-## Native WebSocket Support
-
-Oxidite now features a native `WebSocketUpgrade` extractor that handles protocol handshakes automatically:
-
-```rust
-use oxidite::prelude::*;
-
-async fn ws_handler(ws: WebSocketUpgrade) -> Result<Response> {
-    Ok(ws.on_upgrade(|socket, extensions| async move {
-        // Handle authenticated full-duplex communication here
-        let user = extensions.get::<AuthenticatedUser>();
-    }))
-}
+```toml
+[dependencies]
+toxi = "3.0.0"
+tokio = { version = "1", features = ["full"] }
 ```
 
-## Installation
-
-Install the `oxidite-cli` package to get started:
-
-```bash
-# Install from source
-cargo install --path oxidite-cli
-```
-
-## Usage Example
-
 ```rust
-use oxidite::prelude::*;
+use toxi::prelude::*;
 
 async fn hello(_req: Request) -> Result<Response> {
-    Ok(Response::json(serde_json::json!({ "message": "Hello from Oxidite!" })))
+    Ok(json_response!({ "message": "Hello from Toxi!" }))
 }
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let config = Config::load().unwrap();
-    let mut app = Application::new(config);
+    let mut app = Application::new(Config::load().unwrap());
     app.router_mut().get("/", hello);
     app.run().await
 }
 ```
 
-> **Alternative**: The manual approach using `Router::new()` → `router.get(...)` → `Server::new(router).listen(addr)` works identically.
+## Core Concepts
 
-## Architecture & Modular Ecosystem
+### Extractors
 
-Oxidite is architected as a collection of high-cohesion, low-coupling crates, allowing developers to opt-in to the specific capabilities they require:
+Handler parameters are automatically extracted from the request:
 
-| Crate                            | Purpose                                                 |
-| -------------------------------- | ------------------------------------------------------- |
-| **`oxidite`**            | Unified facade and development prelude.                 |
-| **`oxidite-core`**       | High-performance HTTP kernel and routing engine.        |
-| **`oxidite-macros`**     | Procedural macros for route and model derivation.       |
-| **`oxidite-db`**         | Advanced ORM with migration and relationship support.   |
-| **`oxidite-auth`**       | Identity and Access Management (JWT, OAuth2, RBAC).     |
-| **`oxidite-realtime`**   | WebSocket, SSE, and event broadcasting orchestration.   |
-| **`oxidite-middleware`** | Standard middleware suite (CORS, Logging, Compression). |
-| **`oxidite-config`**     | Hierarchical configuration and environment management.  |
-| **`oxidite-cache`**      | Multi-backend caching (Redis, In-memory).               |
-| **`oxidite-queue`**      | Background job orchestration and task scheduling.       |
-| **`oxidite-template`**   | Server-side rendering and static asset management.      |
-| **`oxidite-mail`**       | SMTP and provider-based email delivery.                 |
-| **`oxidite-storage`**    | Local and S3-compatible object storage abstractions.    |
-| **`oxidite-security`**   | Cryptographic primitives and hardening utilities.       |
-| **`oxidite-utils`**      | Common string, date, and validation helpers.            |
-| **`oxidite-openapi`**    | Automated OpenAPI 3.0 schema generation.                |
-| **`oxidite-graphql`**    | Type-safe GraphQL integration.                          |
-| **`oxidite-testing`**    | Integrated testing and simulation utilities.            |
-| **`oxidite-plugin`**     | Framework extension and lifecycle hook APIs.            |
-| **`oxidite-cli`**        | The framework's primary command-line interface.         |
+```rust
+use toxi::prelude::*;
 
-## 📊 Feature Comparison Matrix
+#[derive(Deserialize)]
+struct CreateUser {
+    name: String,
+    email: String,
+}
 
-Oxidite provides the most feature-rich, high-level developer experience in the Rust web ecosystem. Here is how it compares built-in capability-wise to other major frameworks:
+async fn create_user(
+    State(db): State<Arc<DbPool>>,
+    Json(body): Json<CreateUser>,
+) -> Result<Response> {
+    let user = User::create(&db, &body.name, &body.email).await?;
+    Ok(json_response!({ "id": user.id }))
+}
+```
 
-| Feature                                |    Oxidite    |  Axum  |      Actix      |  Rocket  |    Loco    |  Poem  |  Salvo  |
-| -------------------------------------- | :-----------: | :----: | :-------------: | :------: | :---------: | :----: | :------: |
-| **Routing & Type-safe Handlers** |      ✅      |   ✅   |       ✅       |    ✅    |     ✅     |   ✅   |    ✅    |
-| **Tower Middleware Support**     |      ✅      |   ✅   | ⚠️ Own system |    ❌    |     ✅     |   ✅   | ⚠️ Own |
-| **Built-in ORM Engine**          |   ✅ Custom   | ❌ BYO |     ❌ BYO     |  ❌ BYO  |  ✅ SeaORM  | ❌ BYO |  ❌ BYO  |
-| **Model Validation Rules**       |    ✅ Rich    | ❌ BYO |     ❌ BYO     | ✅ Basic | ⚠️ Manual | ❌ BYO |  ❌ BYO  |
-| **ORM Relationships**            | ✅ Eager/Lazy |   ❌   |       ❌       |    ❌    |  ✅ SeaORM  |   ❌   |    ❌    |
-| **Automated Migrations**         | ✅ Auto-Diff |   ❌   |       ❌       |    ❌    |     ❌     |   ❌   |    ❌    |
-| **Interactive Console (Tinker)** |   ✅ Tinker   |   ❌   |       ❌       |    ❌    |    ⚠️    |   ❌   |    ❌    |
-| **Unified Storage API**          |      ✅      |   ❌   |       ❌       |    ❌    |     ✅     |   ❌   |    ❌    |
-| **Dev Diagnostics (Ignition)**   |    ✅ HTML    |   ❌   |       ❌       |    ❌    |    ⚠️    |   ❌   |    ❌    |
-| **Auto OpenAPI Generation**      |      ✅      | ❌ BYO |     ❌ BYO     |    ❌    |     ❌     |   ✅   |    ✅    |
+Built-in extractors: `Json<T>`, `Path<T>`, `Query<T>`, `State<T>`, `Form<T>`, `Cookies`, `Body<T>`, `WebSocketUpgrade`.
 
-> ✅ = Built-in &nbsp; ⚠️ = Partial/limited &nbsp; ❌ = Not included (BYO = bring your own)
+### Routing
 
-###  Our ORM Philosophy: Parity with SeaORM & Diesel
+Regex-based routing with path parameters, wildcards, and middleware:
 
-We believe developers shouldn't have to sacrifice ergonomics or safety when interacting with databases. Oxidite's ORM is designed to match the power, speed, and safety of the ecosystem's gold standards, **SeaORM** and **Diesel**:
+```rust
+let mut router = Router::new();
+router.get("/users/:id", get_user);
+router.post("/users", create_user);
+router.delete("/users/:id", delete_user);
+```
 
-- **Compile-Time Checks**: Through procedural macros and helper verification traits (`handler_fn`), we enforce valid model mappings and route bindings.
-- **Eager Loading**: Prevent N+1 query patterns using our generated eager-loading methods (e.g. `eager_load_posts` and `eager_load_profile`), executing batched, optimized IN queries under the hood.
-- **Auto-Diff Migrations**: Generate SQL migrations automatically by diffing your Rust structs directly against the database schema.
+### HTTP/2 Support
 
-###  Benchmarks Notice
+Toxi supports HTTP/1.1 and HTTP/2 out of the box:
 
-We don't believe in hype or synthetic bench-gaming. **We currently do not have verified public benchmarks.**
-While Oxidite is built on top of the ultra-fast `hyper` and `tokio` runtimes, we plan to publish detailed throughput (RPS), latency profiles, and database resource overhead comparisons against Axum, Actix, and Loco in future updates using `criterion` and TechEmpower-style suites.
+```rust
+Server::new(router)
+    .with_http_version(HttpVersion::Http2)
+    .listen(addr)
+    .await
+```
+
+When behind a TLS-terminating proxy, use `HttpVersion::Http::Auto` for ALPN negotiation.
+
+### WebSocket Support
+
+Native WebSocket upgrade with authenticated context:
+
+```rust
+async fn ws_handler(ws: WebSocketUpgrade) -> Result<Response> {
+    Ok(ws.on_upgrade(|socket, extensions| async move {
+        // Handle the WebSocket connection
+    }))
+}
+```
+
+## Modular by Design
+
+Each crate in the Toxi ecosystem is independent. Pick only what you need:
+
+| Crate | Purpose |
+|-------|---------|
+| **`toxi`** | Unified facade — re-exports everything |
+| **`toxi-core`** | HTTP kernel, routing, extractors, server |
+| **`toxi-macros`** | `#[derive(Model)]` and other proc macros |
+| **`toxi-db`** | ORM with relationships, migrations, eager loading |
+| **`toxi-auth`** | JWT, OAuth2, RBAC, 2FA, API keys |
+| **`toxi-realtime`** | WebSocket, SSE, event broadcasting |
+| **`toxi-middleware`** | CORS, logging, compression, rate limiting, CSRF |
+| **`toxi-config`** | TOML config with env variable overrides |
+| **`toxi-cache`** | In-memory and Redis caching |
+| **`toxi-queue`** | Background jobs with Postgres and Redis backends |
+| **`toxi-template`** | Server-side rendering engine |
+| **`toxi-mail`** | SMTP email delivery |
+| **`toxi-storage`** | Local and S3 file storage |
+| **`toxi-security`** | Crypto primitives, hashing, sanitization |
+| **`toxi-utils`** | String, date, validation helpers |
+| **`toxi-openapi`** | OpenAPI 3.0 schema generation |
+| **`toxi-graphql`** | GraphQL integration |
+| **`toxi-testing`** | Test utilities and mock servers |
+| **`toxi-plugin`** | Plugin lifecycle hooks |
+| **`toxi-cli`** | Scaffolding, `tinker` REPL, dev server |
+
+### Minimal Setup
+
+```toml
+# Just routing — nothing else
+[dependencies]
+toxi-core = "3.0.0"
+```
+
+### With Database
+
+```toml
+[dependencies]
+toxi-core = "3.0.0"
+toxi-db = "3.0.0"
+```
+
+### Full Stack
+
+```toml
+[dependencies]
+toxi = { version = "3.0.0", features = ["full"] }
+```
+
+## Feature Flags
+
+| Feature | Enables |
+|---------|---------|
+| `database` | ORM, migrations, relationships |
+| `auth` | JWT, OAuth2, RBAC, 2FA |
+| `queue` | Background job processing |
+| `cache` | Response and data caching |
+| `realtime` | WebSocket and SSE |
+| `templates` | Server-side rendering |
+| `mail` | Email delivery |
+| `storage` | File storage (local + S3) |
+| `security` | Crypto and hashing |
+| `utils` | String and date helpers |
+| `graphql` | GraphQL API |
+| `plugin` | Plugin system |
+| `full` | Everything above |
+
+## ORM
+
+Toxi includes a custom ORM built on `sqlx` with `#[derive(Model)]`:
+
+```rust
+use toxi_db::Model;
+
+#[derive(Model)]
+#[model(table = "users")]
+struct User {
+    id: i64,
+    name: String,
+    email: String,
+}
+
+// Generated methods:
+// User::find_by_id(&db, 1).await?
+// User::create(&db, "Alice", "alice@example.com").await?
+// User::query().filter_eq("name", "Alice").fetch_all(&db).await?
+// user.posts().get(&db).await?  (relationship)
+```
+
+Features: async validation, soft deletes, eager loading (N+1 prevention), auto-diff migrations, savepoint transactions.
+
+## CLI
+
+Install the CLI for scaffolding and development:
+
+```bash
+cargo install --path toxi-cli
+```
+
+Commands:
+- `toxi new <project>` — scaffold a new project
+- `toxi dev` — hot-reload development server
+- `toxi migrate` — run database migrations
+- `toxi tinker` — interactive REPL
+- `toxi generate` — code generation
+
+## Architecture
+
+```text
+┌─────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Client     │────▶│    Server     │────▶│   Router     │
+│  (HTTP/WS)   │     │  (hyper)      │     │  (routes)    │
+└─────────────┘     └──────────────┘     └──────┬───────┘
+                                                  │
+                                          ┌───────▼───────┐
+                                          │   Handler     │
+                                          │  (extractors) │
+                                          └───────────────┘
+```
+
+Built on:
+- **hyper** — HTTP/1.1 and HTTP/2
+- **tokio** — async runtime
+- **tower** — middleware composition
+- **sqlx** — database access
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for public progress and upcoming milestones as we move towards a stable 1.0 release.
+See [ROADMAP.md](ROADMAP.md) for progress and upcoming milestones.
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md).
+Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE).

@@ -1,9 +1,9 @@
-use oxidite_core::{Request, Response, Error, State, FromRequest, html};
+use toxi_core::{Request, Response, Error, State, FromRequest, html};
 use crate::{AppState, models::User};
 use std::sync::Arc;
-use oxidite_db::{Database, sqlx::Row};
+use toxi_db::{Database, sqlx::Row};
 use serde_json::json;
-use oxidite_template::Context;
+use toxi_template::Context;
 
 /// List all users (web page)
 pub async fn list_users(mut req: Request) -> Result<Response, Error> {

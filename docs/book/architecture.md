@@ -1,19 +1,19 @@
 # Architecture
 
-This chapter explains how Oxidite is split across crates and how requests move through the system.
+This chapter explains how Toxi is split across crates and how requests move through the system.
 
 ## Workspace Structure
 
-- `oxidite`: top-level facade and feature flags.
-- `oxidite-core`: router, request/response, server primitives.
-- `oxidite-middleware`: common cross-cutting layers.
-- `oxidite-db` + `oxidite-macros`: ORM, derive macros, migrations.
-- `oxidite-auth`, `oxidite-cache`, `oxidite-queue`, `oxidite-realtime`, `oxidite-template`: batteries-included runtime capabilities.
-- `oxidite-cli`: scaffolding, migration, and developer workflow tooling.
+- `toxi`: top-level facade and feature flags.
+- `toxi-core`: router, request/response, server primitives.
+- `toxi-middleware`: common cross-cutting layers.
+- `toxi-db` + `toxi-macros`: ORM, derive macros, migrations.
+- `toxi-auth`, `toxi-cache`, `toxi-queue`, `toxi-realtime`, `toxi-template`: batteries-included runtime capabilities.
+- `toxi-cli`: scaffolding, migration, and developer workflow tooling.
 
 ## Request Lifecycle
 
-1. The server accepts an HTTP request in `oxidite-core`.
+1. The server accepts an HTTP request in `toxi-core`.
 2. The router matches method/path and prepares extractors.
 3. Middleware chain runs pre-handler logic.
 4. Handler executes with typed extractors.
@@ -23,7 +23,7 @@ This chapter explains how Oxidite is split across crates and how requests move t
 
 ## Database Layer Design
 
-Oxidite ORM sits on top of `sqlx::Any`:
+Toxi ORM sits on top of `sqlx::Any`:
 
 - `Database` trait abstracts pool/transaction execution.
 - `Model` trait provides typed CRUD and validation hooks.
@@ -33,6 +33,6 @@ Oxidite ORM sits on top of `sqlx::Any`:
 
 ## Extension Strategy
 
-Prefer adding capabilities in dedicated crates and surfacing stable public APIs through `oxidite`.
+Prefer adding capabilities in dedicated crates and surfacing stable public APIs through `toxi`.
 
 This keeps compile times predictable and avoids making core crates monolithic.
