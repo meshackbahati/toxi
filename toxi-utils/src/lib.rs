@@ -71,4 +71,4 @@ pub use validation::{
 /// assert_eq!(snapshot.get("/api/health"), Some(&(1, 1, 0, 42)));
 /// ```
 pub mod metrics;
-pub use metrics::{GLOBAL_METRICS, MetricsRegistry, RouteMetrics};
+pub use metrics::{GLOBAL_METRICS, MetricsRegistry, RouteMetrics, render_prometheus};

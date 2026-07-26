@@ -161,3 +161,32 @@ impl MetricsRegistry {
 /// GLOBAL_METRICS.record_request("/health", 3, true);
 /// ```
 pub static GLOBAL_METRICS: Lazy<MetricsRegistry> = Lazy::new(MetricsRegistry::new);
+
+/// Render all metrics as Prometheus text format
+///
+/// Each route becomes:
+/// ```prometheus
+/// toxi_requests_total{path="/api/status"} 42
+/// toxi_request_duration_ms{path="/api/status"} 1250
+/// toxi_requests_concurrent 3
+/// ```
+pub fn render_prometheus() -> String {
+    let snapshot = GLOBAL_METRICS.get_snapshot();
+    let concurrent = GLOBAL_METRICS.concurrent_requests();
+    let mut output = String::new();
+
+    output.push_str("# HELP toxi_requests_total Total requests per route\n");
+    output.push_str("# TYPE toxi_requests_total counter\n");
+    for (path, (count, success, errors, duration)) in &snapshot {
+        output.push_str(&format!("toxi_requests_total{{path=\"{}\",result=\"success\"}} {}\n", path, success));
+        output.push_str(&format!("toxi_requests_total{{path=\"{}\",result=\"error\"}} {}\n", path, errors));
+        output.push_str(&format!("toxi_request_duration_ms{{path=\"{}\"}} {}\n", path, duration));
+        output.push_str(&format!("toxi_request_count{{path=\"{}\"}} {}\n", path, count));
+    }
+
+    output.push_str("# HELP toxi_requests_concurrent Current concurrent requests\n");
+    output.push_str("# TYPE toxi_requests_concurrent gauge\n");
+    output.push_str(&format!("toxi_requests_concurrent {}\n", concurrent));
+
+    output
+}
