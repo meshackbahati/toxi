@@ -4,7 +4,7 @@
 
 <img src="../docs/logo/toxi.svg" width="200" alt="Toxi Logo">
 
-A modern, high-performance web framework for Rust, inspired by FastAPI, Express.js, and Laravel.
+A modular, high-performance web framework for Rust.
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](../LICENSE)

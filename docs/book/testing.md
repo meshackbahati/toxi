@@ -205,7 +205,7 @@ mod state_tests {
         
         let json: serde_json::Value = response.json().await;
         assert_eq!(json["app_name"], "Test App");
-        assert_eq!(json["version"], "1.0.0");
+        assert_eq!(json["version"], "3.0.0");
     }
 }
 ```

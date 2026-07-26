@@ -6,14 +6,14 @@ Complete guide to using the Toxi ORM for database operations.
 
 ```toml
 [dependencies]
-toxi = { version = "1.0", features = ["database"] }
+toxi = { version = "3.0", features = ["database"] }
 ```
 
 Or use the full framework:
 
 ```toml
 [dependencies]
-toxi = "1.0"  # Includes database features
+toxi = "3.0"  # Includes database features
 ```
 
 ## Setup

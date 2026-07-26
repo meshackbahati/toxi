@@ -6,7 +6,7 @@ Learn how to implement API key authentication in Toxi.
 
 ```toml
 [dependencies]
-toxi = { version = "1.0", features = ["auth", "database"] }
+toxi = { version = "3.0", features = ["auth", "database"] }
 ```
 
 ## Setup

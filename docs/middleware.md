@@ -21,7 +21,7 @@ Middleware components are included with the core framework:
 
 ```toml
 [dependencies]
-toxi = "1.0"
+toxi = "3.0"
 ```
 
 ## Middleware Layers

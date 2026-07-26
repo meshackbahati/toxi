@@ -13,7 +13,7 @@ Disable S3 if you only need local storage:
 
 ```toml
 [dependencies]
-toxi-storage = { version = "2.3.4", default-features = false }
+toxi-storage = { version = "3.0.0", default-features = false }
 ```
 
 ## Usage

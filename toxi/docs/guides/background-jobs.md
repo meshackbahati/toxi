@@ -6,7 +6,7 @@ Learn how to process background jobs, schedule cron tasks, and handle async oper
 
 ```toml
 [dependencies]
-toxi = { version = "1.0", features = ["queue"] }
+toxi = { version = "3.0", features = ["queue"] }
 ```
 
 ## Quick Start

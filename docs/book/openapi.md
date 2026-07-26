@@ -8,7 +8,7 @@ To enable OpenAPI support, add the `openapi` feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi = { version = "2.3", features = ["full", "openapi"] }
+toxi = { version = "3.0", features = ["full", "openapi"] }
 ```
 
 ## Configuration
@@ -21,7 +21,7 @@ title = "My Professional API"
 version = "1.0.0"
 description = "A high-performance Rust API built with Toxi."
 contact_email = "dev@example.com"
-license = "MIT"
+license = "MIT OR Apache-2.0"
 
 [api.swagger]
 enabled = true

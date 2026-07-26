@@ -6,9 +6,9 @@ Build complete fullstack applications with server-side rendering, authentication
 
 ```toml
 [dependencies]
-toxi = { version = "1.0", features = ["full"] }
+toxi = { version = "3.0", features = ["full"] }
 # or specify features:
-toxi = { version = "1.0", features = ["database", "auth", "templates", "queue", "cache"] }
+toxi = { version = "3.0", features = ["database", "auth", "templates", "queue", "cache"] }
 ```
 
 ## Complete Example: Blog Application

@@ -1,4 +1,4 @@
-# Framework Guide: Building Real Applications with Toxi (v2.3.4)
+# Framework Guide: Building Real Applications with Toxi (v3.0.0)
 
 This guide is a practical map for building production services with Toxi.
 
