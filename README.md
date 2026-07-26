@@ -233,10 +233,6 @@ Built on:
 - **tower** — middleware composition
 - **sqlx** — database access
 
-## Roadmap
-
-See [ROADMAP.md](ROADMAP.md) for progress and upcoming milestones.
-
 ## Contributing
 
 Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).

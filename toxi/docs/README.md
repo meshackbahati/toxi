@@ -104,8 +104,7 @@ Step-by-step guides for common tasks:
 
 ### Project Status
 
-- **[Implementation Status](../STATUS.md)** - Current feature completeness and roadmap progress
-- **[Full Roadmap](../ROADMAP.md)** - Complete development roadmap
+- **[Implementation Status](../STATUS.md)** - Current feature completeness and progress
 
 ## 📖 Demo Application
 
