@@ -22,7 +22,7 @@ Add the auth feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["auth"] }
+toxi = { version = "3.1", features = ["auth"] }
 ```
 
 ## JWT Authentication

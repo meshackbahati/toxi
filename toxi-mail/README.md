@@ -6,7 +6,7 @@ SMTP email sending for Toxi.
 
 ```toml
 [dependencies]
-toxi-mail = "2.3.4"
+toxi-mail = "3.1.0"
 ```
 
 ## Basic Usage

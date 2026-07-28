@@ -8,7 +8,7 @@ A web framework for Rust (previously Oxidite). Build APIs, microservices, server
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](Cargo.toml)
+[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)](Cargo.toml)
 [![GitHub](https://img.shields.io/badge/github-meshackbahati%2Ftoxi-black)](https://github.com/meshackbahati/toxi)
 
 </div>
@@ -23,7 +23,7 @@ Toxi is a Rust web framework for building APIs, microservices, serverless functi
 
 ```toml
 [dependencies]
-toxi = "3.0.0"
+toxi = "3.1.0"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -136,22 +136,22 @@ Each crate in the Toxi ecosystem is independent. Pick only what you need:
 ```toml
 # Just routing — nothing else
 [dependencies]
-toxi-core = "3.0.0"
+toxi-core = "3.1.0"
 ```
 
 ### With Database
 
 ```toml
 [dependencies]
-toxi-core = "3.0.0"
-toxi-db = "3.0.0"
+toxi-core = "3.1.0"
+toxi-db = "3.1.0"
 ```
 
 ### Full Stack
 
 ```toml
 [dependencies]
-toxi = { version = "3.0.0", features = ["full"] }
+toxi = { version = "3.1.0", features = ["full"] }
 ```
 
 ## Feature Flags

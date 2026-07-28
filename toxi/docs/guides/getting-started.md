@@ -202,11 +202,11 @@ toxi = "3.0"
 
 # Minimal (HTTP only)
 [dependencies]
-toxi = { version = "3.0", default-features = false }
+toxi = { version = "3.1", default-features = false }
 
 # Custom features
 [dependencies]
-toxi = { version = "3.0", features = ["database", "auth", "queue"] }
+toxi = { version = "3.1", features = ["database", "auth", "queue"] }
 ```
 
 Available features:

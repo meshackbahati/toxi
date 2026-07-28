@@ -25,7 +25,7 @@ use std::collections::HashMap;
 /// security definitions, and metadata.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OpenApiSpec {
-    /// OpenAPI specification version (e.g. `3.0.0`).
+    /// OpenAPI specification version (e.g. `3.1.0`).
     pub openapi: String,
     /// API information metadata.
     pub info: Info,
@@ -472,7 +472,7 @@ impl OpenApiBuilder {
     pub fn new(title: impl Into<String>, version: impl Into<String>) -> Self {
         Self {
             spec: OpenApiSpec {
-                openapi: "3.0.0".to_string(),
+                openapi: "3.1.0".to_string(),
                 info: Info {
                     title: title.into(),
                     version: version.into(),

@@ -6,7 +6,7 @@ Role-based access control (RBAC) and permission management in Toxi.
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["auth", "database"] }
+toxi = { version = "3.1", features = ["auth", "database"] }
 ```
 
 ## Quick Start

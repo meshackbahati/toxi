@@ -6,7 +6,7 @@ Build real-time applications with WebSockets in Toxi.
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["realtime"] }
+toxi = { version = "3.1", features = ["realtime"] }
 ```
 
 ## Quick Start

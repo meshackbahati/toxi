@@ -6,7 +6,7 @@ Complete guide to implementing authentication in Toxi applications.
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["auth", "database"] }
+toxi = { version = "3.1", features = ["auth", "database"] }
 ```
 
 ## Quick Start

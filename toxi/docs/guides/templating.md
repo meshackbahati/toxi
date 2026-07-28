@@ -6,7 +6,7 @@ Server-side rendering with the Toxi template engine.
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["templates"] }
+toxi = { version = "3.1", features = ["templates"] }
 ```
 
 ## Quick Start

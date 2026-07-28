@@ -6,7 +6,7 @@ Configuration and environment variable management for Toxi applications. Loads `
 
 ```toml
 [dependencies]
-toxi-config = "2.3.4"
+toxi-config = "3.1.0"
 ```
 
 ## Feature Flags

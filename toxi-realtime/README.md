@@ -6,7 +6,7 @@ WebSocket and real-time features for Toxi.
 
 ```toml
 [dependencies]
-toxi-realtime = "2.3.4"
+toxi-realtime = "3.1.0"
 ```
 
 ## Usage

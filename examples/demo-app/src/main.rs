@@ -56,7 +56,7 @@ async fn api_status(_req: Request) -> Result<Response> {
     Ok(Response::json(serde_json::json!({
         "status": "online",
         "framework": "Toxi",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "timestamp": chrono::Utc::now().to_rfc3339(),
     })))
 }

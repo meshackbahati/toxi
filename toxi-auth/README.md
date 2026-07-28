@@ -20,7 +20,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi-auth = "2.3.4"
+toxi-auth = "3.1.0"
 ```
 
 ## Features

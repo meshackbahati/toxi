@@ -20,8 +20,8 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi-plugin = "2.3.4"
-toxi = "2.3.4"
+toxi-plugin = "3.1.0"
+toxi = "3.1.0"
 ```
 
 ## Features

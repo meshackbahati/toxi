@@ -6,7 +6,7 @@ Caching backends for Toxi with in-memory and Redis implementations.
 
 ```toml
 [dependencies]
-toxi-cache = "2.3.4"
+toxi-cache = "3.1.0"
 ```
 
 ## Backends

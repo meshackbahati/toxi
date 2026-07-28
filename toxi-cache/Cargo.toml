@@ -1,6 +1,6 @@
 [package]
 name = "toxi-cache"
-version = "3.0.0"
+version = "3.1.0"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Caching backends (Memory, Redis) for the Toxi web framework"

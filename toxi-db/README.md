@@ -65,7 +65,7 @@ Conventions:
 
 ## Concrete Pool Access (Escape Hatches)
 
-**v3.0.0+**: `DbPool` now stores concrete connection pools alongside the `AnyPool` abstraction, enabling use of PostgreSQL/MySQL/SQLite-specific features that the `Any` driver doesn't support.
+**v3.1.0+**: `DbPool` now stores concrete connection pools alongside the `AnyPool` abstraction, enabling use of PostgreSQL/MySQL/SQLite-specific features that the `Any` driver doesn't support.
 
 ### Why This Matters
 

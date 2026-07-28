@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-07-28
+- **toxi-core** serves HTTP/1.1 connections using the low-level hyper 1.x library. In hyper 1.x, http1::Builder::new().serve_connection(io, service) does not support or honor WebSocket/HTTP upgrades (yielding Error(User(ManualUpgrade)) when an upgrade is attempted).
+To support upgrades (such as WebSockets) on HTTP/1.1 connections under hyper 1.x, we explicitly used the serve_connection_with_upgrades method.
+
 ## [3.0.0] - 2026-07-26
 
 ### Added
@@ -20,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Handler Impl Ordering**: Reordered `Handler` trait impl blocks to sequential order (T1..T12).
 
 ### Changed
-- **Version Bump**: All workspace crates bumped to `3.0.0`.
+- **Version Bump**: All workspace crates bumped to `3.1.0`.
 - **Config Env Vars**: `OXIDITE_ENV` → `TOXI_ENV`, `OXIDITE_SKIP_DOTENV` → `TOXI_SKIP_DOTENV`.
 - **Default App Name**: Changed from `"oxidite-app"` to `"toxi-app"`.
 - **Modularity Messaging**: README rewritten with "Pick Only What You Need" section, minimal dependency examples, and feature flag matrix.

@@ -1,6 +1,6 @@
 [package]
 name = "toxi-plugin"
-version = "3.0.0"
+version = "3.1.0"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Plugin system for Toxi web framework with dynamic loading and extension capabilities"
@@ -19,8 +19,8 @@ chrono = "0.4.42"
 libloading = "0.8.5"
 
 # Toxi dependencies
-toxi-core = { version = "3.0.0", path = "../toxi-core" }
-toxi-config = { version = "3.0.0", path = "../toxi-config" }
+toxi-core = { version = "3.1.0", path = "../toxi-core" }
+toxi-config = { version = "3.1.0", path = "../toxi-config" }
 
 [features]
 default = []

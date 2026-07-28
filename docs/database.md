@@ -20,7 +20,7 @@ Add the database feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["database"] }
+toxi = { version = "3.1", features = ["database"] }
 ```
 
 ## Database Connection

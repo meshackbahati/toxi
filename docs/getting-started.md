@@ -235,7 +235,7 @@ To use the database features, enable the database feature in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["database"] }
+toxi = { version = "3.1", features = ["database"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 ```

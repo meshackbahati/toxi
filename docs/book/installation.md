@@ -28,7 +28,7 @@ cargo install --path toxi-cli
 cargo install toxi-cli
 
 # Or pin this generated CLI build
-cargo install toxi-cli --version 3.0.0
+cargo install toxi-cli --version 3.1.0
 ```
 
 ## Creating Your First Project
@@ -49,7 +49,7 @@ If you prefer to add Toxi to an existing project manually, add it to your `Cargo
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["full"] }
+toxi = { version = "3.1", features = ["full"] }
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 ```

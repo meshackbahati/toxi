@@ -20,7 +20,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi-middleware = "2.3.4"
+toxi-middleware = "3.1.0"
 ```
 
 ## Features

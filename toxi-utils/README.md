@@ -6,7 +6,7 @@ Utility functions and helpers for the Toxi web framework. Provides common utilit
 
 ```toml
 [dependencies]
-toxi-utils = "2.3.4"
+toxi-utils = "3.1.0"
 ```
 
 ## Feature Flags

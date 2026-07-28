@@ -29,7 +29,7 @@ async fn api_endpoint(_req: Request) -> Result<Response> {
     Ok(Response::json(serde_json::json!({
         "message": "Hello from API",
         "framework": "Toxi",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "features": [
             "TemplateContext with load_dir()",
             "Arc<TemplateContext> shared state",

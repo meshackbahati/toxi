@@ -6,7 +6,7 @@ Testing utilities for Toxi handlers and routers.
 
 ```toml
 [dev-dependencies]
-toxi-testing = "2.3.4"
+toxi-testing = "3.1.0"
 ```
 
 ## Available API

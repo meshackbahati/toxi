@@ -88,7 +88,7 @@ toxi-openapi = "3.0"
 use toxi_openapi::{OpenApiBuilder, Info};
 
 async fn api_spec(_req: Request) -> Result<Response> {
-    let spec = OpenApiBuilder::new("My API", "3.0.0")
+    let spec = OpenApiBuilder::new("My API", "3.1.0")
         .description("My API description")
         .build();
     Ok(json_response!(spec))

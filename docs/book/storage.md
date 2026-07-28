@@ -60,7 +60,7 @@ Toxi includes built-in support for S3-compatible APIs.
 
 ```toml
 # Cargo.toml
-toxi = { version = "3.0", features = ["storage-s3"] }
+toxi = { version = "3.1", features = ["storage-s3"] }
 ```
 
 ```rust

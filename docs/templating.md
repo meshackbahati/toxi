@@ -19,7 +19,7 @@ Add the template feature to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-toxi = { version = "3.0", features = ["templates"] }
+toxi = { version = "3.1", features = ["templates"] }
 ```
 
 ## Basic Usage

@@ -6,7 +6,7 @@ OpenAPI 3.0 document structures and helpers for Toxi.
 
 ```toml
 [dependencies]
-toxi-openapi = "2.3.4"
+toxi-openapi = "3.1.0"
 ```
 
 ## What This Crate Provides

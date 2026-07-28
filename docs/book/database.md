@@ -433,7 +433,7 @@ async fn init_database(_config: DatabaseConfig) -> Result<()> {
 }
 ```
 
-## Concrete Pool Access (v3.0.0+)
+## Concrete Pool Access (v3.1.0+)
 
 `DbPool` now stores concrete connection pools alongside the `AnyPool` abstraction, enabling use of PostgreSQL/MySQL/SQLite-specific features that the `Any` driver doesn't support.
 

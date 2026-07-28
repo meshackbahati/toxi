@@ -6,7 +6,7 @@ GraphQL integration for Toxi using Juniper.
 
 ```toml
 [dependencies]
-toxi-graphql = "2.3.4"
+toxi-graphql = "3.1.0"
 ```
 
 ## What This Crate Provides

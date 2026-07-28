@@ -6,7 +6,7 @@ Procedural macros used by Toxi crates.
 
 ```toml
 [dependencies]
-toxi-macros = "2.3.4"
+toxi-macros = "3.1.0"
 ```
 
 This crate currently provides:

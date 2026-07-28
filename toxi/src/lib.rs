@@ -10,7 +10,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! toxi = { version = "3.0.0", features = ["full"] }
+//! toxi = { version = "3.1.0", features = ["full"] }
 //! tokio = { version = "1", features = ["full"] }
 //! serde = { version = "1", features = ["derive"] }
 //! ```
@@ -57,12 +57,12 @@
 //! ```toml
 //! # Minimal: just routing and HTTP
 //! [dependencies]
-//! toxi-core = "3.0.0"
+//! toxi-core = "3.1.0"
 //!
 //! # Add database when needed
 //! [dependencies]
-//! toxi-core = "3.0.0"
-//! toxi-db = "3.0.0"
+//! toxi-core = "3.1.0"
+//! toxi-db = "3.1.0"
 //! ```
 //!
 //! ## Key Concepts
