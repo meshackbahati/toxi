@@ -4692,7 +4692,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-core"
-version = "3.1.1"
+version = "3.1.1-2"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
@@ -4849,7 +4849,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-realtime"
-version = "3.1.0"
+version = "3.1.1"
 dependencies = [
  "async-trait",
  "futures",
