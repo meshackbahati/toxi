@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 toxi = { path = "../../toxi", version = "3", features = ["full"] }
-toxi-core = { path = "../toxi-core", version = "3" }
+toxi-core = { path = "../../toxi-core", version = "3" }
 toxi-auth = { path = "../../toxi-auth", version = "3" }
 toxi-db = { path = "../../toxi-db", version = "3" }
 toxi-queue = { path = "../../toxi-queue", version = "3" }
