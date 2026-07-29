@@ -40,6 +40,24 @@ impl Message {
         Self::Json { data }
     }
 
+    /// Extract text content from either a Text variant or a Json variant
+    /// that has a string `content` field or is a simple string.
+    pub fn as_text(&self) -> Option<&str> {
+        match self {
+            Message::Text { content } => Some(content.as_str()),
+            Message::Json { data } => {
+                if let Some(s) = data.as_str() {
+                    Some(s)
+                } else if let Some(s) = data.get("content").and_then(|v| v.as_str()) {
+                    Some(s)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
+
     /// Convert to a `tungstenite::Message`.
     pub fn to_ws_message(&self) -> Result<WsMessage> {
         match self {
