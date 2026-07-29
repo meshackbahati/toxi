@@ -4,18 +4,18 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-toxi = { path = "../../toxi", version = "3.1.0", features = ["full"] }
-toxi-core = { path = "../toxi-core", version = "3.1" }
-toxi-auth = { path = "../../toxi-auth", version = "3.1.0" }
-toxi-db = { path = "../../toxi-db", version = "3.1.0" }
-toxi-queue = { path = "../../toxi-queue", version = "3.1.0" }
-toxi-realtime = { path = "../../toxi-realtime", version = "3.1" }
-toxi-storage = { path = "../../toxi-storage", version = "3.1.0" }
-toxi-mail = { path = "../../toxi-mail", version = "3.1.0" }
-toxi-template = { path = "../../toxi-template", version = "3.1.0" }
-toxi-middleware = { path = "../../toxi-middleware", version = "3.1.0" }
-toxi-config = { path = "../../toxi-config", version = "3.1.0" }
-toxi-cache = { path = "../../toxi-cache", version = "3.1.0" }
+toxi = { path = "../../toxi", version = "3", features = ["full"] }
+toxi-core = { path = "../toxi-core", version = "3" }
+toxi-auth = { path = "../../toxi-auth", version = "3" }
+toxi-db = { path = "../../toxi-db", version = "3" }
+toxi-queue = { path = "../../toxi-queue", version = "3" }
+toxi-realtime = { path = "../../toxi-realtime", version = "3" }
+toxi-storage = { path = "../../toxi-storage", version = "3" }
+toxi-mail = { path = "../../toxi-mail", version = "3" }
+toxi-template = { path = "../../toxi-template", version = "3" }
+toxi-middleware = { path = "../../toxi-middleware", version = "3" }
+toxi-config = { path = "../../toxi-config", version = "3" }
+toxi-cache = { path = "../../toxi-cache", version = "3" }
 
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
