@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.4] - 2026-07-30
+### Yanked
+- **toxi-core** `3.1.2` and `3.1.3` — these versions contained a broken BodyAdapter that
+  intercepted all WebSocket upgrades with a no-op handler, silently dropping all WS
+  connections. Users should upgrade directly to `3.1.4`.
+
+### Fixed
+- **toxi-core**: BodyAdapter no longer intercepts WebSocket upgrade requests with a default no-op
+  handler. WS upgrades now pass through to the router, allowing route handlers (agent,
+  sandbox terminal) to receive the `OnUpgrade` future from hyper's request extensions and
+  manage their own connection lifecycle. Previously, all WS connections were silently dropped.
+- **toxi-core**: Removed `hyper_tungstenite` default WS upgrade path from BodyAdapter — route
+  handlers using `WebSocketUpgrade` extractor now correctly receive the upgrade future.
+- **toxi-core**: Added structured logging via the `log` crate — BodyAdapter now emits
+  `info!`/`warn!`/`error!` messages for WebSocket upgrade attempts, route dispatch, and
+  connection lifecycle events.
+
+### Added
+- **toxi-core**: WebSocket integration tests — `tests/websocket.rs` covers:
+  - WS upgrade handshake via `WebSocketUpgrade` extractor
+  - Message round-trip (echo server)
+  - Connection close handling
+  - Multiple concurrent WS connections
+  - Route-based WS dispatch
+- **toxi-core**: `tracing` optional dependency for structured log output (default-off feature).
+
+### Changed
+- **toxi-core**: Diagnostic messages now use `log` crate macros (`info!`, `warn!`, `error!`)
+  instead of raw `println!`/`eprintln!`.
+- **toxi-realtime**: bumped to `3.1.2` (no API changes, version sync).
+
+## [3.1.3] - 2026-07-30 (YANKED)
+## [3.1.2] - 2026-07-30 (YANKED)
+- Internal refactoring before the BodyAdapter WS fix was finalized.
+
 ## [3.1.0] - 2026-07-28
 - **toxi-core** serves HTTP/1.1 connections using the low-level hyper 1.x library. In hyper 1.x, http1::Builder::new().serve_connection(io, service) does not support or honor WebSocket/HTTP upgrades (yielding Error(User(ManualUpgrade)) when an upgrade is attempted).
 To support upgrades (such as WebSockets) on HTTP/1.1 connections under hyper 1.x, we explicitly used the serve_connection_with_upgrades method.
