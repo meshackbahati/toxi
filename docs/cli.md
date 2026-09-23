@@ -12,32 +12,6 @@ cargo install toxi-cli
 cargo install --path toxi-cli
 ```
 
-After installation, the first time you run `toxi`, it will suggest adding an alias for shorter commands.
-
-**Recommended**: Add this to your shell config:
-
-```bash
-# For bash
-echo "alias oxi='toxi'" >> ~/.bashrc
-source ~/.bashrc
-
-# For zsh
-echo "alias oxi='toxi'" >> ~/.zshrc
-source ~/.zshrc
-```
-
-**Windows users:**
-
-```powershell
-# PowerShell - add to your $PROFILE
-Set-Alias oxi toxi
-
-# CMD (temporary, per session)
-doskey oxi=toxi
-```
-
-After this, you can use `oxi` instead of `toxi` for all commands.
-
 ## What the CLI Actually Does
 
 The CLI is a **code generation and project management tool**. It:
@@ -57,9 +31,9 @@ It does **not**:
 ## Project Creation
 
 ```bash
-oxi new my-project
-oxi new my-api --project-type api
-oxi new my-web --template web
+toxi new my-project
+toxi new my-api --project-type api
+toxi new my-web --template web
 ```
 
 Generated projects include a standard directory structure. You can reorganize it, but the CLI tools expect this layout.
@@ -82,11 +56,11 @@ my-project/
 Generators create files with boilerplate code. They won't overwrite existing files without asking.
 
 ```bash
-oxi generate model User
-oxi generate model User email:string age:integer
-oxi generate route users
-oxi generate controller UserController
-oxi generate middleware AuthMiddleware
+toxi generate model User
+toxi generate model User email:string age:integer
+toxi generate route users
+toxi generate controller UserController
+toxi generate middleware AuthMiddleware
 ```
 
 **Supported generators:**
@@ -115,16 +89,16 @@ The generated code is yours to modify. The generators are one-time scaffolding t
 
 ```bash
 # Create and run
-oxi migrate create create_users_table
-oxi migrate run
+toxi migrate create create_users_table
+toxi migrate run
 
 # Check status and rollback
-oxi migrate status
-oxi migrate revert
+toxi migrate status
+toxi migrate revert
 
 # Auto-generate from model changes
-oxi make-migrations
-oxi make-migrations add_email_field --dry-run
+toxi make-migrations
+toxi make-migrations add_email_field --dry-run
 ```
 
 Migration files are plain SQL:
@@ -149,8 +123,8 @@ DROP TABLE users;
 ## Database Seeders
 
 ```bash
-oxi seed create users_seed
-oxi seed run
+toxi seed create users_seed
+toxi seed run
 ```
 
 Seeders run your code against the database. You write the insertion logic yourself.
@@ -158,10 +132,10 @@ Seeders run your code against the database. You write the insertion logic yourse
 ## Queue Management
 
 ```bash
-oxi queue work --workers 4
-oxi queue list
-oxi queue dlq
-oxi queue clear
+toxi queue work --workers 4
+toxi queue list
+toxi queue dlq
+toxi queue clear
 ```
 
 Queues require Redis for production. The in-memory backend is for development only and loses data on restart.
@@ -169,17 +143,20 @@ Queues require Redis for production. The in-memory backend is for development on
 ## Development Server
 
 ```bash
-oxi dev
-oxi dev --port 8080
-oxi dev --watch src --watch templates
-oxi dev --no-hot-reload
+toxi dev
+toxi dev --port 8080
+toxi dev --watch src --watch templates
+toxi dev --no-hot-reload
 ```
 
 The dev server:
-- Watches files and recompiles on changes
-- Uses `cargo run` under the hood (not faster than cargo)
-- Passes environment variables from `.env` and `toxi.toml`
-- Can be slow on large projects (full recompile each change)
+- Builds once with `cargo build --bin <name>`, then runs the binary directly
+- Watches `src/`, `migrations/`, `seeds/`, `templates/`, `tests` plus `Cargo.toml`, `Cargo.lock`, `toxi.toml`, `.env` (override with `--watch` and `--ignore`)
+- Rebuilds in the background on content changes and keeps the old server up until the new binary is ready, then swaps with SIGTERM and a 5s grace period
+- Picks up changes that land mid-build instead of dropping them
+- Resolves the binary from the `[package] name` in Cargo.toml (override with `--bin`)
+- A `touch` with no content change does not trigger a rebuild
+- Failed builds keep the old server running
 
 ## Run Single Files
 
@@ -187,33 +164,33 @@ Execute a Rust file directly without creating a full project:
 
 ```bash
 # Standalone file (creates temp project, runs, cleans up)
-oxi run hello.rs
+toxi run hello.rs
 
 # File inside project (copies to src/bin/)
-oxi run src/bin/script.rs
+toxi run src/bin/script.rs
 
 # With extra dependencies
-oxi run api.rs --deps serde,chrono
+toxi run api.rs --deps serde,chrono
 ```
 
 **How it works:**
 - **Standalone mode**: Creates a temporary Cargo project in `/tmp`, compiles with toxi dependencies, runs, then deletes the temp directory
 - **Project mode**: Places the file in `src/bin/` and runs via `cargo run --bin`
 - Compile errors display directly in your terminal
-- Not meant for production - use `oxi build` for deployable binaries
+- Not meant for production - use `toxi build` for deployable binaries
 
 ## Process Management
 
 Manage long-running toxi processes:
 
 ```bash
-oxi pm2 start
-oxi pm2 start my-api --release
-oxi pm2 stop my-api
-oxi pm2 restart my-api
-oxi pm2 list
-oxi pm2 info my-api
-oxi pm2 monitor
+toxi pm2 start
+toxi pm2 start my-api --release
+toxi pm2 stop my-api
+toxi pm2 restart my-api
+toxi pm2 list
+toxi pm2 info my-api
+toxi pm2 monitor
 ```
 
 Process state is stored in `.toxi_procs.json` in the current directory. This is **not** a replacement for systemd, Docker, or proper process managers in production.
@@ -223,8 +200,8 @@ Process state is stored in `.toxi_procs.json` in the current directory. This is 
 Enable verbose output:
 
 ```bash
-TOXI_DEBUG=1 oxi dev
-TOXI_DEBUG=true oxi serve
+TOXI_DEBUG=1 toxi dev
+TOXI_DEBUG=true toxi serve
 ```
 
 Shows environment loading, configuration details, file paths, and internal operations.
@@ -236,16 +213,16 @@ Errors display in red, success in green, warnings in yellow, info in blue. Error
 ## Build and Deploy
 
 ```bash
-oxi build --release
-oxi serve --env production
+toxi build --release
+toxi serve --env production
 ```
 
-`oxi build` runs `cargo build` with your specified flags. It doesn't optimize beyond what cargo already does.
+`toxi build` runs `cargo build` with your specified flags. It doesn't optimize beyond what cargo already does.
 
 ## Diagnostics
 
 ```bash
-oxi doctor
+toxi doctor
 ```
 
 Checks for:

@@ -1,6 +1,6 @@
 [package]
 name = "toxi"
-version = "3.1.0"
+version = "3.2.0"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "A modern, high-performance framework for Rust."
@@ -14,7 +14,9 @@ readme = "README.md"
 
 [dependencies]
 # Core functionality - Always included
-toxi-core = { version = "3", path = "../toxi-core" }
+# default-features is off so minimal builds skip the QUIC/HTTP3 stack
+# (quinn, h3, aws-lc-sys are slow to compile). Use the http3 feature below.
+toxi-core = { version = "3", path = "../toxi-core", default-features = false }
 toxi-middleware = { version = "3", path = "../toxi-middleware" }
 toxi-config = { version = "3", path = "../toxi-config" }
 tokio = { version = "1.48", features = ["full", "test-util"] }
@@ -59,7 +61,11 @@ full = [
     "plugin",
     "security",
     "utils",
+    "http3",
 ]
+
+# QUIC/HTTP3 server support. Off unless asked, it dominates cold build time.
+http3 = ["toxi-core/http3"]
 
 # Individual feature groups
 database = ["dep:toxi-db", "dep:toxi-macros"]

@@ -4703,7 +4703,7 @@ checksum = "8df9b6e13f2d32c91b9bd719c00d1958837bc7dec474d94952798cc8e69eeec3"
 
 [[package]]
 name = "toxi"
-version = "3.1.0"
+version = "3.2.0"
 dependencies = [
  "chrono",
  "serde",
@@ -4774,7 +4774,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-cli"
-version = "3.1.0"
+version = "3.1.1"
 dependencies = [
  "bytes",
  "chrono",
@@ -4795,21 +4795,11 @@ dependencies = [
  "tempfile",
  "tokio",
  "toxi-auth",
- "toxi-cache",
  "toxi-config",
  "toxi-core",
  "toxi-db",
- "toxi-graphql",
- "toxi-macros",
- "toxi-mail",
  "toxi-middleware",
- "toxi-openapi",
- "toxi-plugin",
  "toxi-queue",
- "toxi-realtime",
- "toxi-storage",
- "toxi-template",
- "toxi-utils",
 ]
 
 [[package]]

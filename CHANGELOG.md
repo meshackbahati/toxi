@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-09-23
+
+### Fixed
+- **toxi-cli** (`3.1.1`): `dev` hot reload no longer loses rebuilds requested mid-build. The watcher loop polls with a timeout, so a change that lands while a build runs rebuilds right after instead of waiting for another file change that may never come.
+- **toxi-cli** (`3.1.1`): `dev` watches `src/`, `migrations/`, `seeds/`, `templates/`, `tests` plus manifest files instead of the whole project root. Watching the root pulled `target/` and `.git/` into the recursive watcher, so every build fired its own rebuild storm.
+- **toxi-cli** (`3.1.1`): `dev` resolves the binary name from the `[package]` section only. The old parse took the first `name =` line anywhere in the file, which picked the wrong binary in workspace roots.
+- **toxi-cli** (`3.1.1`): `dev` waits 5s for graceful shutdown before killing the old server. The old 2s deadline SIGKILLed healthy servers mid-drain (Toxi drains up to 3s).
+- **toxi-cli** (`3.1.1`): the four `*_project_compiles` tests run under a mutex. They mutate the process working directory, so parallel threads stole each others cwd and failed with `NotFound`.
+
+### Added
+- **toxi** (`3.2.0`): `http3` feature (`toxi-core/http3`). QUIC/HTTP3 server support is no longer pulled into every build. `full` still includes it.
+
+### Changed
+- **toxi** (`3.2.0`): `toxi-core` is now depended on with `default-features = false`. Minimal feature sets no longer compile quinn, h3 and aws-lc-sys. If you used `Server::listen_h3` without `full` or `http3`, add the feature.
+- **toxi-cli** (`3.1.1`): removed 9 unused dependencies (template, cache, realtime, mail, storage, macros, utils, openapi, graphql, plugin). The CLI never imports them, they only appear in scaffold template strings. This drops aws-sdk-s3 and juniper from every CLI build.
+- **toxi-cli** (`3.1.1`): removed the `oxi` alias suggestion and all `oxi` references from docs. The command is `toxi`.
+
 ## [3.1.4] - 2026-07-30
 ### Yanked
 - **toxi-core** `3.1.2` and `3.1.3` — these versions contained a broken BodyAdapter that

@@ -325,7 +325,7 @@ To run any of these examples:
 2. Add Toxi to your `Cargo.toml`:
    ```toml
    [dependencies]
-   toxi = { version = "3.1", features = ["full"] }
+   toxi = { version = "3.2", default-features = false, features = ["database"] }
    tokio = { version = "1.0", features = ["full"] }
    serde = { version = "1.0", features = ["derive"] }
    serde_json = "1.0"

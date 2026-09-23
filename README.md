@@ -8,7 +8,7 @@ A web framework for Rust (previously Oxidite). Build APIs, microservices, server
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)](Cargo.toml)
+[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](Cargo.toml)
 [![GitHub](https://img.shields.io/badge/github-meshackbahati%2Ftoxi-black)](https://github.com/meshackbahati/toxi)
 
 </div>
@@ -23,7 +23,7 @@ Toxi is a Rust web framework for building APIs, microservices, serverless functi
 
 ```toml
 [dependencies]
-toxi = "3.1.0"
+toxi = "3.2.0"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -151,7 +151,7 @@ toxi-db = "3.1.0"
 
 ```toml
 [dependencies]
-toxi = { version = "3.1.0", features = ["full"] }
+toxi = { version = "3.2.0", features = ["full"] }
 ```
 
 ## Feature Flags
@@ -170,6 +170,8 @@ toxi = { version = "3.1.0", features = ["full"] }
 | `utils` | String and date helpers |
 | `graphql` | GraphQL API |
 | `plugin` | Plugin system |
+| `http3` | QUIC/HTTP3 server (`listen_h3`) |
+| `minimal` | Nothing extra (core routing, middleware, config) |
 | `full` | Everything above |
 
 ## ORM

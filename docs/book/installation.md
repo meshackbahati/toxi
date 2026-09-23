@@ -28,7 +28,7 @@ cargo install --path toxi-cli
 cargo install toxi-cli
 
 # Or pin this generated CLI build
-cargo install toxi-cli --version 3.1.0
+cargo install toxi-cli --version 3.1.1
 ```
 
 ## Creating Your First Project
@@ -49,10 +49,15 @@ If you prefer to add Toxi to an existing project manually, add it to your `Cargo
 
 ```toml
 [dependencies]
-toxi = { version = "3.1", features = ["full"] }
+toxi = { version = "3.2", default-features = false, features = ["database", "auth"] }
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 ```
+
+Enable only the features you import. Core routing, middleware and config are
+always included. Note that `features` adds to the defaults, so write
+`default-features = false` to skip the rest. `full` turns on everything but
+compiles much slower (it pulls the AWS SDK, juniper and the QUIC stack).
 
 ## Development Dependencies
 
@@ -103,6 +108,7 @@ If you encounter issues:
 
 Common features include:
 - `full`: All features enabled
+- `minimal`: Nothing extra (core routing, middleware, config)
 - `database`: Database ORM capabilities
 - `auth`: Authentication and authorization
 - `queue`: Background job processing
@@ -113,3 +119,6 @@ Common features include:
 - `storage`: File storage (local/S3)
 - `graphql`: GraphQL support
 - `plugin`: Plugin system support
+- `security`: Crypto and hashing
+- `utils`: String and date helpers
+- `http3`: QUIC/HTTP3 server (slow to compile, off unless asked)

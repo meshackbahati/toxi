@@ -8,25 +8,6 @@ The Toxi CLI package is `toxi-cli`, and the installed executable is `toxi`.
 cargo install toxi-cli
 ```
 
-**After installation**, add this alias for shorter commands:
-
-```bash
-# Bash
-echo "alias oxi='toxi'" >> ~/.bashrc
-source ~/.bashrc
-
-# Zsh
-echo "alias oxi='toxi'" >> ~/.zshrc
-source ~/.zshrc
-```
-
-**Windows PowerShell:**
-```powershell
-Set-Alias oxi toxi  # Add to $PROFILE for persistence
-```
-
-The CLI will also suggest this alias on first run.
-
 ## What the CLI Does
 
 The CLI generates code, manages projects, and runs development tools. It saves typing but doesn't replace understanding of the underlying technologies.
@@ -47,19 +28,19 @@ The CLI generates code, manages projects, and runs development tools. It saves t
 ## Project Scaffolding
 
 ```bash
-oxi new my_app
-oxi new my_api --project-type api
-oxi new my_web --template web
+toxi new my_app
+toxi new my_api --project-type api
+toxi new my_web --template web
 ```
 
-Generated structure includes standard directories. The CLI tools expect this layout for commands like `oxi generate` and `oxi migrate`.
+Generated structure includes standard directories. The CLI tools expect this layout for commands like `toxi generate` and `toxi migrate`.
 
 ## Code Generation
 
 ```bash
-oxi generate model User email:string age:integer
-oxi generate route users
-oxi generate controller UserController
+toxi generate model User email:string age:integer
+toxi generate route users
+toxi generate controller UserController
 ```
 
 Generated code is starting point boilerplate. You modify it to fit your needs. Generators don't overwrite existing files.
@@ -67,11 +48,11 @@ Generated code is starting point boilerplate. You modify it to fit your needs. G
 ## Database Migrations
 
 ```bash
-oxi migrate create create_users_table
-oxi migrate run
-oxi migrate status
-oxi migrate revert
-oxi make-migrations  # Auto-generate from model changes
+toxi migrate create create_users_table
+toxi migrate run
+toxi migrate status
+toxi migrate revert
+toxi make-migrations  # Auto-generate from model changes
 ```
 
 Migrations are SQL files with `-- migrate:up` and `-- migrate:down` sections. The migration tracker stores which migrations have run, not their content hashes.
@@ -79,17 +60,20 @@ Migrations are SQL files with `-- migrate:up` and `-- migrate:down` sections. Th
 ## Development Server
 
 ```bash
-oxi dev
-oxi dev --port 8080 --watch src
+toxi dev
+toxi dev --port 8080 --watch src
 ```
 
-Runs `cargo run` and restarts on file changes. Compile times remain the same as manual `cargo build`.
+Builds the binary once, runs it, and rebuilds on file changes. Watches source
+and config paths, swaps the running server after a successful build, keeps the
+old one up if the build fails. A `touch` with no content change does not
+trigger a rebuild. Compile times are the same as manual `cargo build`.
 
 ## Single File Execution
 
 ```bash
-oxi run script.rs
-oxi run script.rs --deps serde,chrono
+toxi run script.rs
+toxi run script.rs --deps serde,chrono
 ```
 
 Creates temp projects for standalone files. Useful for scripts and prototypes, not for production code.
@@ -97,9 +81,9 @@ Creates temp projects for standalone files. Useful for scripts and prototypes, n
 ## Process Management
 
 ```bash
-oxi pm2 start --release
-oxi pm2 list
-oxi pm2 stop <name>
+toxi pm2 start --release
+toxi pm2 list
+toxi pm2 stop <name>
 ```
 
 Stores process state locally. For production deployment, use systemd, Docker, or Kubernetes instead.
@@ -107,7 +91,7 @@ Stores process state locally. For production deployment, use systemd, Docker, or
 ## Debug and Output
 
 ```bash
-TOXI_DEBUG=1 oxi dev
+TOXI_DEBUG=1 toxi dev
 ```
 
 Colored output: red for errors, green for success, yellow for warnings, blue for info. Errors are categorized by type automatically.
