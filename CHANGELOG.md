@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 2026-09-23
+
+### Fixed
+- **toxi-cli** (`3.1.2`): `dev` no longer terminates when the initial build
+  fails. The watcher now remains active without a running server, reports
+  that it is waiting for fixes, and starts the server upon the first
+  successful rebuild, with the consequence that compilation errors can be
+  corrected with realtime feedback instead of requiring a manual restart.
+- **toxi-cli** (`3.1.2`): `dev` reports a server that exits on its own
+  without terminating the watcher, clears the process slot so the next
+  successful build starts a fresh process, and distinguishes a fresh start
+  from a graceful restart in its output.
+- **toxi-cli** (`3.1.2`): `dev` inherits standard output in the build helper
+  rather than piping it without draining, since an undrained pipe risks
+  deadlock when the buffer fills and the build would stall while the
+  watcher waits.
+- **docs**: installation instructions present `cargo install toxi-cli` from
+  crates.io as the primary method. The repository-relative `--path` form is
+  retained as a documented alternative for local checkouts, and stale
+  version pins were updated.
+
 ## [3.2.0] - 2026-09-23
 
 ### Fixed

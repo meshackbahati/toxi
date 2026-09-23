@@ -203,8 +203,11 @@ Features: async validation, soft deletes, eager loading (N+1 prevention), auto-d
 Install the CLI for scaffolding and development:
 
 ```bash
-cargo install --path toxi-cli
+cargo install toxi-cli
 ```
+
+When working from a local checkout of this repository, the equivalent
+installation from source is `cargo install --path toxi-cli`.
 
 Commands:
 - `toxi new <project>` — scaffold a new project

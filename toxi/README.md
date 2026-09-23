@@ -54,7 +54,7 @@ Install the Toxi CLI tool to get started:
 # Install from source (recommended for development)
 cargo install --path ../toxi-cli
 
-# Or install from crates.io (when published)
+# Or install from crates.io
 cargo install toxi-cli
 ```
 

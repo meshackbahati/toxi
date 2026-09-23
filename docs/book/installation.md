@@ -28,7 +28,7 @@ cargo install --path toxi-cli
 cargo install toxi-cli
 
 # Or pin this generated CLI build
-cargo install toxi-cli --version 3.1.1
+cargo install toxi-cli --version 3.1.2
 ```
 
 ## Creating Your First Project

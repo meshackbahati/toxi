@@ -17,11 +17,11 @@ Before you begin, ensure you have:
 The easiest way to start is by installing the Toxi CLI tool:
 
 ```bash
-# Install from the repository
-cargo install --path toxi-cli
-
-# Or from crates.io
+# Install from crates.io
 cargo install toxi-cli
+
+# Or install from a local checkout of the repository
+cargo install --path toxi-cli
 ```
 
 The installed executable is `toxi`.
