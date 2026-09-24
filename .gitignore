@@ -42,5 +42,5 @@ coverage/
 tmp/
 dist/
 
-# Release 
+# Release
 publish.sh

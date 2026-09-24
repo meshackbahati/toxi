@@ -23,7 +23,7 @@ Toxi is a Rust web framework for building APIs, microservices, serverless functi
 
 ```toml
 [dependencies]
-toxi = "3.2.0"
+toxi = "3"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -136,22 +136,22 @@ Each crate in the Toxi ecosystem is independent. Pick only what you need:
 ```toml
 # Just routing — nothing else
 [dependencies]
-toxi-core = "3.1.0"
+toxi-core = "3"
 ```
 
 ### With Database
 
 ```toml
 [dependencies]
-toxi-core = "3.1.0"
-toxi-db = "3.1.0"
+toxi-core = "3"
+toxi-db = "3"
 ```
 
 ### Full Stack
 
 ```toml
 [dependencies]
-toxi = { version = "3.2.0", features = ["full"] }
+toxi = { version = "3", features = ["full"] }
 ```
 
 ## Feature Flags
@@ -243,3 +243,16 @@ Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 MIT OR Apache-2.0 — see [LICENSE](LICENSE).
+
+## Benchmarks
+
+Full results in [`benchmarks/`](benchmarks/): dispatch, extractors,
+responses, middleware, throughput, and full HTTP against Axum, Actix
+Web, and Rocket.
+
+| Route (req/s, loopback) | Toxi | Axum | Actix | Rocket |
+| ----------------------- | ---- | ---- | ----- | ------ |
+| GET /hello | 2,019 | 2,890 | 3,449 | 1,490 |
+| GET /users/42 | 2,099 | 2,661 | 2,885 | 2,229 |
+| POST /echo | 2,092 | 1,984 | 2,334 | 1,251 |
+| GET /missing | 1,817 | 3,055 | 3,279 | 1,258 |
