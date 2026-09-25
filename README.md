@@ -247,12 +247,14 @@ MIT OR Apache-2.0 — see [LICENSE](LICENSE).
 ## Benchmarks
 
 Full results in [`benchmarks/`](benchmarks/): dispatch, extractors,
-responses, middleware, throughput, and full HTTP against Axum, Actix
-Web, and Rocket.
+responses, middleware, throughput, and full HTTP against Rocket, Loco,
+Poem, Salvo, and Warp.
 
-| Route (req/s, loopback) | Toxi | Axum | Actix | Rocket |
-| ----------------------- | ---- | ---- | ----- | ------ |
-| GET /hello | 2,019 | 2,890 | 3,449 | 1,490 |
-| GET /users/42 | 2,099 | 2,661 | 2,885 | 2,229 |
-| POST /echo | 2,092 | 1,984 | 2,334 | 1,251 |
-| GET /missing | 1,817 | 3,055 | 3,279 | 1,258 |
+| Framework (GET /json, req/s) | Req/s | p99 (ms) |
+| ---------------------------- | ----: | -------: |
+| toxi | 40,812 | 8.60 |
+| warp | 40,681 | 11.51 |
+| poem | 40,359 | 8.44 |
+| loco | 28,994 | 10.49 |
+| salvo | 27,759 | 33.78 |
+| rocket | 23,207 | 36.34 |
