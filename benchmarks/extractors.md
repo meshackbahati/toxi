@@ -12,3 +12,5 @@ Medians, 100 samples.
 | integrated query | 3.50 µs | 4.33 µs |
 | integrated path | 4.04 µs | 35.7 µs |
 | integrated state | 2.79 µs | 4.11 µs |
+
+![extractor cost](img/extractors.png)

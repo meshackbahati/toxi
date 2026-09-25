@@ -10,3 +10,5 @@ Medians, 100 samples. Concurrent dispatch fan-out, no TCP.
 | 16 tasks × 50 (800 reqs) | 4.10 ms | ~195,000 |
 | 50 tasks × 50 (2500 reqs) | 10.59 ms | ~236,000 |
 | echo 16 × 25 (400 reqs) | 5.95 ms | ~67,000 |
+
+![in-process throughput](img/throughput.png)

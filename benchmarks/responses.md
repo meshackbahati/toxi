@@ -11,3 +11,5 @@ Medians, 100 samples.
 | HTML page | 0.62 µs | 0.68 µs |
 | empty ok | 0.40 µs | 1.21 µs |
 | error to 404 | 2.37 µs | 3.16 µs |
+
+![response construction](img/responses.png)

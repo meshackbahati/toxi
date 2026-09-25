@@ -16,4 +16,10 @@ Medians, 100 samples.
 | last hit, 100 routes | 8.11 µs | 9.11 µs |
 | last hit, 500 routes | 27.49 µs | 29.12 µs |
 
-![last-hit cost by route count](img/scaling.png)
+![dispatch by case](img/router-cases.png)
+
+`is_match` fast path, before → after (means): first-10 3.57 → 3.27,
+last-10 9.01 → 5.31, param 10.84 → 6.79, wildcard 10.07 → 6.62,
+404 28.64 → 13.68, scale-100 19.93 → 13.70, scale-500 119.61 → 51.29.
+
+![before vs after](img/optimization.png)
