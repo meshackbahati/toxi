@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - toxi-core 3.1.5
+
+### Fixed
+- **toxi-core** (`3.1.5`): router dispatch uses a boolean `is_match` fast
+  path for routes without parameters instead of full capture extraction.
+  Measured improvements: −45% at 100 routes, −38% at 500 routes, −68% on
+  the 404 path, with per-route marginal cost restored from 0.24 µs to
+  0.09 µs (linear scaling). Behavior is unchanged: the skipped branch
+  stored no parameters for such routes.
+- **toxi-core** (`3.1.5`): `Json` extractor parses from a contiguous buffer
+  with `from_slice` instead of byte-wise `from_reader`. Measured −79% on
+  10 KB payloads; direction confirmed with p = 0.00, exact magnitude
+  pending quiet-box rerun.
+- **toxi-template** (`3.1.1`): `TemplateContext` caches the compiled engine
+  after a single directory load instead of re-traversing and re-parsing on
+  every render. Added `reload()` to pick up disk changes without restart.
+- **toxi-cache** (`3.1.1`): `MemoryCache` replaces the per-operation
+  full-scan expiry sweep under a write lock with lazy single-entry
+  eviction and an amortized sweep every 1024 operations.
+- **toxi-middleware** (`3.1.1`): `RateLimiter` replaces the global mutex
+  with 16 sharded read-write locks, ordered timestamp deques with prefix
+  eviction, and reverse minute counting.
+- **toxi-graphql** (`3.1.1`): query execution runs in `spawn_blocking`
+  instead of on the async worker, so CPU-bound Juniper execution no longer
+  stalls unrelated connections.
+- **toxi-realtime** (`3.1.3`): fan-out snapshots connection handles before
+  delivery instead of sending under the registry lock; room broadcast no
+  longer orders locks opposite to disconnect handling.
+- **toxi-config** (`3.1.1`): fixed a self-deadlock in the test helper that
+  locked the non-reentrant `SERIAL_TEST` mutex while callers already held
+  it, which hung the config suite indefinitely. Test-only change.
+
 ## [3.1.2] - 2026-09-23
 
 ### Fixed

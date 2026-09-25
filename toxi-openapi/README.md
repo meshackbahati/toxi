@@ -1,57 +1,34 @@
 # toxi-openapi
 
-OpenAPI 3.0 document structures and helpers for Toxi.
-
-## Installation
+OpenAPI 3.0 spec building with Swagger UI for Toxi.
 
 ```toml
 [dependencies]
-toxi-openapi = "3.1.0"
+toxi-openapi = "3"
 ```
-
-## What This Crate Provides
-
-- OpenAPI spec data structures (`OpenApiSpec`, `PathItem`, `Operation`, etc.)
-- `OpenApiBuilder` for assembling a spec
-- Helper constructors for common operations and schemas
-- Swagger UI HTML generation via `generate_docs_html`
-
-## Quick Example
-
-```rust
-use toxi_openapi::{
-    get_operation, generate_docs_html, AutoDocs, OpenApiBuilder, Parameter, PathItem, Response, Schema,
-};
-
-let list_users = get_operation("List users")
-    .with_description("Returns paginated users")
-    .add_parameter(Parameter::query("page", Schema::integer()))
-    .add_response("200", Response::json("ok", Schema::array(Schema::object(std::collections::HashMap::new()))));
-
-let spec = OpenApiBuilder::new("Users API", "1.0.0")
-    .description("Public API")
-    .path("/users", PathItem::default().with_get(list_users))
-    .build();
-
-let html = generate_docs_html(&spec);
-assert!(html.contains("SwaggerUIBundle"));
-```
-
-## Router Integration
-
-Register docs endpoints in one call with the Application:
 
 ```rust
 use toxi::prelude::*;
-use toxi_openapi::{AutoDocs, OpenApiBuilder};
+use toxi_openapi::{AutoDocs, OpenApiBuilder, PathItem, get_operation, Parameter, Response, Schema};
 
-let config = Config::load().unwrap();
-let mut app = Application::new(config);
-let spec = OpenApiBuilder::new("My API", "1.0.0").build();
-let _ = app.into_router().with_auto_docs(spec); // mounts /openapi.json and /api/docs
+async fn list_users_handler(_req: Request) -> Result<Response> {
+    Ok(Response::json([] as [String; 0]))
+}
+
+let list_users = get_operation("List users")
+    .add_parameter(Parameter::query("page", Schema::integer()))
+    .add_response("200", Response::json("ok", Schema::array(Schema::string())));
+
+let spec = OpenApiBuilder::new("My API", "1.0.0")
+    .path("/users", PathItem::default().with_get(list_users))
+    .build();
+
+let mut router = Router::new();
+router.get("/users", list_users_handler);
+let router = router.with_auto_docs(spec);
+Server::new(router).listen("127.0.0.1:3000".parse().unwrap()).await
 ```
 
-## Notes
-
-- This crate does not currently include proc-macro annotations or automatic route introspection.
-- Integrate by exposing the generated spec at an endpoint (for example `/openapi.json`) and serving `generate_docs_html` output.
+`with_auto_docs` serves the spec at `GET /openapi.json` and Swagger UI
+at `GET /api/docs`. The spec is built by hand today: each path gets a
+`PathItem` with operations, parameters, request bodies, and responses.

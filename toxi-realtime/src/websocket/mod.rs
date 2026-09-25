@@ -157,10 +157,15 @@ impl WebSocketManager {
     }
 
     /// Broadcast a message to all connected clients.
+    ///
+    /// Connection handles are snapshotted under the read lock and the lock
+    /// is released before sending, since delivery fans out per connection
+    /// and must never hold the registry lock while dispatching.
     pub async fn broadcast(&self, message: Message) -> Result<()> {
-        let connections = self.connections.read().await;
+        let targets: Vec<Arc<WebSocketConnection>> =
+            self.connections.read().await.values().cloned().collect();
         let mut failed = 0usize;
-        for conn in connections.values() {
+        for conn in &targets {
             if conn.send(message.clone()).is_err() {
                 failed += 1;
             }
@@ -172,17 +177,24 @@ impl WebSocketManager {
     }
 
     /// Send a message to all connections for a given user.
+    ///
+    /// Matching handles are collected under the read lock and delivery
+    /// happens after release, for the same reason documented on
+    /// `broadcast`.
     pub async fn send_to_user(&self, user_id: &str, message: Message) -> Result<()> {
-        let connections = self.connections.read().await;
-        let mut matched = 0usize;
-        for conn in connections.values() {
-            if conn.user_id.as_deref() == Some(user_id) {
-                matched += 1;
-                conn.send(message.clone())?;
-            }
-        }
-        if matched == 0 {
+        let targets: Vec<Arc<WebSocketConnection>> = self
+            .connections
+            .read()
+            .await
+            .values()
+            .filter(|conn| conn.user_id.as_deref() == Some(user_id))
+            .cloned()
+            .collect();
+        if targets.is_empty() {
             return Err(WebSocketError::UserNotConnected(user_id.to_string()));
+        }
+        for conn in &targets {
+            conn.send(message.clone())?;
         }
         Ok(())
     }

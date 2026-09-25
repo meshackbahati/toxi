@@ -102,21 +102,34 @@ impl RoomManager {
     }
 
     /// Send a message to all members of a room.
+    ///
+    /// Member IDs and connection handles are snapshotted under short-lived
+    /// read locks before any delivery. The previous implementation held the
+    /// rooms lock across the loop while acquiring the connections lock per
+    /// member, which both serialized dispatch and ordered locks rooms
+    /// before connections, opposite to `remove_connection`, with the
+    /// consequence that concurrent broadcast and disconnect could deadlock.
     pub async fn broadcast_to_room(&self, room_name: &str, message: Message, manager: &super::WebSocketManager) -> Result<()> {
-        let rooms = self.rooms.read().await;
-        
-        if let Some(room) = rooms.get(room_name) {
-            for conn_id in room.members() {
-                // Send to each member
-                let connections = manager.connections.read().await;
-                if let Some(conn) = connections.get(conn_id) {
-                    let _ = conn.send(message.clone());
-                }
+        let member_ids: Vec<String> = {
+            let rooms = self.rooms.read().await;
+            match rooms.get(room_name) {
+                Some(room) => room.members().iter().cloned().collect(),
+                None => return Err(WebSocketError::RoomNotFound),
             }
-            Ok(())
-        } else {
-            Err(WebSocketError::RoomNotFound)
+        };
+
+        let targets: Vec<Arc<super::WebSocketConnection>> = {
+            let connections = manager.connections.read().await;
+            member_ids
+                .iter()
+                .filter_map(|id| connections.get(id).cloned())
+                .collect()
+        };
+
+        for conn in &targets {
+            let _ = conn.send(message.clone());
         }
+        Ok(())
     }
 
     /// Get the list of connection IDs in a room.

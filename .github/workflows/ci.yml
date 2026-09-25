@@ -15,5 +15,21 @@ jobs:
           channel: stable
       - name: Check workspace
         run: cargo check --workspace --all-targets
+      # Scaffold-compile tests are excluded here; they build full
+      # generated projects and run in the dedicated job below.
       - name: Test workspace
-        run: cargo test --workspace
+        run: cargo test --workspace --exclude toxi-cli
+      - name: Test CLI without scaffold builds
+        run: cargo test -p toxi-cli --bin toxi -- --skip project_compiles
+
+  scaffold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: moonrepo/setup-rust@v1
+        with:
+          channel: stable
+      # Each test scaffolds a project and compiles it; slow by nature.
+      - name: Test generated project builds
+        run: cargo test -p toxi-cli --bin toxi project_compiles

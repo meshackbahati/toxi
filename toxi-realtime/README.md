@@ -1,42 +1,17 @@
 # toxi-realtime
 
-WebSocket and real-time features for Toxi.
-
-## Installation
+WebSockets, rooms, pub/sub, and SSE helpers for Toxi.
 
 ```toml
 [dependencies]
-toxi-realtime = "3.1.0"
+toxi-realtime = "3"
 ```
-
-## Usage
 
 ```rust
-use toxi_realtime::{Event, Message, PubSub, WebSocketManager};
+use toxi_realtime::{Message, PubSub, WebSocketManager};
 
-#[tokio::main]
-async fn main() {
-    // Pub/Sub
-    let pubsub = PubSub::new();
-    let mut subscriber = pubsub.subscribe("news").await;
-    let event = Event::message("news", serde_json::json!({"headline": "hello"}));
-    let _ = pubsub.publish("news", event).await;
-    let _ = subscriber.recv().await;
-
-    // WebSocket manager
-    let ws = WebSocketManager::new();
-    let _ = ws.broadcast(Message::text("system broadcast")).await;
-}
+let pubsub = PubSub::new();
+let mut sub = pubsub.subscribe("news").await;
+pubsub.publish("news", Message::text("hi")).await?;
+let _ = sub.recv().await;
 ```
-
-## Features
-
-- WebSocket support
-- Room management
-- Pub/sub messaging
-- Direct messaging
-- SSE event formatting helpers
-
-## License
-
-MIT OR Apache-2.0

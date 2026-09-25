@@ -106,7 +106,17 @@ pub struct MemoryCache {
     misses: Arc<AtomicU64>,
     sets: Arc<AtomicU64>,
     deletes: Arc<AtomicU64>,
+    /// Operations since the last amortized expiry sweep.
+    since_sweep: Arc<AtomicU64>,
 }
+
+/// Operations between amortized expiry sweeps.
+///
+/// Expiry is checked lazily on access, so a full sweep on every operation
+/// would turn each get and set into an O(n) scan under a write lock. The
+/// amortized sweep bounds the growth of dead entries while keeping common
+/// operations O(1).
+const SWEEP_EVERY_OPS: u64 = 1024;
 
 /// Cache operation statistics
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -151,6 +161,7 @@ impl MemoryCache {
             misses: Arc::new(AtomicU64::new(0)),
             sets: Arc::new(AtomicU64::new(0)),
             deletes: Arc::new(AtomicU64::new(0)),
+            since_sweep: Arc::new(AtomicU64::new(0)),
         }
     }
 
@@ -163,6 +174,7 @@ impl MemoryCache {
             misses: Arc::new(AtomicU64::new(0)),
             sets: Arc::new(AtomicU64::new(0)),
             deletes: Arc::new(AtomicU64::new(0)),
+            since_sweep: Arc::new(AtomicU64::new(0)),
         }
     }
 
@@ -185,6 +197,18 @@ impl MemoryCache {
         let value = f().await?;
         self.set(key, &value, Some(ttl)).await?;
         Ok(value)
+    }
+
+    /// Sweep expired entries when the operation budget is exhausted.
+    ///
+    /// Runs at most one sweep per `SWEEP_EVERY_OPS` operations across all
+    /// tasks, since the counter increment races benignly toward the same
+    /// threshold.
+    async fn maybe_sweep(&self) {
+        if self.since_sweep.fetch_add(1, Ordering::Relaxed) >= SWEEP_EVERY_OPS {
+            self.since_sweep.store(0, Ordering::Relaxed);
+            self.cleanup().await;
+        }
     }
 
     /// Clean expired entries
@@ -254,22 +278,29 @@ impl Cache for MemoryCache {
         T: for<'de> Deserialize<'de> + Send,
     {
         validate_cache_key(key)?;
-        self.cleanup().await;
+        self.maybe_sweep().await;
         let store = self.store.read().await;
-        
-        if let Some(entry) = store.get(key) {
-            if entry.is_expired() {
-                self.misses.fetch_add(1, Ordering::Relaxed);
-                return Ok(None);
-            }
-            
+
+        let Some(entry) = store.get(key) else {
+            self.misses.fetch_add(1, Ordering::Relaxed);
+            return Ok(None);
+        };
+        if !entry.is_expired() {
             let value: T = serde_json::from_slice(&entry.data)?;
             self.hits.fetch_add(1, Ordering::Relaxed);
-            Ok(Some(value))
-        } else {
-            self.misses.fetch_add(1, Ordering::Relaxed);
-            Ok(None)
+            return Ok(Some(value));
         }
+        drop(store);
+
+        // Lazy eviction of the single expired entry. The write lock is
+        // rechecked because a concurrent task may have replaced the entry
+        // after the read lock was released.
+        let mut store = self.store.write().await;
+        if store.get(key).map(|e| e.is_expired()).unwrap_or(false) {
+            store.remove(key);
+        }
+        self.misses.fetch_add(1, Ordering::Relaxed);
+        Ok(None)
     }
 
     async fn set<T>(&self, key: &str, value: &T, ttl: Option<Duration>) -> Result<()>
@@ -278,7 +309,7 @@ impl Cache for MemoryCache {
     {
         validate_cache_key(key)?;
         validate_ttl(ttl)?;
-        self.cleanup().await;
+        self.maybe_sweep().await;
         let data = serde_json::to_vec(value)?;
         let ttl = ttl.or(self.default_ttl);
         let entry = CacheEntry::new(data, ttl);
@@ -286,7 +317,7 @@ impl Cache for MemoryCache {
         let mut store = self.store.write().await;
         store.insert(key.to_string(), entry);
         self.sets.fetch_add(1, Ordering::Relaxed);
-        
+
         Ok(())
     }
 
@@ -300,7 +331,7 @@ impl Cache for MemoryCache {
 
     async fn exists(&self, key: &str) -> Result<bool> {
         validate_cache_key(key)?;
-        self.cleanup().await;
+        self.maybe_sweep().await;
         let store = self.store.read().await;
         Ok(store.get(key).map(|e| !e.is_expired()).unwrap_or(false))
     }
@@ -356,6 +387,23 @@ mod tests {
         
         let value: Option<String> = cache.get("key1").await.unwrap();
         assert_eq!(value, None);
+    }
+
+    #[tokio::test]
+    async fn test_expired_entry_evicts_lazily() {
+        let cache = MemoryCache::new();
+
+        cache.set("short", &"v", Some(Duration::from_millis(20))).await.unwrap();
+        tokio::time::sleep(Duration::from_millis(50)).await;
+
+        // Expired reads miss and remove the entry without scanning the store.
+        let value: Option<String> = cache.get("short").await.unwrap();
+        assert_eq!(value, None);
+        assert!(!cache.store.read().await.contains_key("short"));
+
+        // Live entries are unaffected by neighboring expiries.
+        cache.set("live", &"v", None).await.unwrap();
+        assert!(cache.exists("live").await.unwrap());
     }
 
     #[tokio::test]

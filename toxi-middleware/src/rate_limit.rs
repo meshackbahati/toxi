@@ -1,7 +1,8 @@
 use toxi_db::Database;
 use std::sync::Arc;
-use std::collections::HashMap;
-use tokio::sync::Mutex;
+use std::collections::{HashMap, VecDeque};
+use std::hash::{Hash, Hasher};
+use tokio::sync::RwLock;
 
 /// Rate limit configuration
 #[derive(Clone, Debug)]
@@ -19,13 +20,23 @@ impl Default for RateLimitConfig {
     }
 }
 
-/// In-memory rate limiter with sliding window
+/// In-memory rate limiter with sliding window.
+///
+/// Checks shard by `identifier + endpoint` across independent locks, so
+/// concurrent requests for distinct clients proceed in parallel instead of
+/// serializing on a single global mutex. Per-key timestamps are kept in
+/// insertion order, which bounds eviction to the expired prefix rather than
+/// a full scan on every check.
 pub struct RateLimiter {
     db: Option<Arc<dyn Database>>,
     config: RateLimitConfig,
-    // In-memory cache: identifier -> (timestamp, count)
-    cache: Arc<Mutex<HashMap<String, Vec<i64>>>>,
+    // Sharded in-memory cache: identifier -> ordered request timestamps.
+    shards: Vec<Arc<RwLock<HashMap<String, VecDeque<i64>>>>>,
 }
+
+/// Lock shard count. Sixteen shards keep per-shard contention negligible
+/// at typical concurrency while adding no measurable lookup cost.
+const SHARD_COUNT: usize = 16;
 
 impl RateLimiter {
     /// Create a new in-memory rate limiter with the given configuration
@@ -33,17 +44,29 @@ impl RateLimiter {
         Self {
             db: None,
             config,
-            cache: Arc::new(Mutex::new(HashMap::new())),
+            shards: Self::empty_shards(),
         }
     }
-    
+
     /// Create a new rate limiter with a database backend for persistent tracking
     pub fn with_db(config: RateLimitConfig, db: Arc<dyn Database>) -> Self {
         Self {
             db: Some(db),
             config,
-            cache: Arc::new(Mutex::new(HashMap::new())),
+            shards: Self::empty_shards(),
         }
+    }
+
+    fn empty_shards() -> Vec<Arc<RwLock<HashMap<String, VecDeque<i64>>>>> {
+        (0..SHARD_COUNT)
+            .map(|_| Arc::new(RwLock::new(HashMap::new())))
+            .collect()
+    }
+
+    fn shard(&self, key: &str) -> &Arc<RwLock<HashMap<String, VecDeque<i64>>>> {
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        key.hash(&mut hasher);
+        &self.shards[hasher.finish() as usize % SHARD_COUNT]
     }
     
     /// Check if request is allowed (returns true if allowed)
@@ -51,25 +74,31 @@ impl RateLimiter {
         let now = chrono::Utc::now().timestamp();
         let minute_ago = now - 60;
         let hour_ago = now - 3600;
-        
-        // Use in-memory cache for performance
-        let mut cache = self.cache.lock().await;
+
+        // Only the owning shard is locked, so distinct clients never block
+        // each other. Timestamps arrive in nondecreasing order, with the
+        // consequence that eviction touches the expired prefix alone and the
+        // minute count scans back from the newest entry rather than the
+        // whole hour window.
         let key = format!("{}:{}", identifier, endpoint);
-        
-        // Get timestamps for this identifier+endpoint
-        let timestamps = cache.entry(key.clone()).or_insert_with(Vec::new);
-        
-        // Remove timestamps older than 1 hour
-        timestamps.retain(|&ts| ts > hour_ago);
-        
-        // Count requests in last minute
-        let minute_count = timestamps.iter().filter(|&&ts| ts > minute_ago).count() as u32;
-        
+        let mut shard = self.shard(&key).write().await;
+        let timestamps = shard.entry(key).or_insert_with(VecDeque::new);
+
+        while timestamps.front().map(|&ts| ts <= hour_ago).unwrap_or(false) {
+            timestamps.pop_front();
+        }
+
+        let minute_count = timestamps
+            .iter()
+            .rev()
+            .take_while(|&&ts| ts > minute_ago)
+            .count() as u32;
+
         // Check minute limit
         if minute_count >= self.config.requests_per_minute {
             return false;
         }
-        
+
         // Check hour limit if configured
         if let Some(hour_limit) = self.config.requests_per_hour {
             let hour_count = timestamps.len() as u32;
@@ -77,9 +106,9 @@ impl RateLimiter {
                 return false;
             }
         }
-        
+
         // Request allowed - add timestamp
-        timestamps.push(now);
+        timestamps.push_back(now);
         
         // Persist to database if configured (async, don't wait)
         if let Some(db) = &self.db {
@@ -133,27 +162,89 @@ impl RateLimiter {
     pub async fn get_remaining(&self, identifier: &str, endpoint: &str) -> u32 {
         let now = chrono::Utc::now().timestamp();
         let minute_ago = now - 60;
-        
-        let cache = self.cache.lock().await;
+
         let key = format!("{}:{}", identifier, endpoint);
-        
-        if let Some(timestamps) = cache.get(&key) {
-            let minute_count = timestamps.iter().filter(|&&ts| ts > minute_ago).count() as u32;
+        let shard = self.shard(&key).read().await;
+
+        if let Some(timestamps) = shard.get(&key) {
+            let minute_count = timestamps
+                .iter()
+                .rev()
+                .take_while(|&&ts| ts > minute_ago)
+                .count() as u32;
             self.config.requests_per_minute.saturating_sub(minute_count)
         } else {
             self.config.requests_per_minute
         }
     }
-    
+
     /// Clean up old entries from cache (call periodically)
     pub async fn cleanup(&self) {
         let now = chrono::Utc::now().timestamp();
         let hour_ago = now - 3600;
-        
-        let mut cache = self.cache.lock().await;
-        cache.retain(|_, timestamps| {
-            timestamps.retain(|&ts| ts > hour_ago);
-            !timestamps.is_empty()
+
+        for shard in &self.shards {
+            let mut shard = shard.write().await;
+            shard.retain(|_, timestamps| {
+                while timestamps.front().map(|&ts| ts <= hour_ago).unwrap_or(false) {
+                    timestamps.pop_front();
+                }
+                !timestamps.is_empty()
+            });
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn tight_config() -> RateLimitConfig {
+        RateLimitConfig {
+            requests_per_minute: 3,
+            requests_per_hour: Some(5),
+        }
+    }
+
+    #[tokio::test]
+    async fn enforces_minute_limit() {
+        let limiter = RateLimiter::new(tight_config());
+        assert!(limiter.check("u1", "/api").await);
+        assert!(limiter.check("u1", "/api").await);
+        assert!(limiter.check("u1", "/api").await);
+        assert!(!limiter.check("u1", "/api").await);
+        assert_eq!(limiter.get_remaining("u1", "/api").await, 0);
+    }
+
+    #[tokio::test]
+    async fn enforces_hour_limit() {
+        let limiter = RateLimiter::new(RateLimitConfig {
+            requests_per_minute: 100,
+            requests_per_hour: Some(2),
         });
+        assert!(limiter.check("u1", "/api").await);
+        assert!(limiter.check("u1", "/api").await);
+        assert!(!limiter.check("u1", "/api").await);
+    }
+
+    #[tokio::test]
+    async fn isolates_distinct_keys() {
+        let limiter = RateLimiter::new(tight_config());
+        for _ in 0..3 {
+            assert!(limiter.check("u1", "/api").await);
+        }
+        assert!(!limiter.check("u1", "/api").await);
+        // A different client is unaffected by the first client's consumption.
+        assert!(limiter.check("u2", "/api").await);
+        assert_eq!(limiter.get_remaining("u2", "/api").await, 2);
+    }
+
+    #[tokio::test]
+    async fn cleanup_drops_empty_keys() {
+        let limiter = RateLimiter::new(tight_config());
+        assert!(limiter.check("u1", "/api").await);
+        limiter.cleanup().await;
+        // Recent entries survive cleanup.
+        assert_eq!(limiter.get_remaining("u1", "/api").await, 2);
     }
 }

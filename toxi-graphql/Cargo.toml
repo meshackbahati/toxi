@@ -1,6 +1,6 @@
 [package]
 name = "toxi-graphql"
-version = "3.1.0"
+version = "3.1.1"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "GraphQL integration for Toxi web framework with schema generation and resolvers"

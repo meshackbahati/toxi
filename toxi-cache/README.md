@@ -1,58 +1,17 @@
 # toxi-cache
 
-Caching backends for Toxi with in-memory and Redis implementations.
-
-## Installation
+In-memory and Redis caching for Toxi.
 
 ```toml
 [dependencies]
-toxi-cache = "3.1.0"
+toxi-cache = "3"
 ```
-
-## Backends
-
-- `MemoryCache`: process-local in-memory cache with TTL support
-- `RedisCache`: shared cache backed by Redis
-
-## Basic Usage
 
 ```rust
 use std::time::Duration;
 use toxi_cache::{Cache, MemoryCache};
 
-#[tokio::main]
-async fn main() -> Result<(), toxi_cache::CacheError> {
-    let cache = MemoryCache::new();
-
-    cache.set("user:1", &"Alice", Some(Duration::from_secs(60))).await?;
-    let user: Option<String> = cache.get("user:1").await?;
-    assert_eq!(user.as_deref(), Some("Alice"));
-
-    Ok(())
-}
-```
-
-## Remember Pattern
-
-```rust
-use std::time::Duration;
-use toxi_cache::MemoryCache;
-
-# #[tokio::main]
-# async fn main() -> Result<(), toxi_cache::CacheError> {
 let cache = MemoryCache::new();
-let value: String = cache
-    .remember("expensive:key", Duration::from_secs(30), || async {
-        Ok("computed".to_string())
-    })
-    .await?;
-assert_eq!(value, "computed");
-# Ok(())
-# }
+cache.set("user:1", &"Alice", Some(Duration::from_secs(60))).await?;
+let user: Option<String> = cache.get("user:1").await?;
 ```
-
-## Notes
-
-- Cache keys must be non-empty and free of control characters.
-- TTL values must be greater than zero when provided.
-- This crate currently does not implement tagged cache invalidation.

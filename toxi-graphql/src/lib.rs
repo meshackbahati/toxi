@@ -72,12 +72,25 @@ impl GraphQLHandler {
                 
                 // Create context
                 let context = (context_factory)();
-                
-                // Execute query
-                let response = graphql_request.execute_sync(&schema, &context);
+
+                // Execute the query off the async worker. Juniper execution
+                // is synchronous and CPU-bound, so running it inline would
+                // block the Tokio worker for the full query duration and
+                // stall unrelated connections sharing that worker. The
+                // response borrows the request, with the consequence that
+                // it is resolved to owned JSON before crossing back.
+                let value: serde_json::Value = tokio::task::spawn_blocking(move || {
+                    let response = graphql_request.execute_sync(&schema, &context);
+                    serde_json::to_value(&response).map_err(|e| e.to_string())
+                })
+                .await
+                .map_err(|e| toxi_core::Error::InternalServerError(format!(
+                    "GraphQL execution failed: {e}"
+                )))?
+                .map_err(toxi_core::Error::InternalServerError)?;
                 
                 // Return JSON response
-                Ok(toxi_core::ToxiResponse::json(response))
+                Ok(toxi_core::ToxiResponse::json(value))
             }
         });
         

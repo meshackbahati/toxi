@@ -922,6 +922,10 @@ mod tests {
     /// Takes a **pre-set** snapshot of env vars so any OS-level or leaked
     /// env vars are blacklisted. Only the env vars passed in `env_vars`
     /// (which are set AFTER the snapshot) pass through.
+    ///
+    /// Callers must NOT hold `SERIAL_TEST`: this helper owns the lock for
+    /// the whole parse-and-restore sequence, since `std::sync::Mutex` is
+    /// non-reentrant and a second lock from the same thread deadlocks.
     fn config_from_toml_with_env(
         toml_str: &str,
         env_vars: &[(&str, &str)],
@@ -1318,7 +1322,6 @@ mod tests {
     // Test 6b: Custom env vars via [env] table override config values
     #[test]
     fn test_custom_env_table_overrides() {
-        let _lock = SERIAL_TEST.lock().unwrap();
         let toml = r#"
             [server]
             port = 3000
