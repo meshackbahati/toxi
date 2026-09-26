@@ -1,4 +1,4 @@
-error: `deleted_at` must be Option<i64> for soft-delete support
+error: `deleted_at` must be Option<i64> or Option<DateTime> for soft-delete support
  --> tests/ui/fail_deleted_at_not_option.rs:7:17
   |
 7 |     deleted_at: i64,

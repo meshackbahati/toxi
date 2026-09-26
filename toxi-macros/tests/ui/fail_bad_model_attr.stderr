@@ -1,4 +1,4 @@
-error: unsupported model attribute; expected `table_name = "..."` or `table = "..."`
+error: unsupported model attribute; expected `table_name = "..."`, `table = "..."`, or `primary_key = "..."`
  --> tests/ui/fail_bad_model_attr.rs:2:9
   |
 2 | #[model(foo = "bar")]

@@ -1,4 +1,4 @@
-error: Model derive requires an `id` field
+error: Model derive requires an `id` field or #[model(primary_key = "field1", "field2")] for composite keys
  --> tests/ui/fail_missing_id.rs:2:1
   |
 2 | struct Bad {
