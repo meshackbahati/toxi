@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - toxi-core 3.1.5
+## [Unreleased] - toxi-core 3.1.6
+
+### Fixed
+- **toxi-core** (`3.1.6`): TLS configuration installs the ring crypto
+  provider explicitly. rustls 0.23 selects no provider by default, with
+  the consequence that every HTTPS handshake panicked at runtime. All
+  `SecureServer` users are covered by the single install.
+
+## [3.1.5] - 2026-09-24 (workspace batch)
 
 ### Fixed
 - **toxi-core** (`3.1.5`): router dispatch uses a boolean `is_match` fast
