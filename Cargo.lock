@@ -5007,7 +5007,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-core"
-version = "3.1.5"
+version = "3.1.6"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
