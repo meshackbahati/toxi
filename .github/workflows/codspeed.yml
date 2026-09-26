@@ -25,13 +25,9 @@ jobs:
           cache-target: release
           bins: cargo-codspeed
       - name: Build the benchmark target(s)
-        run: cargo codspeed build -p toxi-core
+        run: cargo codspeed build -m simulation -p toxi-core
       - name: Run the benchmarks
         uses: CodSpeedHQ/action@v5
         with:
           mode: simulation
-          # Required for private repositories. Create the project at
-          # codspeed.io, then add the token as a CODSPEED_TOKEN secret
-          # under repository Settings -> Secrets and variables -> Actions.
-          token: ${{ secrets.CODSPEED_TOKEN }}
           run: cargo codspeed run -p toxi-core
