@@ -76,7 +76,8 @@ Middleware depth shows no trend above noise.
 
 - 1000-connection sweep on a 2-core laptop: recorded, may fail; failure
   is data, not excluded.
-- TLS profiles: not implemented in the arena entry yet.
+- TLS profiles (json-tls, 8gbit): implemented in the arena entry on
+  `toxi-core` 3.1.6 and validated locally; arena CI green.
 
 ## 11. Raw data and graphs
 

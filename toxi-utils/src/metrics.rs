@@ -11,7 +11,7 @@
 //! let registry = MetricsRegistry::new();
 //! registry.record_request("/health", 5, true);
 //! let snapshot = registry.get_snapshot();
-//! assert_eq!(snapshot.get("/health").unwrap(), (1, 1, 0, 5));
+//! assert_eq!(*snapshot.get("/health").unwrap(), (1, 1, 0, 5));
 //! ```
 
 use std::sync::atomic::{AtomicU64, Ordering};

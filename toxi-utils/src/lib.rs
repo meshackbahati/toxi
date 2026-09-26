@@ -68,7 +68,7 @@ pub use validation::{
 /// let registry = MetricsRegistry::new();
 /// registry.record_request("/api/health", 42, true);
 /// let snapshot = registry.get_snapshot();
-/// assert_eq!(snapshot.get("/api/health"), Some(&(1, 1, 0, 42)));
+/// assert_eq!(snapshot.get("/api/health"), Some(&(1u64, 1u64, 0u64, 42u64)));
 /// ```
 pub mod metrics;
 pub use metrics::{GLOBAL_METRICS, MetricsRegistry, RouteMetrics, render_prometheus};
