@@ -246,15 +246,10 @@ MIT OR Apache-2.0 — see [LICENSE](LICENSE).
 
 ## Benchmarks
 
-Full results in [`benchmarks/`](benchmarks/): dispatch, extractors,
-responses, middleware, throughput, and full HTTP against Rocket, Loco,
-Poem, Salvo, and Warp.
-
-| Framework (GET /json, req/s) | Req/s | p99 (ms) |
-| ---------------------------- | ----: | -------: |
-| toxi | 40,812 | 8.60 |
-| warp | 40,681 | 11.51 |
-| poem | 40,359 | 8.44 |
-| loco | 28,994 | 10.49 |
-| salvo | 27,759 | 33.78 |
-| rocket | 23,207 | 36.34 |
+Measured results live in [`benchmarks/`](benchmarks/) by area (router,
+extractors, responses, middleware, throughput, full HTTP). The harness
+source is documented in [`toxi-core/benches/README.md`](toxi-core/benches/README.md)
+and runs in CI on every pull request. Full HTTP comparisons and the
+HTTP Arena entry live in the separate
+[`toxi-benchmark`](https://github.com/meshackbahati/toxi-benchmark)
+repository.
