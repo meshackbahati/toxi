@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - toxi-core 3.1.7
+
+### Fixed
+- **toxi-core** (`3.1.7`): server I/O path tuning. Explicit 1024 listen
+  backlog via `TcpSocket` instead of the default bind backlog,
+  `TCP_NODELAY` on accepted connections, 32 KB hyper read-buffer cap,
+  and allocation-free WebSocket upgrade detection. No public API change.
+
 ## [Unreleased] - toxi-core 3.1.6
 
 ### Fixed
