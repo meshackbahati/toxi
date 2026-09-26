@@ -5041,6 +5041,7 @@ dependencies = [
  "tower-http",
  "tower-service",
  "toxi-config",
+ "toxi-db",
  "tungstenite 0.20.1",
 ]
 
