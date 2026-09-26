@@ -8,6 +8,7 @@ only, no network) unless labeled **full HTTP**.
 - `responses.md` — response construction and serialization.
 - `middleware.md` — per-layer composition cost.
 - `throughput.md` — in-process concurrent load.
+- `database.md` — sqlite-backed handler cost.
 - `comparison.md` — full HTTP against Rocket, Loco, Poem, Salvo, Warp.
 
 Harness source: `toxi-core/benches/` (divan, CodSpeed-compatible).
