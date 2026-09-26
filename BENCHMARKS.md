@@ -77,8 +77,6 @@ Middleware depth shows no trend above noise.
 - 1000-connection sweep on a 2-core laptop: recorded, may fail; failure
   is data, not excluded.
 - TLS profiles: not implemented in the arena entry yet.
-- CodSpeed upload in CI: blocked on the `CODSPEED_TOKEN` secret
-  (account-side).
 
 ## 11. Raw data and graphs
 

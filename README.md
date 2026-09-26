@@ -10,6 +10,7 @@ A web framework for Rust (previously Oxidite). Build APIs, microservices, server
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](Cargo.toml)
 [![GitHub](https://img.shields.io/badge/github-meshackbahati%2Ftoxi-black)](https://github.com/meshackbahati/toxi)
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/meshackbahati/toxi?utm_source=badge)
 
 </div>
 
