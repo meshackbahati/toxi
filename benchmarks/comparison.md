@@ -13,3 +13,18 @@ connections, loopback, release builds. Success rate 1.0 everywhere.
 | rocket | 23,207 | 36.34 |
 
 ![throughput with p99](img/six-http.png)
+
+## Sustained load (5 min, /json, 50 conns)
+
+| Framework | Req/s | p50 (ms) | p99 (ms) |
+| --------- | ----: | -------: | -------: |
+| warp | 38,850 | 0.88 | 10.72 |
+| salvo | 27,115 | 1.17 | 15.30 |
+| loco | 23,924 | 1.46 | 19.94 |
+| toxi | 19,547 | 1.45 | 26.91 |
+| poem | 9,808 | 3.44 | 53.34 |
+| rocket | 6,974 | 4.39 | 79.72 |
+
+No errors on any framework. Sprint ordering does not hold
+sustained: warp and salvo pull ahead while poem and rocket fall back.
+Raw output in `raw/sus-*.json`, rows in `results/sustained.csv`.

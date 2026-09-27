@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `TCP_NODELAY` on accepted connections, 32 KB hyper read-buffer cap,
   and allocation-free WebSocket upgrade detection. No public API change.
 
-## [Unreleased] - toxi-core 3.1.6
+## [3.1.6] - 2026-09-26
 
 ### Fixed
 - **toxi-core** (`3.1.6`): TLS configuration installs the ring crypto

@@ -1,0 +1,7 @@
+framework,framework_version,commit,benchmark,payload_size,connections,threads,duration_seconds,run,requests_per_second,p50_ms,p95_ms,p99_ms,errors,success_rate,rss_mb,timestamp
+toxi,see-kit-lock,local,P-sustained,,50,auto,300,1,19547.2,1.453,6.528,26.911,0,1.0,,2026-09-27T06:01:28Z
+rocket,see-kit-lock,local,P-sustained,,50,auto,300,1,6974.0,4.393,13.238,79.719,0,1.0,,2026-09-27T06:01:28Z
+poem,see-kit-lock,local,P-sustained,,50,auto,300,1,9808.4,3.438,9.575,53.337,0,1.0,,2026-09-27T06:01:28Z
+salvo,see-kit-lock,local,P-sustained,,50,auto,300,1,27115.3,1.172,4.098,15.304,0,1.0,,2026-09-27T06:01:28Z
+warp,see-kit-lock,local,P-sustained,,50,auto,300,1,38849.8,0.879,2.375,10.718,0,1.0,,2026-09-27T06:01:28Z
+loco,see-kit-lock,local,P-sustained,,50,auto,300,1,23923.5,1.457,3.834,19.935,0,1.0,,2026-09-27T06:01:28Z
