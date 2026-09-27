@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - toxi-core 3.1.8
+
+### Fixed
+- **toxi-core** (`3.1.8`): route table shared by clone instead of
+  reallocated per request. `Service::call` cloned the entire routes map
+  on every request; the table now lives behind `Arc` with copy-on-write
+  mutation, so per-request clones cost one atomic increment. No public
+  API change.
+
 ## [3.1.7] - 2026-09-26
 
 ### Fixed
