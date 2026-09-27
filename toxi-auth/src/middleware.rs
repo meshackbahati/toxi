@@ -3,19 +3,26 @@ use tower::{Service, Layer};
 use std::task::{Context, Poll};
 use std::future::Future;
 use std::pin::Pin;
-use crate::verify_token;
+use std::sync::Arc;
+use crate::JwtManager;
 
-/// Auth middleware that validates JWT tokens
+/// Auth middleware that validates JWT tokens.
+///
+/// Holds precomputed verification keys shared across requests, so token
+/// verification performs no key derivation on the hot path.
 #[derive(Clone)]
 pub struct AuthMiddleware<S> {
     inner: S,
-    secret: String,
+    manager: Arc<JwtManager>,
 }
 
 impl<S> AuthMiddleware<S> {
     /// Create a new `AuthMiddleware` that validates JWT tokens with the given secret.
     pub fn new(inner: S, secret: String) -> Self {
-        Self { inner, secret }
+        Self {
+            inner,
+            manager: Arc::new(JwtManager::new(secret)),
+        }
     }
 }
 
@@ -41,17 +48,19 @@ where
             .and_then(|h| h.strip_prefix("Bearer "))
             .map(|s| s.to_string());
 
-        let secret = self.secret.clone();
+        let manager = self.manager.clone();
         let mut inner = self.inner.clone();
 
         Box::pin(async move {
             // Verify token
             if let Some(token_str) = token {
-                match verify_token(&token_str, &secret) {
+                match manager.verify(&token_str) {
                     Ok(claims) => {
                         let mut req = req;
-                        req.extensions_mut().insert(claims.clone());
-                        if let Ok(user_id) = claims.sub.parse::<i64>() {
+                        // Parse before moving so the claims insert needs no clone.
+                        let user_id = claims.sub.parse::<i64>().ok();
+                        req.extensions_mut().insert(claims);
+                        if let Some(user_id) = user_id {
                             req.extensions_mut().insert(user_id);
                         }
                         // Token is valid, proceed with request

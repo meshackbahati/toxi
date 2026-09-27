@@ -54,15 +54,18 @@ where
         Box::pin(async move {
             let res = fut.await;
             let elapsed_ms = start.elapsed().as_millis();
+            // Routed through the `log` facade rather than standard output:
+            // unbuffered per-request writes stall the worker, and operators
+            // without a logger installed pay nothing.
             match &res {
                 Ok(response) => {
-                    println!(
+                    log::info!(
                         "{} {} {} ({}ms)",
                         method, path, response.status(), elapsed_ms
                     );
                 }
                 Err(err) => {
-                    println!(
+                    log::info!(
                         "{} {} {} {} ({}ms)",
                         method, path, err.status_code(), err, elapsed_ms
                     );

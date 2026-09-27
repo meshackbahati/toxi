@@ -90,16 +90,24 @@ impl ApiKey {
         match row {
             Some(row) => {
                 let mut api_key = ApiKey::from_row(&row)?;
-                
-                // Update last_used_at
-                let update_query = toxi_db::sqlx::query(
-                    "UPDATE api_keys SET last_used_at = ? WHERE id = ?"
-                )
-                    .bind(now)
-                    .bind(api_key.id);
-                let _ = db.execute_query(update_query).await;
-                api_key.last_used_at = Some(now);
-                
+
+                // Refresh last_used_at at most every five minutes. Verifying
+                // a key otherwise costs a read plus a write on every request;
+                // the timestamp only needs coarse freshness.
+                let stale = api_key
+                    .last_used_at
+                    .map(|t| now - t > 300)
+                    .unwrap_or(true);
+                if stale {
+                    let update_query = toxi_db::sqlx::query(
+                        "UPDATE api_keys SET last_used_at = ? WHERE id = ?"
+                    )
+                        .bind(now)
+                        .bind(api_key.id);
+                    let _ = db.execute_query(update_query).await;
+                    api_key.last_used_at = Some(now);
+                }
+
                 Ok(Some(api_key))
             }
             None => Ok(None),

@@ -550,26 +550,51 @@ pub trait AutoDocs {
 
 impl AutoDocs for toxi_core::Router {
     fn with_auto_docs(mut self, spec: OpenApiSpec) -> Self {
-        let spec_arc = std::sync::Arc::new(spec);
+        // Render once at mount: the spec never changes per request, so
+        // cloning the whole document and re-serializing on every docs hit
+        // is pure waste. Both payloads are shared as immutable byte strings
+        // and served without further serialization.
+        let rendered_json = std::sync::Arc::new(
+            bytes::Bytes::from(
+                serde_json::to_vec(&spec).unwrap_or_else(|_| b"{}".to_vec()),
+            ),
+        );
+        let rendered_docs =
+            std::sync::Arc::new(bytes::Bytes::from(generate_docs_html(&spec)));
 
-        let spec_json = spec_arc.clone();
+        let spec_json = rendered_json.clone();
         self.get("/openapi.json", move || {
             let spec_json = spec_json.clone();
-            async move { Ok(toxi_core::ToxiResponse::json((*spec_json).clone())) }
+            async move { Ok(json_bytes_response(&spec_json, "application/json")) }
         });
 
-        let spec_docs = spec_arc.clone();
+        let spec_docs = rendered_docs;
         self.get("/api/docs", move || {
             let spec_docs = spec_docs.clone();
-            async move {
-                Ok(toxi_core::ToxiResponse::html(generate_docs_html(
-                    &spec_docs,
-                )))
-            }
+            async move { Ok(html_bytes_response(&spec_docs)) }
         });
 
         self
     }
+}
+
+/// Serve pre-serialized bytes with a JSON content type.
+fn json_bytes_response(body: &bytes::Bytes, content_type: &'static str) -> toxi_core::ToxiResponse {
+    use http_body_util::BodyExt;
+    let res = http::Response::builder()
+        .header(http::header::CONTENT_TYPE, content_type)
+        .body(
+            http_body_util::Full::new(body.clone())
+                .map_err(|e| match e {})
+                .boxed(),
+        )
+        .expect("static docs response builds");
+    toxi_core::ToxiResponse::new(res)
+}
+
+/// Serve pre-rendered HTML bytes.
+fn html_bytes_response(body: &bytes::Bytes) -> toxi_core::ToxiResponse {
+    json_bytes_response(body, "text/html")
 }
 
 /// Generate HTML documentation page

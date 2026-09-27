@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **toxi-auth** (`3.1.1`): `JwtManager` derives encoding, decoding, and
+  validation once at construction instead of per token; the auth
+  middleware shares one manager and no longer clones claims into
+  extensions.
+- **toxi-middleware** (`3.1.1`): request logger writes through the `log`
+  facade instead of blocking standard output per request; server header
+  values precomputed once instead of formatted and parsed per response.
+- **toxi-queue** (`3.1.1`): in-memory backend uses priority and delay
+  heaps (O(log n)) instead of scans with memmoves (O(n)); worker
+  diagnostics go through the `log` facade.
+- **toxi-template** (`3.1.1`): loop rendering reuses one context instead
+  of cloning the full context map per element.
+- **toxi-openapi** (`3.1.1`): docs endpoints serve pre-rendered bytes
+  instead of cloning and re-serializing the whole spec per hit.
+- **toxi-storage** (`3.1.1`): file reads preallocate from metadata
+  instead of growing the buffer geometrically.
+
 ## [3.1.8] - 2026-09-27
 
 ### Fixed

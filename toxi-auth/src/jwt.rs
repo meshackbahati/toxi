@@ -63,34 +63,36 @@ impl Claims {
     }
 }
 
-/// JWT Manager for creating and verifying tokens
+/// JWT Manager for creating and verifying tokens.
+///
+/// Encoding and decoding keys with the validation policy are derived once
+/// at construction. Deriving them per call repeats HMAC setup and
+/// validation allocation on every authenticated request.
 pub struct JwtManager {
-    secret: String,
+    encoding_key: EncodingKey,
+    decoding_key: DecodingKey,
+    validation: Validation,
 }
 
 impl JwtManager {
     /// Create a new `JwtManager` with the given signing secret.
     pub fn new(secret: String) -> Self {
-        Self { secret }
+        Self {
+            encoding_key: EncodingKey::from_secret(secret.as_bytes()),
+            decoding_key: DecodingKey::from_secret(secret.as_bytes()),
+            validation: Validation::default(),
+        }
     }
 
     /// Generate a signed JWT from the given claims.
     pub fn generate_token<T: Serialize>(&self, claims: &T) -> Result<String> {
-        let token = encode(
-            &Header::default(),
-            claims,
-            &EncodingKey::from_secret(self.secret.as_bytes()),
-        )?;
+        let token = encode(&Header::default(), claims, &self.encoding_key)?;
         Ok(token)
     }
 
     /// Verify a signed JWT and return its claims.
     pub fn verify(&self, token: &str) -> Result<Claims> {
-        let token_data = decode::<Claims>(
-            token,
-            &DecodingKey::from_secret(self.secret.as_bytes()),
-            &Validation::default(),
-        )?;
+        let token_data = decode::<Claims>(token, &self.decoding_key, &self.validation)?;
         Ok(token_data.claims)
     }
 }

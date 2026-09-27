@@ -64,9 +64,12 @@ impl Storage for LocalStorage {
         }
         
         let mut file = fs::File::open(&full_path).await?;
-        let mut buffer = Vec::new();
+        // Preallocate from metadata so large files grow the buffer once
+        // instead of reallocating through geometric growth.
+        let capacity = file.metadata().await.map(|m| m.len()).unwrap_or(0);
+        let mut buffer = Vec::with_capacity(capacity.min(256 * 1024 * 1024) as usize);
         file.read_to_end(&mut buffer).await?;
-        
+
         Ok(Bytes::from(buffer))
     }
 

@@ -19,6 +19,7 @@ sha2 = "0.10.9"
 base64 = "0.22.1"
 rand = "0.9.1"
 thiserror = "2.0"
+log = "0.4"
 toxi-db = { version = "3", path = "../toxi-db" }
 toxi-utils = { version = "3", path = "../toxi-utils" }
 chrono = "0.4"
