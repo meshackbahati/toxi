@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "OpenAPI/Swagger documentation generation for Toxi"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/meshackbahati/toxi"
+repository = "https://github.com/toxi-rs/toxi-openapi"
 keywords = ["openapi", "swagger", "api", "documentation", "web"]
 categories = ["web-programming", "development-tools"]
 

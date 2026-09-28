@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Procedural macros for the Toxi web framework (Model derive, etc.)"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/meshackbahati/toxi"
+repository = "https://github.com/toxi-rs/toxi-macros"
 keywords = ["macros", "derive", "web", "framework", "orm"]
 categories = ["web-programming", "development-tools::procedural-macro-helpers"]
 

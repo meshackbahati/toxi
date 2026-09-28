@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Database ORM with relationships and migrations for Toxi"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/meshackbahati/toxi"
+repository = "https://github.com/toxi-rs/toxi-db"
 keywords = ["database", "orm", "migrations", "postgres", "mysql"]
 categories = ["database", "web-programming"]
 

@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "WebSocket and real-time features for Toxi"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/meshackbahati/toxi"
+repository = "https://github.com/toxi-rs/toxi-realtime"
 keywords = ["websocket", "realtime", "pubsub", "async", "web"]
 categories = ["web-programming", "network-programming"]
 

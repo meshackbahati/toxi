@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Caching backends (Memory, Redis) for the Toxi web framework"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/meshackbahati/toxi"
+repository = "https://github.com/toxi-rs/toxi-cache"
 keywords = ["cache", "redis", "memory", "async", "web"]
 categories = ["caching", "web-programming"]
 

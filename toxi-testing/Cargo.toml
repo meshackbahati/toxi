@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Testing utilities for the Toxi web framework"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/meshackbahati/toxi"
+repository = "https://github.com/toxi-rs/toxi-testing"
 keywords = ["web", "framework", "testing", "http", "async"]
 categories = ["web-programming", "development-tools::testing"]
 
