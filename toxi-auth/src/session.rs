@@ -69,7 +69,9 @@ impl Session {
 #[async_trait]
 pub trait SessionStore: Send + Sync {
     async fn create(&self, session: Session) -> Result<String>;
-    async fn get(&self, session_id: &str) -> Result<Option<Session>>;
+    /// Retrieve a session. Returns a shared reference so reads perform
+    /// no deep copy of session data.
+    async fn get(&self, session_id: &str) -> Result<Option<Arc<Session>>>;
     async fn update(&self, session: Session) -> Result<()>;
     async fn delete(&self, session_id: &str) -> Result<()>;
     async fn cleanup_expired(&self) -> Result<usize>;
@@ -77,7 +79,7 @@ pub trait SessionStore: Send + Sync {
 
 /// In-memory session store
 pub struct InMemorySessionStore {
-    sessions: Arc<RwLock<HashMap<String, Session>>>,
+    sessions: Arc<RwLock<HashMap<String, Arc<Session>>>>,
 }
 
 impl InMemorySessionStore {
@@ -101,18 +103,18 @@ impl SessionStore for InMemorySessionStore {
     async fn create(&self, session: Session) -> Result<String> {
         let session_id = session.id.clone();
         let mut sessions = self.sessions.write().await;
-        sessions.insert(session_id.clone(), session);
+        sessions.insert(session_id.clone(), Arc::new(session));
         Ok(session_id)
     }
 
-    async fn get(&self, session_id: &str) -> Result<Option<Session>> {
+    async fn get(&self, session_id: &str) -> Result<Option<Arc<Session>>> {
         let sessions = self.sessions.read().await;
         Ok(sessions.get(session_id).cloned())
     }
 
     async fn update(&self, session: Session) -> Result<()> {
         let mut sessions = self.sessions.write().await;
-        sessions.insert(session.id.clone(), session);
+        sessions.insert(session.id.clone(), Arc::new(session));
         Ok(())
     }
 
@@ -174,7 +176,7 @@ impl SessionStore for RedisSessionStore {
         Ok(session_id)
     }
 
-    async fn get(&self, session_id: &str) -> Result<Option<Session>> {
+    async fn get(&self, session_id: &str) -> Result<Option<Arc<Session>>> {
         let key = self.session_key(session_id);
         
         let mut conn = self.client.get_multiplexed_async_connection()
@@ -188,13 +190,13 @@ impl SessionStore for RedisSessionStore {
         if let Some(data) = result {
             let session: Session = serde_json::from_str(&data)
                 .map_err(|e| AuthError::HashError(e.to_string()))?;
-            
+
             if session.is_expired() {
                 self.delete(session_id).await?;
                 return Ok(None);
             }
-            
-            Ok(Some(session))
+
+            Ok(Some(Arc::new(session)))
         } else {
             Ok(None)
         }
@@ -253,7 +255,7 @@ impl SessionManager {
     }
 
     /// Retrieve a session from the backing store.
-    pub async fn get(&self, session_id: &str) -> Result<Option<Session>> {
+    pub async fn get(&self, session_id: &str) -> Result<Option<Arc<Session>>> {
         self.store.get(session_id).await
     }
 

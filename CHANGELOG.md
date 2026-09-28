@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **toxi-auth** (`4.0.0`): session stores hand out `Arc<Session>` instead
+  of deep copies. `SessionStore::get`, `SessionManager::get`, and session
+  middleware move to shared sessions. Breaking for external store
+  implementations and for readers of `Session` from extensions.
+- **toxi-realtime** (`4.0.0`): `Message` payloads are reference-counted
+  (`Arc<String>`, `Arc<Value>`, `Arc<Vec<u8>>`), so fan-out clones
+  pointers instead of duplicating payloads. Constructors keep their
+  shapes; pattern matches observe `Arc` payloads. Breaking for matches
+  on message contents.
+
 ### Fixed
 - **toxi-auth** (`3.1.1`): `JwtManager` derives encoding, decoding, and
   validation once at construction instead of per token; the auth

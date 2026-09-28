@@ -83,7 +83,9 @@ where
             };
 
             let mut req = req;
-            if let Some(sess) = session.clone() {
+            // The store hands out shared sessions, so attaching them to
+            // the request costs reference counts rather than deep copies.
+            if let Some(ref sess) = session {
                 req.extensions_mut().insert(sess.clone());
                 req.extensions_mut().insert(sess.user_id.clone());
                 if let Ok(user_id) = sess.user_id.parse::<i64>() {

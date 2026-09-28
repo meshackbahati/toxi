@@ -4922,7 +4922,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-auth"
-version = "3.1.0"
+version = "4.0.0"
 dependencies = [
  "argon2",
  "async-trait",
@@ -5131,7 +5131,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-openapi"
-version = "3.1.0"
+version = "3.1.1"
 dependencies = [
  "bytes",
  "http 1.4.0",
@@ -5158,7 +5158,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-queue"
-version = "3.1.0"
+version = "3.1.1"
 dependencies = [
  "async-trait",
  "chrono",
@@ -5175,7 +5175,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-realtime"
-version = "3.1.3"
+version = "4.0.0"
 dependencies = [
  "async-trait",
  "futures",
@@ -5203,7 +5203,7 @@ dependencies = [
 
 [[package]]
 name = "toxi-storage"
-version = "3.1.0"
+version = "3.1.1"
 dependencies = [
  "async-trait",
  "aws-config",

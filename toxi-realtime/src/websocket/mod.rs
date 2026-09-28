@@ -11,16 +11,20 @@ pub mod rooms;
 /// Re-export of room types.
 pub use rooms::{Room, RoomManager};
 
-/// WebSocket message types
+/// WebSocket message types.
+///
+/// Payloads are reference-counted so fan-out to many connections clones
+/// pointers rather than deep-copying strings, JSON trees, and byte
+/// buffers on every send.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Message {
     /// Text message
-    Text { content: String },
+    Text { content: Arc<String> },
     /// JSON message
-    Json { data: serde_json::Value },
+    Json { data: Arc<serde_json::Value> },
     /// Binary message
-    Binary { data: Vec<u8> },
+    Binary { data: Arc<Vec<u8>> },
     /// Ping
     Ping,
     /// Pong  
@@ -32,12 +36,16 @@ pub enum Message {
 impl Message {
     /// Create a text message.
     pub fn text(content: impl Into<String>) -> Self {
-        Self::Text { content: content.into() }
+        Self::Text {
+            content: Arc::new(content.into()),
+        }
     }
 
     /// Create a JSON message.
     pub fn json(data: serde_json::Value) -> Self {
-        Self::Json { data }
+        Self::Json {
+            data: Arc::new(data),
+        }
     }
 
     /// Extract text content from either a Text variant or a Json variant
@@ -59,14 +67,17 @@ impl Message {
     }
 
     /// Convert to a `tungstenite::Message`.
+    ///
+    /// The socket write still copies once per connection; the saving is
+    /// in fan-out, where the payload is shared instead of duplicated.
     pub fn to_ws_message(&self) -> Result<WsMessage> {
         match self {
-            Message::Text { content } => Ok(WsMessage::Text(content.clone())),
+            Message::Text { content } => Ok(WsMessage::Text(content.to_string())),
             Message::Json { data } => {
-                let json_str = serde_json::to_string(data)?;
+                let json_str = serde_json::to_string(&**data)?;
                 Ok(WsMessage::Text(json_str))
             }
-            Message::Binary { data } => Ok(WsMessage::Binary(data.clone())),
+            Message::Binary { data } => Ok(WsMessage::Binary(data.to_vec())),
             Message::Ping => Ok(WsMessage::Ping(vec![])),
             Message::Pong => Ok(WsMessage::Pong(vec![])),
             Message::Close => Ok(WsMessage::Close(None)),
@@ -79,12 +90,18 @@ impl Message {
             WsMessage::Text(text) => {
                 // Try to parse as JSON first
                 if let Ok(data) = serde_json::from_str(&text) {
-                    Ok(Message::Json { data })
+                    Ok(Message::Json {
+                        data: Arc::new(data),
+                    })
                 } else {
-                    Ok(Message::Text { content: text })
+                    Ok(Message::Text {
+                        content: Arc::new(text),
+                    })
                 }
             }
-            WsMessage::Binary(data) => Ok(Message::Binary { data }),
+            WsMessage::Binary(data) => Ok(Message::Binary {
+                data: Arc::new(data),
+            }),
             WsMessage::Ping(_) => Ok(Message::Ping),
             WsMessage::Pong(_) => Ok(Message::Pong),
             WsMessage::Close(_) => Ok(Message::Close),
