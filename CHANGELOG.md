@@ -15,6 +15,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- **toxi-auth** (`4.0.1`): password hashes use a fresh random salt per
+  password. The previous fixed salt made identical passwords hash
+  identically. Stored hashes remain verifiable; new hashes differ.
+- **toxi-middleware** (`3.1.2`): CSRF token comparison runs without
+  early exit, so matching time no longer reveals correct prefix bytes.
+
+### Fixed
+- **toxi-core** (`3.1.10`): router dispatch borrows the request path
+  instead of copying it per request and answers misses without a
+  second method scan; CORS headers resolve once at layer build and
+  share across responses; `Path` extraction deserializes from a borrow
+  instead of cloning the parameter map; cookie map pre-sizes from the
+  separator count. No public API change.
+- **toxi-cache** (`3.1.2`): Redis backend shares one lazily established
+  multiplexed connection instead of handshaking per operation.
+- **toxi-db** (`3.1.1`): `QueryCache::get` serves hits under a single
+  shared read plus the recency write instead of three acquisitions
+  with a re-read. Adds `cache_get_hit` / `cache_get_miss` divan benches.
+- **toxi-middleware** (`3.1.2`): CSRF tokens draw one RNG fill instead
+  of thirty-two generator setups; logger skips method clone and path
+  allocation when info logging is disabled.
+- **toxi-plugin** (`3.1.1`): hook value moves into the final plugin
+  instead of cloning per plugin; registration is a single map lookup.
+- **toxi-realtime** (`4.0.1`): room join and create use one lookup and
+  one name allocation through the entry API.
+- **toxi-security** (`3.1.1`): sanitizer passes reuse two buffers
+  instead of allocating per pass; matching rules unchanged.
+- **toxi-template** (`3.1.2`): renderer threads one output buffer
+  through all nesting levels; static files serve small files from a
+  size-capped mtime-validated memory cache with disk fallback.
+  `StaticFiles::with_max_cached_file_size` tunes the cap.
+
 ### Changed
 - **toxi-auth** (`4.0.0`): session stores hand out `Arc<Session>` instead
   of deep copies. `SessionStore::get`, `SessionManager::get`, and session

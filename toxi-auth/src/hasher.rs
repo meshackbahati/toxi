@@ -10,9 +10,11 @@ pub struct PasswordHasher;
 impl PasswordHasher {
     /// Hash a password using Argon2id
     pub fn hash(password: &str) -> Result<String> {
-        // Use a pre-generated salt for simplicity
-        // In production, you'd want proper random salt generation
-        let salt = SaltString::from_b64("X2lyb25tYW5pc2dyZWF0").unwrap();
+        use argon2::password_hash::rand_core::OsRng;
+
+        // A fresh random salt per password: a fixed salt makes identical
+        // passwords hash identically and defeats the salt's purpose.
+        let salt = SaltString::generate(&mut OsRng);
         let argon2 = Argon2::default();
         
         let password_hash = argon2

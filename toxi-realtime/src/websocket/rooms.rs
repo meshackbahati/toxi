@@ -56,20 +56,24 @@ impl RoomManager {
     /// Create a new room if it does not already exist.
     pub async fn create_room(&self, name: String) -> Result<()> {
         let mut rooms = self.rooms.write().await;
-        if !rooms.contains_key(&name) {
-            rooms.insert(name.clone(), Room::new(name));
-        }
+        // Single lookup through the entry API; the previous form probed
+        // the map twice and cloned the name for the key and the room.
+        rooms
+            .entry(name.clone())
+            .or_insert_with_key(|key| Room::new(key.clone()));
         Ok(())
     }
 
     /// Add a connection to a room, creating the room if needed.
     pub async fn join_room(&self, room_name: &str, conn_id: String) -> Result<()> {
         let mut rooms = self.rooms.write().await;
-        
-        // Create room if it doesn't exist
-        let room = rooms.entry(room_name.to_string())
-            .or_insert_with(|| Room::new(room_name.to_string()));
-        
+
+        // Create room if it doesn't exist. `or_insert_with_key` reuses
+        // the owned entry key instead of allocating a second copy.
+        let room = rooms
+            .entry(room_name.to_owned())
+            .or_insert_with_key(|key| Room::new(key.clone()));
+
         room.add_member(conn_id);
         Ok(())
     }

@@ -45,12 +45,24 @@ impl<S> CsrfMiddleware<S> {
     }
 
     fn generate_token() -> String {
-        let random_bytes: Vec<u8> = (0..32).map(|_| rand::rng().random()).collect();
+        // One RNG draw fills the whole buffer. The previous form built a
+        // fresh generator per byte, paying setup cost thirty-two times.
+        let random_bytes: [u8; 32] = rand::rng().random();
         general_purpose::STANDARD.encode(random_bytes)
     }
 
+    /// Compare tokens without early exit so matching time does not reveal
+    /// how many leading bytes are correct.
     fn verify_token(token: &str, cookie_token: &str) -> bool {
-        token == cookie_token
+        let (a, b) = (token.as_bytes(), cookie_token.as_bytes());
+        if a.len() != b.len() {
+            return false;
+        }
+        let mut diff = 0u8;
+        for i in 0..a.len() {
+            diff |= a[i] ^ b[i];
+        }
+        diff == 0
     }
 }
 

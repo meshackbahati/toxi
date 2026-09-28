@@ -70,29 +70,23 @@ impl QueryCache {
 
     /// Get a cached result for the given key.
     /// Returns None if the key is not found or the entry has expired.
+    ///
+    /// Holds a single read lock for lookup plus the access-order write,
+    /// instead of read, write, re-read across three acquisitions. Readers
+    /// stay shared; only the recency update takes an exclusive lock.
     pub async fn get(&self, key: &str) -> Option<Vec<u8>> {
-        let (exists, expired) = {
+        let data = {
             let entries = self.entries.read().await;
-            if let Some(entry) = entries.get(key) {
-                (true, entry.is_expired())
-            } else {
-                (false, false)
+            match entries.get(key) {
+                Some(entry) if !entry.is_expired() => entry.data.clone(),
+                _ => return None,
             }
         };
-
-        if !exists {
-            return None;
-        }
-        if expired {
-            return None;
-        }
 
         // Update access order for LRU
         self.touch_access_order(key).await;
 
-        // Re-read to get the data
-        let entries = self.entries.read().await;
-        entries.get(key).map(|e| e.data.clone())
+        Some(data)
     }
 
     /// Insert a result into the cache with the given TTL.

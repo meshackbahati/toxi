@@ -1,6 +1,6 @@
 [package]
 name = "toxi-auth"
-version = "4.0.0"
+version = "4.0.1"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Authentication and authorization for Toxi (RBAC, JWT, OAuth2, 2FA, API keys)"

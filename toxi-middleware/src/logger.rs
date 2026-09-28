@@ -46,6 +46,13 @@ where
     }
 
     fn call(&mut self, req: ToxiRequest) -> Self::Future {
+        // Deployments without a logger installed pay nothing: the method
+        // clone and path allocation below exist only to format the log
+        // line, so skip them entirely when info logging is disabled.
+        if !log::log_enabled!(log::Level::Info) {
+            return Box::pin(self.inner.call(req));
+        }
+
         let method = req.method().clone();
         let path = req.uri().path().to_string();
         let start = Instant::now();

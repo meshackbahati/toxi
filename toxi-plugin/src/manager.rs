@@ -41,16 +41,18 @@ impl PluginManager {
     /// Register a plugin
     pub fn register_plugin(&mut self, plugin: Arc<dyn Plugin>) -> Result<()> {
         let info = plugin.info();
-        
-        if self.plugins.contains_key(&info.id) {
-            return Err(Error::InternalServerError(
-                format!("Plugin with id '{}' already exists", info.id)
-            ));
+
+        // Single lookup through the entry API; the previous form probed
+        // the map and then inserted with a second key clone.
+        match self.plugins.entry(info.id.clone()) {
+            std::collections::hash_map::Entry::Occupied(_) => Err(Error::InternalServerError(
+                format!("Plugin with id '{}' already exists", info.id),
+            )),
+            std::collections::hash_map::Entry::Vacant(slot) => {
+                slot.insert(plugin);
+                Ok(())
+            }
         }
-        
-        self.plugins.insert(info.id.clone(), plugin);
-        
-        Ok(())
     }
     
     /// Enable a plugin
@@ -78,15 +80,31 @@ impl PluginManager {
     }
     
     /// Execute a hook across all registered plugins
+    ///
+    /// Enabled plugins are collected first so the hook value moves into
+    /// the final plugin instead of being cloned once per plugin. With
+    /// payload-carrying hooks (`Custom` holds a JSON value) that last
+    /// clone is the most expensive one, and it was pure waste.
     pub async fn execute_hook(&self, hook: PluginHook) -> Result<HookResult> {
         let mut result = HookResult::Continue;
-        
-        for plugin in self.plugins.values() {
-            if !plugin.info().enabled {
-                continue;
-            }
-            
-            result = plugin.hook(hook.clone()).await;
+
+        let enabled: Vec<&Arc<dyn Plugin>> = self
+            .plugins
+            .values()
+            .filter(|plugin| plugin.info().enabled)
+            .collect();
+
+        let last = enabled.len().saturating_sub(1);
+        let mut hook = Some(hook);
+        for (index, plugin) in enabled.into_iter().enumerate() {
+            // The final plugin takes ownership; earlier plugins clone.
+            // Early `return` paths below simply drop the unused value.
+            let current = if index == last {
+                hook.take().expect("hook is consumed exactly once")
+            } else {
+                hook.as_ref().expect("hook is present").clone()
+            };
+            result = plugin.hook(current).await;
             
             match result {
                 HookResult::Stop => break,

@@ -1,6 +1,6 @@
 [package]
 name = "toxi-realtime"
-version = "4.0.0"
+version = "4.0.1"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "WebSocket and real-time features for Toxi"

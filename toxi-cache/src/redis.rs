@@ -2,22 +2,29 @@ use async_trait::async_trait;
 use redis::{Client, AsyncCommands};
 use std::time::Duration;
 use serde::{Deserialize, Serialize};
+use tokio::sync::OnceCell;
 use crate::{validate_cache_key, validate_ttl, Cache, Result};
 
 /// Redis cache backend
+///
+/// Holds one lazily established multiplexed connection shared across
+/// operations. The previous form opened a fresh connection per call,
+/// paying a handshake on every cache hit.
 pub struct RedisCache {
     client: Client,
     default_ttl: Option<Duration>,
+    conn: OnceCell<redis::aio::MultiplexedConnection>,
 }
 
 impl RedisCache {
     /// Create a new Redis cache from a connection URL
     pub fn new(url: &str) -> Result<Self> {
         let client = Client::open(url)?;
-        
+
         Ok(Self {
             client,
             default_ttl: Some(Duration::from_secs(3600)),
+            conn: OnceCell::new(),
         })
     }
 
@@ -25,11 +32,25 @@ impl RedisCache {
     pub fn with_default_ttl(url: &str, ttl: Duration) -> Result<Self> {
         validate_ttl(Some(ttl))?;
         let client = Client::open(url)?;
-        
+
         Ok(Self {
             client,
             default_ttl: Some(ttl),
+            conn: OnceCell::new(),
         })
+    }
+
+    /// Return the shared connection, establishing it on first use.
+    /// `MultiplexedConnection` is cheap to clone and safe to share
+    /// across tasks, so all operations multiplex over one socket.
+    async fn connection(&self) -> Result<redis::aio::MultiplexedConnection> {
+        self.conn
+            .get_or_try_init(|| async {
+                self.client.get_multiplexed_async_connection().await
+            })
+            .await
+            .cloned()
+            .map_err(crate::CacheError::from)
     }
 }
 
@@ -40,7 +61,7 @@ impl Cache for RedisCache {
         T: for<'de> Deserialize<'de> + Send,
     {
         validate_cache_key(key)?;
-        let mut conn = self.client.get_multiplexed_async_connection().await?;
+        let mut conn = self.connection().await?;
             
         let result: Option<String> = conn.get(key).await?;
             
@@ -58,7 +79,7 @@ impl Cache for RedisCache {
     {
         validate_cache_key(key)?;
         validate_ttl(ttl)?;
-        let mut conn = self.client.get_multiplexed_async_connection().await?;
+        let mut conn = self.connection().await?;
             
         let data = serde_json::to_string(value)?;
             
@@ -76,7 +97,7 @@ impl Cache for RedisCache {
 
     async fn delete(&self, key: &str) -> Result<()> {
         validate_cache_key(key)?;
-        let mut conn = self.client.get_multiplexed_async_connection().await?;
+        let mut conn = self.connection().await?;
             
         let _: () = conn.del(key).await?;
             
@@ -85,7 +106,7 @@ impl Cache for RedisCache {
 
     async fn exists(&self, key: &str) -> Result<bool> {
         validate_cache_key(key)?;
-        let mut conn = self.client.get_multiplexed_async_connection().await?;
+        let mut conn = self.connection().await?;
             
         let exists: bool = conn.exists(key).await?;
             
@@ -93,7 +114,7 @@ impl Cache for RedisCache {
     }
 
     async fn flush(&self) -> Result<()> {
-        let mut conn = self.client.get_multiplexed_async_connection().await?;
+        let mut conn = self.connection().await?;
             
         let _: () = redis::cmd("FLUSHDB")
             .query_async(&mut conn)
