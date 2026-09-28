@@ -1,7 +1,9 @@
 # Full HTTP Comparison
 
-GET /json returning `{"message":"Hello, World!"}`, oha 30 s, 125
-connections, loopback, release builds. Success rate 1.0 everywhere.
+GET /json, oha 30 s, 125 connections, loopback, release builds.
+Success rate 1.0 everywhere.
+
+## Baseline shootout (preserved)
 
 | Framework | Req/s | p99 (ms) |
 | --------- | ----: | -------: |
@@ -11,6 +13,21 @@ connections, loopback, release builds. Success rate 1.0 everywhere.
 | loco | 28,994 | 10.49 |
 | salvo | 27,759 | 33.78 |
 | rocket | 23,207 | 36.34 |
+
+## Tuned campaign (forward + reverse order, drift-corrected mean)
+
+| Framework | Forward | Reverse | Mean |
+| --------- | ------: | ------: | ---: |
+| toxi | 33,715 | 17,137 | 25,426 |
+| rocket | 12,715 | 16,218 | 14,466 |
+| poem | 15,699 | 12,441 | 14,070 |
+| warp | 15,201 | 12,443 | 13,822 |
+| salvo | 14,608 | 12,340 | 13,474 |
+| loco | 11,963 | 11,881 | 11,922 |
+
+Requests per second. Each direction ran all six back-to-back; the mean
+cancels the load drift that flatters whoever runs first. Four-route
+detail (hello, user, missing, echo) in the previous section.
 
 ![throughput with p99](img/six-http.png)
 
