@@ -1,5 +1,0 @@
-error: #[validate(email)] can only be used on String fields
- --> tests/ui/fail_email_non_string.rs:4:16
-  |
-4 |     #[validate(email)]
-  |                ^^^^^

@@ -1,29 +1,3 @@
 [workspace]
+members = ["apps/*"]
 resolver = "2"
-members = [
-    "toxi",
-    "toxi-core",
-    "toxi-macros",
-    "toxi-config",
-    "toxi-middleware",
-    "toxi-utils",
-    "toxi-template",
-    "toxi-db",
-    "toxi-auth",
-    "toxi-cache",
-    "toxi-queue",
-    "toxi-realtime",
-    "toxi-mail",
-    "toxi-storage",
-    "toxi-security",
-    "toxi-cli",
-    "toxi-testing",
-    "toxi-openapi",
-    "toxi-graphql",
-    "toxi-plugin",
-    "examples/*",
-    "tests/*",
-]
-
-[workspace.package]
-version = "3.1.0"
