@@ -5040,7 +5040,13 @@ dependencies = [
  "tower",
  "tower-http",
  "tower-service",
+ "toxi-auth",
+ "toxi-cache",
  "toxi-config",
+ "toxi-db",
+ "toxi-queue",
+ "toxi-realtime",
+ "toxi-template",
  "tungstenite 0.20.1",
 ]
 
