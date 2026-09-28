@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
-- **toxi-auth** (`4.0.1`): password hashes use a fresh random salt per
+- **toxi-auth** (`3.2.0`): password hashes use a fresh random salt per
   password. The previous fixed salt made identical passwords hash
   identically. Stored hashes remain verifiable; new hashes differ.
 - **toxi-middleware** (`3.1.2`): CSRF token comparison runs without
@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   allocation when info logging is disabled.
 - **toxi-plugin** (`3.1.1`): hook value moves into the final plugin
   instead of cloning per plugin; registration is a single map lookup.
-- **toxi-realtime** (`4.0.1`): room join and create use one lookup and
+- **toxi-realtime** (`3.2.0`): room join and create use one lookup and
   one name allocation through the entry API.
 - **toxi-security** (`3.1.1`): sanitizer passes reuse two buffers
   instead of allocating per pass; matching rules unchanged.
@@ -49,15 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `StaticFiles::with_max_cached_file_size` tunes the cap.
 
 ### Changed
-- **toxi-auth** (`4.0.0`): session stores hand out `Arc<Session>` instead
+- **toxi-auth** (`3.2.0`): session stores hand out `Arc<Session>` instead
   of deep copies. `SessionStore::get`, `SessionManager::get`, and session
-  middleware move to shared sessions. Breaking for external store
-  implementations and for readers of `Session` from extensions.
-- **toxi-realtime** (`4.0.0`): `Message` payloads are reference-counted
+  middleware move to shared sessions.
+- **toxi-realtime** (`3.2.0`): `Message` payloads are reference-counted
   (`Arc<String>`, `Arc<Value>`, `Arc<Vec<u8>>`), so fan-out clones
   pointers instead of duplicating payloads. Constructors keep their
-  shapes; pattern matches observe `Arc` payloads. Breaking for matches
-  on message contents.
+  shapes; pattern matches observe `Arc` payloads.
 
 ### Fixed
 - **toxi-auth** (`3.1.1`): `JwtManager` derives encoding, decoding, and
