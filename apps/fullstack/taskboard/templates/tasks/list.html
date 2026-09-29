@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}Task board{% endblock %}
+
+{% block content %}
+<h2>Task board</h2>
+
+<div id="tasks-list">
+    {% for task in tasks %}
+    <div class="card">
+        <h3>{{ task.title }}</h3>
+        <p class="text-muted">by {{ task.author }} — {% if task.done %}done{% endif %}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

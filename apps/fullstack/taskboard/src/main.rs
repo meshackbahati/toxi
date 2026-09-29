@@ -73,7 +73,10 @@ async fn main() -> Result<()> {
     router.get("/", routes::web::home);
     router.get("/api/status", routes::status::api_status);
     router.get("/health", routes::status::health_check);
-    router.get("/users", routes::users::get_users);
+    router.get("/users", routes::web::users_page);
+    router.get("/api/users", routes::users::get_users);
+    router.get("/board", routes::web::board);
+    router.get("/api-docs", routes::web::api_docs_page);
 
     router.post("/auth/register", routes::auth::register);
     router.post("/auth/login", routes::auth::login);
