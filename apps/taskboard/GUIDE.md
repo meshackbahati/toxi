@@ -21,6 +21,10 @@ migrations, and uploads resolve relative to it. Environment:
 ## Try it
 
 ```bash
+cargo test -p taskboard
+```
+
+```bash
 # register and log in
 curl -X POST localhost:3000/auth/register \
   -H 'Content-Type: application/json' \
