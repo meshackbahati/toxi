@@ -1,14 +1,20 @@
 //! Blog: rendered posts with auth-gated writing.
 //!
-//! Fullstack group: every page is server-rendered HTML. See GUIDE.md.
+//! Boot sequence: Config ──> Router ──> Middleware ──> Server.
+//! See GUIDE.md.
 
 use toxi::auth::JwtManager;
 use toxi::db::DbPool;
 use toxi::prelude::*;
 use std::sync::Arc;
 
+mod config;
+mod controllers;
+mod middleware;
 mod models;
 mod routes;
+mod services;
+mod validators;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -18,11 +24,9 @@ pub struct AppState {
 }
 
 impl AppState {
-    async fn load() -> Result<Self> {
+    async fn load(settings: &config::Settings) -> Result<Self> {
         let templates = toxi_template::TemplateContext::new("templates");
-        let db_url =
-            std::env::var("BLOG_DB").unwrap_or_else(|_| "sqlite:blog.db".to_string());
-        let db = DbPool::connect(&db_url)
+        let db = DbPool::connect(&settings.db_url)
             .await
             .map_err(|e| Error::InternalServerError(format!("db connect: {e}")))?;
         let sql = std::fs::read_to_string("migrations/001_blog.sql")
@@ -32,36 +36,76 @@ impl AppState {
                 .await
                 .map_err(|e| Error::InternalServerError(format!("migrate: {e}")))?;
         }
-        let secret =
-            std::env::var("BLOG_JWT").unwrap_or_else(|_| "blog-dev-secret".to_string());
-        Ok(Self {
+        let state = Self {
             templates: Arc::new(templates),
             db,
-            jwt: Arc::new(JwtManager::new(secret)),
-        })
+            jwt: Arc::new(JwtManager::new(settings.jwt_secret.clone())),
+        };
+        state.seed_welcome().await?;
+        Ok(state)
+    }
+
+    /// First boot plants a welcome post so the index never opens empty.
+    async fn seed_welcome(&self) -> Result<()> {
+        use toxi::db::Database;
+        let existing: Option<i64> = self
+            .db
+            .fetch_one(toxi::db::sqlx::query("SELECT COUNT(*) AS n FROM posts"))
+            .await
+            .map_err(|e| Error::InternalServerError(e.to_string()))?
+            .and_then(|row| {
+                use toxi::db::sqlx::Row;
+                row.try_get("n").ok()
+            });
+        if existing.unwrap_or(0) > 0 {
+            return Ok(());
+        }
+        self.db
+            .execute("INSERT INTO users (id, email, name) VALUES ('system', 'system@local', 'System')")
+            .await
+            .map_err(|e| Error::InternalServerError(e.to_string()))?;
+        self.db
+            .execute(
+                "INSERT INTO posts (id, user_id, title, body) VALUES \
+                 ('welcome', 'system', 'Welcome to the blog', \
+                 'This is the first post. Register an account to publish your own.')",
+            )
+            .await
+            .map_err(|e| Error::InternalServerError(e.to_string()))?;
+        Ok(())
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let state = Arc::new(AppState::load().await?);
-    let mut router = Router::new();
+    // ── 1. Config ──────────────────────────────────────────────────
+    let settings = config::load()?;
 
-    router.get("/", routes::pages::index);
-    router.get("/posts/:id", routes::pages::show);
-    router.post("/auth/register", routes::write::register);
-    router.post("/auth/login", routes::write::login);
-    router.post("/posts", routes::write::publish);
-    router.get("/api/status", routes::status::api_status);
-    router.get("/health", routes::status::health_check);
-    // Static assets last: specific routes match first, everything else
-    // falls through to the template engine file server.
-    router.get("/*", toxi_template::serve_static);
+    // Shared state travels in request extensions for State.
+    let state = Arc::new(AppState::load(&settings).await?);
 
-    let mut router = router;
-    router.with_state(state);
-    println!("Blog on http://127.0.0.1:3003");
-    Server::new(router).listen("127.0.0.1:3003".parse().unwrap()).await
+    // ── 2. Router ──────────────────────────────────────────────────
+    let mut app = Application::new(
+        toxi::config::Config::load()
+            .map_err(|e| Error::InternalServerError(format!("config: {e}")))?,
+    );
+    routes::register(app.router_mut());
+    app.router_mut().with_state(state);
+
+    // ── 3. Middleware ── 4. Server ─────────────────────────────────
+    println!(
+        "Blog on http://{}:{}",
+        app.config().server.host,
+        app.config().server.port
+    );
+    let router = app.into_router();
+    let logged = tower::ServiceBuilder::new()
+        .layer(middleware::LoggerLayer)
+        .service(router);
+    let addr: std::net::SocketAddr = format!("{}:{}", settings.host, settings.port)
+        .parse()
+        .unwrap();
+    Server::new(logged).listen(addr).await
 }
 
 #[cfg(test)]
@@ -95,17 +139,23 @@ mod boot_tests {
             "migrations/001_blog.sql",
         )
         .unwrap();
-        std::fs::write("templates/index.html", "{% for post in posts %}{{ post.title }}{% endfor %}").unwrap();
+        std::fs::write("templates/index.html", "{% for post in posts %}{{ post.title }}{% endfor %}{% if post_count == 0 %}empty{% endif %}").unwrap();
         std::fs::write("templates/post.html", "{{ post.title }}").unwrap();
         std::env::set_var("BLOG_DB", "sqlite:blog-test.db");
-        Arc::new(AppState::load().await.unwrap())
+        let settings = config::Settings {
+            host: "127.0.0.1".to_string(),
+            port: 3003,
+            db_url: "sqlite:blog-test.db".to_string(),
+            jwt_secret: "test-secret".to_string(),
+        };
+        Arc::new(AppState::load(&settings).await.unwrap())
     }
 
     #[tokio::test]
     async fn full_flow() {
         let state = test_state().await;
 
-        let res = routes::write::register(
+        let res = controllers::write::register(
             json_req(
                 "POST",
                 "/auth/register",
@@ -117,7 +167,7 @@ mod boot_tests {
         .unwrap();
         assert_eq!(res.status(), http::StatusCode::OK);
 
-        let res = routes::pages::index(json_req("GET", "/", b"", &state))
+        let res = controllers::pages::index(json_req("GET", "/", b"", &state))
             .await
             .unwrap();
         assert_eq!(res.status(), http::StatusCode::OK);

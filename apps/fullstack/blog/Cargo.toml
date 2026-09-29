@@ -18,3 +18,4 @@ http = "1"
 http-body-util = "0.1"
 bytes = "1"
 toxi-template = "3"
+tower = { version = "0.5", features = ["full"] }
