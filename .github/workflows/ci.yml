@@ -26,6 +26,8 @@ jobs:
         include:
           - app: taskboard
             dir: apps/fullstack/taskboard
+          - app: blog
+            dir: apps/fullstack/blog
           - app: shortlink
             dir: apps/api/shortlink
           - app: echo
