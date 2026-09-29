@@ -54,6 +54,9 @@ async fn main() -> Result<()> {
     router.post("/posts", routes::write::publish);
     router.get("/api/status", routes::status::api_status);
     router.get("/health", routes::status::health_check);
+    // Static assets last: specific routes match first, everything else
+    // falls through to the template engine file server.
+    router.get("/*", toxi_template::serve_static);
 
     let mut router = router;
     router.with_state(state);

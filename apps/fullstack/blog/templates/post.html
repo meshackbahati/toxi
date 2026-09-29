@@ -1,4 +1,4 @@
 {% extends "layout.html" %}
 {% block content %}
-<article><h1>{{ post.title }}</h1><p>by {{ post.author }}</p><div>{{ post.body }}</div></article>
+<article><h1>{{ post.title }}</h1><p class="meta">by {{ post.author }}</p><div class="prose">{{ post.body }}</div></article>
 {% endblock %}
