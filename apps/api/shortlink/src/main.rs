@@ -21,7 +21,7 @@ impl AppState {
         let db = DbPool::connect(&db_url)
             .await
             .map_err(|e| Error::InternalServerError(format!("db connect: {e}")))?;
-        let sql = std::fs::read_to_string("migrations/001_links.sql")
+        let sql = std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/migrations/001_links.sql"))
             .map_err(|e| Error::InternalServerError(format!("read migration: {e}")))?;
         for statement in sql.split(';').map(str::trim).filter(|s| !s.is_empty()) {
             db.execute(statement)

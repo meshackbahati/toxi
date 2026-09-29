@@ -1,5 +1,5 @@
 use toxi::auth::JwtManager;
-use toxi::db::DbPool;
+use toxi::db::{sqlx, DbPool};
 use toxi::prelude::*;
 use toxi::realtime::PubSub;
 use toxi_template::TemplateContext;
@@ -18,18 +18,31 @@ pub struct AppState {
 
 impl AppState {
     async fn load() -> Result<Self> {
-        // Templates resolve relative to the app directory.
+        // Run from the app directory: templates, migrations, uploads,
+        // and the database resolve relative to it.
         let templates = TemplateContext::new("templates");
         let db_url =
             std::env::var("TASKBOARD_DB").unwrap_or_else(|_| "sqlite:taskboard.db".to_string());
         let db = DbPool::connect(&db_url)
             .await
             .map_err(|e| Error::InternalServerError(format!("db connect: {e}")))?;
+        // Migrations apply once each, tracked in the database, so
+        // restarts never replay DDL.
+        db.execute("CREATE TABLE IF NOT EXISTS _migrations (name TEXT PRIMARY KEY)")
+            .await
+            .map_err(|e| Error::InternalServerError(format!("migrate: {e}")))?;
         for file in [
             "migrations/001_initial_schema.sql",
             "migrations/002_tasks.sql",
             "migrations/003_password_hash.sql",
         ] {
+            let applied = db
+                .fetch_one(sqlx::query("SELECT name FROM _migrations WHERE name = $1").bind(file))
+                .await
+                .map_err(|e| Error::InternalServerError(format!("migrate: {e}")))?;
+            if applied.is_some() {
+                continue;
+            }
             let sql = std::fs::read_to_string(file)
                 .map_err(|e| Error::InternalServerError(format!("read {file}: {e}")))?;
             for statement in sql.split(';').map(str::trim).filter(|s| !s.is_empty()) {
@@ -37,6 +50,9 @@ impl AppState {
                     .await
                     .map_err(|e| Error::InternalServerError(format!("migrate: {e}")))?;
             }
+            db.execute_query(sqlx::query("INSERT INTO _migrations (name) VALUES ($1)").bind(file))
+                .await
+                .map_err(|e| Error::InternalServerError(format!("migrate: {e}")))?;
         }
         let secret =
             std::env::var("TASKBOARD_JWT").unwrap_or_else(|_| "taskboard-dev-secret".to_string());
@@ -74,6 +90,9 @@ async fn main() -> Result<()> {
     router.get("/events/next", routes::realtime::next);
     router.get("/openapi.json", routes::openapi_spec);
     router.get("/favicon.ico", routes::favicon);
+    // Static assets last: specific routes match first, everything else
+    // falls through to the template engine file server.
+    router.get("/*", toxi_template::serve_static);
 
     // Shared state travels in request extensions for State.
     let mut router = router;
