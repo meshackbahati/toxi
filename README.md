@@ -43,7 +43,6 @@ tokio = { version = "1", features = ["full"] }
 
 - [`docs/`](docs) — framework guides: getting started, core concepts,
   authentication, database, middleware, deployment, migrations.
-- [`benchmarks/`](benchmarks) — performance results and graphs.
 - [`examples/`](examples) — single-file code samples.
 
 ## Run an app
