@@ -14,9 +14,9 @@ jobs:
         with:
           channel: stable
       - name: Check apps
-        run: cargo check --workspace --all-targets
+        run: for app in apps/*/*/; do echo "== $app"; (cd $app && cargo check --all-targets); done
       - name: Test apps
-        run: cargo test --workspace
+        run: for app in apps/*/*/; do echo "== $app"; (cd $app && cargo test); done
 
   docker:
     runs-on: ubuntu-latest
