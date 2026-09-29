@@ -1,0 +1,19 @@
+[package]
+name = "shortlink"
+version = "0.1.0"
+edition = "2021"
+authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
+description = "Cache-first URL shortener on Toxi"
+
+[dependencies]
+toxi = { version = "3", features = ["full"] }
+toxi-core = "3"
+toxi-openapi = "3"
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4"] }
+http = "1"
+http-body-util = "0.1"
+bytes = "1"

@@ -2,8 +2,7 @@ use toxi::auth::JwtManager;
 use toxi::db::DbPool;
 use toxi::prelude::*;
 use toxi::realtime::PubSub;
-use toxi::json_response;
-use toxi_template::{Context, TemplateContext};
+use toxi_template::TemplateContext;
 use std::sync::Arc;
 
 mod models;
@@ -50,70 +49,15 @@ impl AppState {
     }
 }
 
-async fn home(mut req: Request) -> Result<Response> {
-    let State(state): State<Arc<AppState>> = State::from_request(&mut req).await?;
-    let mut ctx = Context::new();
-    ctx.set("title", "Taskboard");
-    ctx.set("welcome_message", "Tasks, auth, realtime, uploads");
-    let html = state
-        .templates
-        .render("home.html", &ctx)
-        .map_err(|e| Error::InternalServerError(e.to_string()))?;
-    Ok(Response::html(html))
-}
-
-async fn api_status(_req: Request) -> Result<Response> {
-    Ok(json_response!({
-        "status": "online",
-        "framework": "Toxi",
-        "app": "taskboard",
-        "timestamp": chrono::Utc::now().to_rfc3339(),
-    }))
-}
-
-async fn health_check(_req: Request) -> Result<Response> {
-    Ok(Response::text("OK"))
-}
-
-#[derive(serde::Serialize)]
-struct UserSummary {
-    id: u64,
-    name: String,
-    active: bool,
-}
-
-#[derive(serde::Deserialize, Default)]
-struct Pagination {
-    page: Option<u64>,
-    limit: Option<u64>,
-}
-
-async fn get_users(Query(params): Query<Pagination>) -> Result<Response> {
-    let page = params.page.unwrap_or(1);
-    let limit = params.limit.unwrap_or(10);
-    let offset = (page - 1) * limit;
-    let users: Vec<UserSummary> = ((offset + 1)..=(offset + limit))
-        .map(|i| UserSummary {
-            id: i,
-            name: format!("User {i}"),
-            active: true,
-        })
-        .collect();
-    Ok(json_response!({
-        "users": users,
-        "pagination": { "page": page, "limit": limit, "offset": offset },
-    }))
-}
-
 #[tokio::main]
 async fn main() -> Result<()> {
     let state = Arc::new(AppState::load().await?);
     let mut router = Router::new();
 
-    router.get("/", home);
-    router.get("/api/status", api_status);
-    router.get("/health", health_check);
-    router.get("/users", get_users);
+    router.get("/", routes::web::home);
+    router.get("/api/status", routes::status::api_status);
+    router.get("/health", routes::status::health_check);
+    router.get("/users", routes::users::get_users);
 
     router.post("/auth/register", routes::auth::register);
     router.post("/auth/login", routes::auth::login);

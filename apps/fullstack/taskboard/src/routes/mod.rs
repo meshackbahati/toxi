@@ -1,7 +1,10 @@
 pub mod auth;
+pub mod status;
+pub mod users;
 pub mod realtime;
 pub mod tasks;
 pub mod uploads;
+pub mod web;
 
 use toxi_core::{Error, Request, Response, Result};
 use http_body_util::BodyExt;

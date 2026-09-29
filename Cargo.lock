@@ -1202,6 +1202,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "echo"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "chrono",
+ "http 1.5.0",
+ "http-body-util",
+ "serde",
+ "serde_json",
+ "tokio",
+ "toxi",
+ "toxi-core",
+]
+
+[[package]]
 name = "either"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3693,6 +3708,23 @@ name = "shlex"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
+
+[[package]]
+name = "shortlink"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "chrono",
+ "http 1.5.0",
+ "http-body-util",
+ "serde",
+ "serde_json",
+ "tokio",
+ "toxi",
+ "toxi-core",
+ "toxi-openapi",
+ "uuid 1.26.1",
+]
 
 [[package]]
 name = "signal-hook-registry"

@@ -23,8 +23,14 @@ jobs:
     needs: test
     strategy:
       matrix:
-        app: [taskboard]
+        include:
+          - app: taskboard
+            dir: apps/fullstack/taskboard
+          - app: shortlink
+            dir: apps/api/shortlink
+          - app: echo
+            dir: apps/serverless/echo
     steps:
       - uses: actions/checkout@v5
       - name: Build ${{ matrix.app }} image
-        run: docker build -t ${{ matrix.app }} apps/${{ matrix.app }}
+        run: docker build -t ${{ matrix.app }} ${{ matrix.dir }}

@@ -16,9 +16,11 @@ web framework, plus the framework documentation hub.
 
 ## Applications
 
-| App | What it shows | Guide |
-| --- | ------------ | ----- |
-| [taskboard](apps/taskboard) | Tasks with auth, sqlite, uploads, events, templates, OpenAPI | [GUIDE.md](apps/taskboard/GUIDE.md) |
+| Group | App | Guide |
+| ----- | --- | ----- |
+| fullstack | [taskboard](apps/fullstack/taskboard) — tasks with auth, sqlite, uploads, events, templates, OpenAPI | [GUIDE.md](apps/fullstack/taskboard/GUIDE.md) |
+| api | [shortlink](apps/api/shortlink) — cache-first redirects, rate limits, stats | [GUIDE.md](apps/api/shortlink/GUIDE.md) |
+| serverless | [echo](apps/serverless/echo) — stateless webhook plus warmth probe | [GUIDE.md](apps/serverless/echo/GUIDE.md) |
 
 Every app depends on the published crates, follows the modular
 `routes / models / services` layout, and keeps each file under 500 lines.
@@ -48,6 +50,6 @@ tokio = { version = "1", features = ["full"] }
 ## Run an app
 
 ```bash
-cd apps/taskboard
+cd apps/fullstack/taskboard
 cargo run
 ```
