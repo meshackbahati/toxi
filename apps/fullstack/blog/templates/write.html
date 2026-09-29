@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<article>
+<h1>Write a post</h1>
+<form method="post" action="/write">
+<label>Email<br><input type="email" name="email" required></label><br><br>
+<label>Password<br><input type="password" name="password" required></label><br><br>
+<label>Title<br><input type="text" name="title" required maxlength="200"></label><br><br>
+<label>Body<br><textarea name="body" rows="10" cols="60"></textarea></label><br><br>
+<button type="submit">Publish</button>
+</form>
+<p class="meta">New here? Your account is created automatically on first publish.</p>
+</article>
+{% endblock %}
