@@ -18,7 +18,7 @@ web framework, plus the framework documentation hub.
 
 | App | What it shows | Guide |
 | --- | ------------ | ----- |
-| [demo-app](apps/demo-app) | REST JSON, templates, forms, cookies, errors | [GUIDE.md](apps/demo-app/GUIDE.md) |
+| [taskboard](apps/taskboard) | Tasks with auth, sqlite, uploads, events, templates, OpenAPI | [GUIDE.md](apps/taskboard/GUIDE.md) |
 
 Every app depends on the published crates, follows the modular
 `routes / models / services` layout, and keeps each file under 500 lines.
@@ -49,6 +49,6 @@ tokio = { version = "1", features = ["full"] }
 ## Run an app
 
 ```bash
-cd apps/demo-app
+cd apps/taskboard
 cargo run
 ```
