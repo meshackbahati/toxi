@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Meshack Bahati Ouma <bahatikylemeshack@gmail.com>"]
 description = "Rendered blog with auth-gated writing on Toxi"
+license = "Apache-2.0"
 
 [dependencies]
 toxi = { version = "3", features = ["full"] }

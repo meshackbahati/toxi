@@ -8,7 +8,7 @@ Working applications built with the [Toxi](https://github.com/toxi-rs/toxi)
 web framework, plus the framework documentation hub.
 
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
-[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache-2.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 </div>
 
