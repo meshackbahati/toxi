@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+<article>
+<h1>New paste</h1>
+<form id="paste-form">
+<label>Title<br><input type="text" id="title"></label><br><br>
+<label>Body<br><textarea id="body" rows="10" cols="60" required></textarea></label><br><br>
+<button type="submit">Save</button>
+</form>
+<div id="result"></div>
+</article>
+<script>
+document.getElementById('paste-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const title = document.getElementById('title').value;
+  const body = document.getElementById('body').value;
+  const res = await fetch('/pastes', { method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, body }) });
+  const data = await res.json();
+  document.getElementById('result').innerHTML =
+    '<p>Saved: <a href="/pastes/' + data.paste.id + '">' + data.paste.id + '</a></p>';
+});
+</script>
+{% endblock %}

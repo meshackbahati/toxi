@@ -19,6 +19,7 @@ web framework, plus the framework documentation hub.
 | Group | App | Guide |
 | ----- | --- | ----- |
 | fullstack | [taskboard](apps/fullstack/taskboard) — tasks with auth, sqlite, uploads, events, templates, OpenAPI | [GUIDE.md](apps/fullstack/taskboard/GUIDE.md) |
+| fullstack | [pastebin](apps/fullstack/pastebin) — sanitized pastes with rendered preview | [GUIDE.md](apps/fullstack/pastebin/GUIDE.md) |
 | fullstack | [blog](apps/fullstack/blog) — rendered posts with auth-gated writing | [GUIDE.md](apps/fullstack/blog/GUIDE.md) |
 | api | [todo](apps/api/todo) — todos over REST plus live GraphQL playground | [GUIDE.md](apps/api/todo/GUIDE.md) |
 | api | [notifier](apps/api/notifier) — queued welcome emails over SMTP | [GUIDE.md](apps/api/notifier/GUIDE.md) |

@@ -28,6 +28,8 @@ jobs:
             dir: apps/fullstack/taskboard
           - app: blog
             dir: apps/fullstack/blog
+          - app: pastebin
+            dir: apps/fullstack/pastebin
           - app: todo
             dir: apps/api/todo
           - app: notifier
