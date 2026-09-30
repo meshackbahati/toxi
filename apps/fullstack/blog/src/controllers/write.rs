@@ -75,7 +75,7 @@ pub async fn form(mut req: Request) -> Result<Response> {
 }
 
 #[derive(serde::Deserialize)]
-struct PublishForm {
+pub struct PublishForm {
     email: String,
     password: String,
     title: String,

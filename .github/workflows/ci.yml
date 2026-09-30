@@ -30,6 +30,8 @@ jobs:
             dir: apps/fullstack/blog
           - app: todo
             dir: apps/api/todo
+          - app: notifier
+            dir: apps/api/notifier
           - app: shortlink
             dir: apps/api/shortlink
           - app: echo
